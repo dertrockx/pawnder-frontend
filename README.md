@@ -1,70 +1,83 @@
-# Getting Started with Create React App
+# Pawnder
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+- the tinder for adoption
+- because, y not
 
-## Available Scripts
+## Core Contributors
+- Reamonn Domingo [@rladomingo](https://github.com/rladomingo)
+- Sophia Nakashima [@xrrhythmxx](https://github.com/rladomingo)
+- Lea Marie Somoson [@xxyangxx](https://github.com/xxyangxx)
 
-In the project directory, you can run:
+## Guidelines
 
-### `yarn start`
+### File imports
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+- I had set up this project to use alias import by creating a file called `jsconfig.json`
+- to see examples, just keep scrolling
 
-The page will reload if you make edits.\
-You will also see any lint errors in the console.
+### Example patterns
 
-### `yarn test`
+- **Example#1:** creating a basic component and importing it
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+```jsx
+// src/components/Component1.jsx
+import React from "react";
 
-### `yarn build`
+function Component1(){
+  return (
+    <h1>I am a simple component</h1>
+  )
+}
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+export default Component1;
+```
+```jsx
+// src/pages/SamplePage.jsx
+import React from "react";
+// to use Component1, we import them 
+import Component1 from "components/Component1";
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+function SamplePage(){
+  return (
+    <p>Inside sample page</p>
+    <Component1 />
+  )
+}
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+export default SamplePage;
+```
+- **Example#2:** creating a component with separate styles using [css modules](https://create-react-app.dev/docs/adding-a-css-modules-stylesheet/)
+```css
+/* We create two files, one index.jsx file and one css file 
+src/components/BasicButton/BasicButton.module.css */
 
-### `yarn eject`
+.button {
+  padding: 5px 10px;
+  /* ... styles go here */
+}
 
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
+.ghost-button {
+  border: 1px solid #f91;
+  background: none;
+  /* ... styles go here */
+}
+```
+```jsx
+// src/components/BasicButton/index.jsx
+import React from "react";
+import styles from "./BasicButton.module.css";
 
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+function BasicButton(){
+  return (
+    <button className={ styles.button }> 
+    I am a button
+    </button>
+    /*
+      for multiple style names, here's a reference https://stackoverflow.com/questions/33949469/using-css-modules-how-do-i-define-more-than-one-style-name
+    */
+  )
+}
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
-
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
-
-### Code Splitting
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
-
-### Analyzing the Bundle Size
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
-
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `yarn build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+export default BasicButton;
+// and then we import the component just like in Example#1
+```
