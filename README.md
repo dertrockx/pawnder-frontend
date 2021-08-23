@@ -4,6 +4,7 @@
 - because, y not
 
 ## Core Contributors
+- Ian Salazar [@dertrockx](https://github.com/dertrockx)
 - Reamonn Domingo [@rladomingo](https://github.com/rladomingo)
 - Sophia Nakashima [@xrrhythmxx](https://github.com/rladomingo)
 - Lea Marie Somoson [@xxyangxx](https://github.com/xxyangxx)
@@ -73,11 +74,16 @@ function BasicButton(){
     I am a button
     </button>
     /*
-      for multiple style names, here's a reference https://stackoverflow.com/questions/33949469/using-css-modules-how-do-i-define-more-than-one-style-name
+      for multiple styles, here's a reference https://stackoverflow.com/questions/33949469/using-css-modules-how-do-i-define-more-than-one-style-name
     */
   )
 }
 
 export default BasicButton;
 // and then we import the component just like in Example#1
+```
+- **Example#3:** other imports
+```javascript
+// importing a utility function from src/utils
+import someUtilityFunction from "utils/someUtilFile"
 ```
