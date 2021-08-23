@@ -1,4 +1,6 @@
 .basicButton {
 	padding: 10px;
 	border: 0;
+	background: none;
+	border: 2px solid #ffb703;
 }
