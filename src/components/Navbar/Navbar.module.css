@@ -1,15 +1,24 @@
 .navbar {
 	display: flex;
-	width: 100vw;
+	justify-content: space-between;
+	align-items: center;
+	width: 100%;
 	padding: 20px 40px;
-	background: var(--color-primary-default);
+	background: var(--color-brand-default);
 }
 
 .navbarRightItems {
 	display: flex;
+	align-items: center;
 	flex-direction: row;
+	color: var(--color-white);
 }
 
-.navbarRightItems:not(:first-child) {
+.navbarRightItems > *:not(:first-child) {
 	margin-left: 30px;
+}
+
+.navbarItem {
+	color: var(--color-white);
+	text-decoration: none;
 }
