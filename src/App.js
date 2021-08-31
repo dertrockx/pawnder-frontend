@@ -6,10 +6,12 @@ import {
 	Redirect,
 } from "react-router-dom";
 
-// reset default styles for all html elements - https://en.wikipedia.org/wiki/Reset_style_sheet
+// TODO: use React.lazy() to lazy-load these pages
 import SamplePage from "pages/SamplePage";
+import Feed from "pages/Feed";
 import Navbar from "components/Navbar";
 
+// reset default styles for all html elements - https://en.wikipedia.org/wiki/Reset_style_sheet
 import "./normalize.css";
 import "./typography.css";
 
@@ -20,6 +22,7 @@ function App() {
 				<Navbar />
 				<Switch>
 					<Route path="/sample" exact component={SamplePage} />
+					<Route path="/feed" exact component={Feed} />
 					<Redirect path="/" to="/sample" exact />
 				</Switch>
 			</Router>
