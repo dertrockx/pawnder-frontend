@@ -7,7 +7,10 @@ function BasicButton() {
 		setCount(count + 1);
 	}
 	return (
-		<button onClick={handleClick} className={styles.basicButton}>
+		<button
+			onClick={handleClick}
+			className={`button-text ${styles.basicButton}`}
+		>
 			I am a button that's been clicked {count} time{count > 1 ? "s" : ""}
 		</button>
 	);

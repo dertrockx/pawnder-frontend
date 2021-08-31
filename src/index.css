@@ -1,3 +1,15 @@
+/* Global styles */
+:root {
+	--color-primary-default: #ffa500;
+	--color-primary-lighter: #ffc55c;
+	--color-primary-darker: #a36a00;
+	--color-black: #000;
+	--color-white: #fff;
+	--color-red: #ed455d;
+	--color-green: #00c04d;
+	--color-blue: #5a4ff3;
+}
+
 * {
 	box-sizing: border-box;
 }
