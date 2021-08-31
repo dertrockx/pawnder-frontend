@@ -1,10 +1,11 @@
 import React from "react";
 import BasicButton from "components/BasicButton";
 import BasicCard from "components/BasicCard";
-
+import Navbar from "components/Navbar";
 function SamplePage() {
 	return (
 		<div>
+			<Navbar />
 			Hello! I'm a dummy page
 			<BasicButton />
 			<BasicCard />
