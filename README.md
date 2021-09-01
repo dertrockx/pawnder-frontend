@@ -3,21 +3,21 @@
 - the tinder for adoption
 - because, y not
 
-## Core Contributors
+# Core Contributors
 
 - Ian Salazar [@dertrockx](https://github.com/dertrockx)
 - Reamonn Domingo [@rladomingo](https://github.com/rladomingo)
 - Sophia Nakashima [@xrrhythmxx](https://github.com/rladomingo)
 - Lea Marie Somoson [@xxyangxx](https://github.com/xxyangxx)
 
-## Guidelines
+# Guidelines
 
-### Importing Files
+## Importing Files
 
 - I had set up this project to use alias import by creating a file called `jsconfig.json`
 - to see examples, just keep scrolling
 
-#### Example patterns
+### Example patterns
 
 - **Example#1:** creating a basic component and importing it
 
@@ -93,7 +93,7 @@ import someUtilityFunction from "utils/someUtilFile";
 
 ---
 
-### Routing
+## Routing
 
 - Here are the routes to be expected
 
@@ -144,4 +144,73 @@ function App() {
 		</>
 	);
 }
+```
+
+## Using Reuasble components
+
+### Button
+
+- a reusable button component
+- our button component has 6 props ( size, color, variant, block, disabled, and onClick )
+
+#### Props
+
+- size
+  - controls size of button
+  - accepted values are "default" or "small"
+  - default value: "default"
+- color
+  - controls color of button
+  - accepted values are:
+    - "brand-default"
+    - "brand-lighter"
+    - "brand-darker"
+    - "red"
+    - "blue"
+    - "green"
+    - "white"
+    - "black"
+    - "default"
+  - default value: "default"
+- variant
+  - controls size of button
+  - accepted values are "default" or "outline"
+  - default variant is filled
+  - default value: "default"
+- block
+  - controls if the button should go full width or not
+  - accepted value: true or false
+  - default value: false
+- disabled
+  - controls if the button should is disabled or not
+  - accepted value: true or false
+  - default value: false
+- onClick
+  - catches onClick event of button
+  - accepted value: a function
+  - defaults to a placeholder function
+
+#### Example
+
+```jsx
+// import the button first
+import Button from "components/Button";
+
+function SomePage() {
+	function handleClick() {
+		alert("I am clicked");
+	}
+	return (
+		<div>
+			<Button color="brand-default" onClick={handleClick}>
+				I am a button
+			</Button>
+			<Button color="red" variant="outline" block>
+				I am a full-width button
+			</Button>
+		</div>
+	);
+}
+
+// FOR MORE EXAMPLES, SEE src/pages/SamplePage.jsx
 ```
