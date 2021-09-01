@@ -1,6 +1,5 @@
 import React from "react";
-import BasicButton from "components/BasicButton";
-import BasicCard from "components/BasicCard";
+
 import Button from "components/Button";
 function SamplePage() {
 	return (

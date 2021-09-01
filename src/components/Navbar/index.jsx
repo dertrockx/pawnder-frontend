@@ -46,33 +46,33 @@ function Navbar() {
 		);
 	}
 	// render these navbar items if currently signed-in identiy is an institution
-	function renderInstitutionItems() {
-		return (
-			<>
-				<NavLink
-					className={`paragraph ${styles.navbarItem}`}
-					activeClassName="bold-text"
-					to="/manage-pets"
-				>
-					Manage Pets
-				</NavLink>
-				<NavLink
-					className={`paragraph ${styles.navbarItem}`}
-					activeClassName="bold-text"
-					to="/manage-stories"
-				>
-					Manage Stories
-				</NavLink>
-				<NavLink
-					className={`paragraph ${styles.navbarItem}`}
-					activeClassName="bold-text"
-					to="/settings"
-				>
-					Settings
-				</NavLink>
-			</>
-		);
-	}
+	// function renderInstitutionItems() {
+	// 	return (
+	// 		<>
+	// 			<NavLink
+	// 				className={`paragraph ${styles.navbarItem}`}
+	// 				activeClassName="bold-text"
+	// 				to="/manage-pets"
+	// 			>
+	// 				Manage Pets
+	// 			</NavLink>
+	// 			<NavLink
+	// 				className={`paragraph ${styles.navbarItem}`}
+	// 				activeClassName="bold-text"
+	// 				to="/manage-stories"
+	// 			>
+	// 				Manage Stories
+	// 			</NavLink>
+	// 			<NavLink
+	// 				className={`paragraph ${styles.navbarItem}`}
+	// 				activeClassName="bold-text"
+	// 				to="/settings"
+	// 			>
+	// 				Settings
+	// 			</NavLink>
+	// 		</>
+	// 	);
+	// }
 
 	return (
 		<header className={styles.navbar}>

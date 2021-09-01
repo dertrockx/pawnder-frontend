@@ -63,7 +63,7 @@ function NearbyInstitution({ history }) {
 
 	// TODO: change the ff states kapag na-setup na ang redux
 	const [loading, setLoading] = useState(true);
-	const [location, setLocation] = useState(true);
+	const [location] = useState(true);
 
 	const [viewport, setViewport] = useState({
 		width: 400,
