@@ -9,6 +9,7 @@ import {
 // TODO: use React.lazy() to lazy-load these pages
 import SamplePage from "pages/SamplePage";
 import Feed from "pages/Feed";
+import NearbyInstitution from "pages/NearbyInstitution";
 import Navbar from "components/Navbar";
 
 // reset default styles for all html elements - https://en.wikipedia.org/wiki/Reset_style_sheet
@@ -23,6 +24,7 @@ function App() {
 				<Switch>
 					<Route path="/sample" exact component={SamplePage} />
 					<Route path="/feed" exact component={Feed} />
+					<Route path="/nearby" exact component={NearbyInstitution} />
 					<Redirect path="/" to="/sample" exact />
 				</Switch>
 			</Router>
