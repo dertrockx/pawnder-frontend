@@ -1,8 +1,15 @@
 import React from "react";
-// import classnames from "classnames";
+import styles from "./BasicInput.module.css";
 
-function BasicInput({ type, name, onChange, placeholder, disabled }) {
-    // const classes = classnames(styles.input, className);
+function BasicInput( props ) {
+    const { 
+        type, 
+        name, 
+        onChange, 
+        placeholder,
+        children,
+        disabled
+    } = props;
 
     return (
         <input
@@ -11,8 +18,11 @@ function BasicInput({ type, name, onChange, placeholder, disabled }) {
             onChange={onChange}
             placeholder={placeholder}
             disabled={disabled}
-            // className={classes}
-        />
+            className={`
+                input-text
+                ${styles.baseStyles}
+            `}
+        >{children}</input>
     )
 }
 
