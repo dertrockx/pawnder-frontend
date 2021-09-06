@@ -22,7 +22,7 @@ const InstitutionSignUpPage = () => {
                     <p className = {styles.greetingCaption}>Find your pets a new home today!</p>
                     <div className = {styles.brownDesign}>
                         <p className = "paragraph" id= {styles.formInputLogin}>
-                            Already have an account? <Link to = {"/institutionLogin"} className = {styles.link} >Login</Link>
+                            Already have an account? <Link to = {"/institution/login"} className = {styles.link} >Login</Link>
                         </p>
                     </div>    
                 </div>

@@ -27,7 +27,7 @@ const InstitutionSignUpPage = () => {
                     </p>
                     <div className = {styles.brownDesign}>
                         <p className = "paragraph" id= {styles.formInputLogin}>
-                            Need an account? <Link to = {"/institutionSignUp"} className = {styles.link}>Sign Up</Link>
+                            Need an account? <Link to = {"/institution/signup"} className = {styles.link}>Sign Up</Link>
                         </p>
                     </div>   
                 </div> 

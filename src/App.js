@@ -22,8 +22,8 @@ function App() {
 					<NavRoute path="/sample" exact component={SamplePage} />
 					<NavRoute path="/feed" exact component={Feed} />
 					<NavRoute path="/nearby" exact component={NearbyInstitution} />
-					<Route path="/institutionSignUp" exact component = {InstitutionSignUp} />
-					<Route path="/institutionLogin" exact component = {InstitutionLogin} />
+					<Route path="/institution/signup" exact component = {InstitutionSignUp} />
+					<Route path="/institution/login" exact component = {InstitutionLogin} />
 					<Redirect path="/" to="/sample" exact />
 				</Switch>
 			</Router>
