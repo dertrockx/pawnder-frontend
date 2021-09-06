@@ -1,11 +1,13 @@
 import React from "react";
 import { BrowserRouter as Router, Switch, Redirect } from "react-router-dom";
+import { Route } from "react-router";
 
 // TODO: use React.lazy() to lazy-load these pages
 import SamplePage from "pages/SamplePage";
 import Feed from "pages/Feed";
 import NearbyInstitution from "pages/NearbyInstitution";
 import NavRoute from "components/NavRoute";
+import UserOnboarding from "pages/UserOnboarding";
 
 // reset default styles for all html elements - https://en.wikipedia.org/wiki/Reset_style_sheet
 import "./normalize.css";
@@ -20,6 +22,7 @@ function App() {
 					<NavRoute path="/feed" exact component={Feed} />
 					<NavRoute path="/nearby" exact component={NearbyInstitution} />
 					<Redirect path="/" to="/sample" exact />
+					<Route path="/user-onboarding" exact component={UserOnboarding} />
 				</Switch>
 			</Router>
 		</>
