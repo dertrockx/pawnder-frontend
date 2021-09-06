@@ -1,7 +1,32 @@
+<<<<<<< HEAD
 import React, { lazy, Suspense, useEffect, useState } from "react";
 import { Router, Switch, Redirect } from "react-router-dom";
 
 import { Route } from "react-router";
+=======
+import React from "react";
+import { BrowserRouter as Router, Switch, Redirect } from "react-router-dom";
+import { Provider as ReduxProvider } from "react-redux";
+import configureStore from "redux/store";
+import { Route } from "react-router";
+
+// TODO: use React.lazy() to lazy-load these pages
+import SamplePage from "pages/SamplePage";
+import ChakraSample from "pages/ChakraSample";
+import Feed from "pages/Feed";
+import NearbyInstitution from "pages/NearbyInstitution";
+import {
+	List as ManagePetList,
+	Details as ManagePetDetails,
+} from "pages/ManagePets";
+
+import NavRoute from "components/NavRoute";
+import InstitutionSignUp from "pages/InstitutionSignUpPage";
+import InstitutionLogin from "pages/InstitutionLoginPage";
+import ShowStoryDetails from "pages/ShowStoryDetails";
+import ManageStoryDetails from "pages/ManageStoryDetails";
+import UserOnboarding from "pages/UserOnboarding";
+>>>>>>> Create onboarding page for user
 
 // reset default styles for all html elements - https://en.wikipedia.org/wiki/Reset_style_sheet
 import { UserLoginPage, UserSignupPage } from "pages";
