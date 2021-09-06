@@ -1,55 +1,44 @@
-<<<<<<< HEAD
 * {
-    position: relative;
-}
-
-.baseStyles {
-    border: 2px solid var(--color-grey);
-    border-radius: 5px;
-    width: 100%;
-    height: 40px;
-    padding: 10px;
-    margin-top: 5px;
-    margin-bottom: 5px;
+	position: relative;
 }
 
 .baseStyles:focus {
-    border: 2px solid var(--color-brand-default);
-    outline: none;
+	border: 2px solid var(--color-brand-default);
+	outline: none;
 }
 
 .inputError {
-    border: 2px solid var(--color-red);
-    border-radius: 5px;
-    width: 100%;
-    height: 40px;
-    padding: 10px;
-    margin-top: 5px;
-    margin-bottom: 5px;
-=======
+	border: 2px solid var(--color-red);
+	border-radius: 5px;
+	width: 100%;
+	height: 40px;
+	padding: 10px;
+	margin-top: 5px;
+	margin-bottom: 5px;
+}
+
 .baseStyles {
-  border: 2px solid var(--color-light-grey);
-  border-radius: 5px;
-  width: 100%;
-  height: 40px;
-  padding: 10px;
-  margin-top: 5px;
-  margin-bottom: 5px;
-  font-size: 16px;
-  font-size: 16;
-  font-family: 'Raleway';
+	border: 2px solid var(--color-light-grey);
+	border-radius: 5px;
+	width: 100%;
+	height: 40px;
+	padding: 10px;
+	margin-top: 5px;
+	margin-bottom: 5px;
+	font-size: 16px;
+	font-size: 16;
+	font-family: "Raleway";
 }
 
 .baseStyles:focus {
-  border: 2px solid var(--color-brand-default);
-  outline: none;
+	border: 2px solid var(--color-brand-default);
+	outline: none;
 }
 
 .baseStyles::placeholder {
-  color: #BBC8D4;
-  font-size: 16px;
-  font-size: 16;
-  font-family: 'Raleway';
-  font-weight: 400;
->>>>>>> Create onboarding page for user
+	color: #bbc8d4;
+	font-size: 16px;
+	font-size: 16;
+	font-family: "Raleway";
+	font-weight: 400;
 }
