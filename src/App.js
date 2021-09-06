@@ -7,6 +7,7 @@ import { Route } from "react-router";
 import { UserLoginPage, UserSignupPage } from "pages";
 import InstitutionOnboardingPage from "pages/InstitutionOnboarding";
 import NavRoute from "components/NavRoute";
+import UserOnboarding from "pages/UserOnboarding";
 
 import history from "utils/history";
 import LoadingPage from "pages/LoadingPage";

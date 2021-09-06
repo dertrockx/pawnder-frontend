@@ -7,11 +7,17 @@ function BasicInput( props ) {
         name, 
         onChange, 
         placeholder,
+<<<<<<< HEAD
         value,
         outline,
         children,
         required,
         disabled
+=======
+        children,
+        disabled,
+        value,
+>>>>>>> Create onboarding page for user
     } = props;
 
     return (
@@ -20,6 +26,7 @@ function BasicInput( props ) {
             name={name}
             onChange={onChange}
             placeholder={placeholder}
+<<<<<<< HEAD
             value={value}
             disabled={disabled}
             required={required}
@@ -27,6 +34,14 @@ function BasicInput( props ) {
                 input-text
                 ${outline === "red" ? styles.inputError : styles.baseStyles}
             `}
+=======
+            disabled={disabled}
+            className={`
+                input-text
+                ${styles.baseStyles}
+            `}
+            value={value}
+>>>>>>> Create onboarding page for user
         >{children}</input>
     )
 }
