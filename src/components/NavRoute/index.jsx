@@ -15,7 +15,7 @@ function NavRoute({ component: Component, ...rest }) {
 }
 
 NavRoute.propTypes = {
-	component: PropTypes.element,
+	component: PropTypes.oneOfType([PropTypes.string, PropTypes.func]),
 };
 
 export default NavRoute;
