@@ -1,0 +1,109 @@
+.formContainer {
+  position: absolute;
+  top: 120px;
+  left: 250px;
+  max-width: 600px;
+}
+
+.formGroup {
+  margin-bottom: 40px;
+}
+
+.formGroup > h2 {
+  margin-bottom: 40px;
+  text-align: center;
+}
+
+.formGroup > p {
+  text-align: center;
+  margin-top: -30px;
+}
+
+.cardDisplay {
+  display: flex;
+  align-content: space-between;
+  
+}
+
+.cardPreferences {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  border: 1px solid #D0D0D0;
+  border-radius: 8px;
+  box-shadow: 0px 4px rgba(0, 0, 0, 0.25);
+  padding: 10px;
+  justify-content: space-around;
+  column-gap: 500px;
+}
+
+.cardPreferences:hover {
+  cursor: pointer;
+}
+
+
+.cardPreferencesSelected {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  border: 1px solid #FFA500;
+  border-radius: 8px;
+  box-shadow: 0px 4px rgba(0, 0, 0, 0.25);
+  padding: 10px;
+  column-gap: 500px;
+}
+
+.cardPreferencesSelected:hover {
+  cursor: pointer;
+}
+
+.cardImage {
+  height: 240px;
+  width: 240px;
+}
+
+.logo {
+  width: 127px;
+  height: 55px;
+  margin-left: inherit;
+}
+
+.topItems {
+  position: absolute;
+  top: 30px;
+  left: 90px;
+  display: flex;
+}
+
+.topItems > *:not(:first-child) {
+	margin-left: 20px;
+}
+
+.profileFormLabel {
+  margin-top: 10px;
+}
+
+.checkboxOption {
+  color: black;
+  font-size: 16px;
+  font-size: 16;
+  font-family: 'Raleway';
+  font-weight: 400;
+}
+
+.checkboxLabel {
+  margin-left: 5px;
+  
+}
+
+.checkboxLabelSelected {
+  margin-left: 5px;
+  font-weight: bold;
+  color:#FFA500
+}
+
+.checkboxes {
+  margin-bottom: 40px;
+}
