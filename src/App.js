@@ -2,6 +2,7 @@ import React from "react";
 import { BrowserRouter as Router, Switch, Redirect } from "react-router-dom";
 import { Provider as ReduxProvider } from "react-redux";
 import configureStore from "redux/store";
+import { Route } from "react-router";
 
 // TODO: use React.lazy() to lazy-load these pages
 import SamplePage from "pages/SamplePage";
@@ -18,7 +19,7 @@ import InstitutionSignUp from "pages/InstitutionSignUpPage";
 import InstitutionLogin from "pages/InstitutionLoginPage";
 import ShowStoryDetails from "pages/ShowStoryDetails";
 import ManageStoryDetails from "pages/ManageStoryDetails";
-import { Route } from "react-router";
+import UserOnboarding from "pages/UserOnboarding";
 
 import { ChakraProvider } from "@chakra-ui/react";
 import theme from "./theme";
@@ -44,6 +45,7 @@ function App() {
 						<Route path = "/institution/signup" component = {InstitutionSignUp} />
 						<NavRoute path = "/institution/manage-stories/:id" component = {ManageStoryDetails} />
 						<NavRoute path = "/stories/:id" component = {ShowStoryDetails} />
+						<Route path="/user-onboarding" exact component={UserOnboarding} />
 						<Redirect path="/" to="/sample" exact />
 					</Switch>
 				</Router>
