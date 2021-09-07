@@ -1,16 +1,12 @@
 import React from "react";
-import {
-	BrowserRouter as Router,
-	Switch,
-	Route,
-	Redirect,
-} from "react-router-dom";
+import { BrowserRouter as Router, Switch, Redirect, Route } from "react-router-dom";
 
-// reset default styles for all html elements - https://en.wikipedia.org/wiki/Reset_style_sheet
+// TODO: use React.lazy() to lazy-load these pages
 import SamplePage from "pages/SamplePage";
 import { UserLoginPage, UserSignupPage, InstitutionOnboardingPage } from "pages";
 import Navbar from "components/Navbar";
 
+// reset default styles for all html elements - https://en.wikipedia.org/wiki/Reset_style_sheet
 import "./normalize.css";
 import "./typography.css";
 
@@ -18,7 +14,6 @@ function App() {
 	return (
 		<>
 			<Router>
-				<Navbar />
 				<Switch>
 					<Route path="/sample" exact component={SamplePage} />
 					<Route path="/user-login" component={UserLoginPage} />
