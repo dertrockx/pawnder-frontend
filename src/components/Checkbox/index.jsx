@@ -1,7 +1,6 @@
 import React from 'react';
 import styles from './Checkbox.module.css';
 
-
 function Checkbox(props) {
   const {
     name, // no need for this but pwede namang gamitin, e.g. name="preferredAnimals"
@@ -12,7 +11,6 @@ function Checkbox(props) {
   } = props;
   
   return (
-    
       <label className={checked ? styles.containerChecked : styles.container}>{label}
       <input
         type="checkbox"
@@ -26,6 +24,5 @@ function Checkbox(props) {
       </label>
   );
 }
-  
 
 export default Checkbox;
