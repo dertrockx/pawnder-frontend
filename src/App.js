@@ -1,11 +1,5 @@
-<<<<<<< HEAD
 import React, { lazy, Suspense, useEffect, useState } from "react";
 import { Router, Switch, Redirect } from "react-router-dom";
-=======
-import React from "react";
-import { BrowserRouter as Router, Switch, Redirect } from "react-router-dom";
-import { Route } from "react-router";
->>>>>>> Create onboarding page for user
 
 import { Route } from "react-router";
 
@@ -14,13 +8,10 @@ import { UserLoginPage, UserSignupPage } from "pages";
 import InstitutionOnboardingPage from "pages/InstitutionOnboarding";
 import NavRoute from "components/NavRoute";
 import UserOnboarding from "pages/UserOnboarding";
-<<<<<<< HEAD
 
 import history from "utils/history";
 import LoadingPage from "pages/LoadingPage";
 import { useDispatch, useSelector } from "react-redux";
-=======
->>>>>>> Create onboarding page for user
 
 import { silentRefresh } from "redux/actions/authActions";
 import { model } from "constants/EntityType";
@@ -139,9 +130,9 @@ function App() {
 					/>
 					<NavRoute path="/login" exact component={ChooseLogin} />
 					<NavRoute path="/signup" exact component={ChooseSignup} />
-					<Route path="/user-onboarding" exact component={UserOnboarding} />
+					<Route path="/user/onboarding" exact component={UserOnboarding} />
 					<Redirect path="/" to="/signup" exact />
-							
+					
 				</Switch>
 			</Router>
 		</Suspense>
