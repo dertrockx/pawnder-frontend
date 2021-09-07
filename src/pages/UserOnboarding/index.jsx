@@ -4,6 +4,8 @@ import BasicInput from 'components/BasicInput';
 import styles from './UserOnboarding.module.css';
 import { IoLocationSharp, IoArrowBack } from 'react-icons/io5';
 
+import Checkbox from 'components/Checkbox';
+
 import dogAdopting from 'assets/dogAdopting.png';
 import catFostering from 'assets/catFostering.png';
 import logo from 'assets/logo.svg';
@@ -24,6 +26,33 @@ const UserOnboarding = () => {
     animalPreferences: [],
     locationPreferences: null
   });
+
+  const animals = [
+    { text: 'dogs', value: 'dogs' },
+    { text: 'cats', value: 'cats' },
+    { text: 'fish & aquariums', value: 'fish' },
+    { text: 'reptiles & amphibians', value: 'reptilesAndAmphibians' },
+    { text: 'exotic pets', value: 'exoticPets' },
+    { text: 'rabbits', value: 'rabbits' },
+    { text: 'rodents', value: 'rodents' }
+  ]
+
+  const AnimalOptions = ({options}) => {
+    return (
+      <> 
+        {options.map((choice, index) => (
+        <React.Fragment key={index}>
+          <Checkbox 
+            id={choice.value}
+            label={choice.text}
+            onChange={handleCheck}
+            checked={value.animalPreferences.includes(`${choice.value}`)}
+          />
+        </React.Fragment>
+      ))}
+      </>
+    );
+  }
 
   const handleCheck = (e) => {
     let newArray = [...value.animalPreferences, e.target.id];
@@ -163,99 +192,10 @@ const UserOnboarding = () => {
         <div className={styles.formGroup}>
           <h2 className="heading-2">Which animal/s would you like to see?</h2>
           <p className="paragraph">You can select multiple</p>
-          <div className={styles.checkboxes}>
-            <div className={styles.checkboxOption}>
-                <input
-                  type="checkbox"
-                  className="animalPreferences"
-                  id="dogs"
-                  value="dogs"
-                  onChange={handleCheck}
-                  checked={value.animalPreferences.includes("dogs")}
-                />
-                <label className={value.animalPreferences.includes("dogs") ? styles.checkboxLabelSelected : styles.checkboxLabel} htmlFor="dogs">
-                  dogs
-                </label>
-              </div>
-              <div className={styles.checkboxOption}>
-                <input
-                  type="checkbox"
-                  className="animalPreferences"
-                  id="cats"
-                  value="cats"
-                  onChange={handleCheck}
-                  checked={value.animalPreferences.includes("cats")}
-                />
-                <label className={value.animalPreferences.includes("cats") ? styles.checkboxLabelSelected : styles.checkboxLabel} htmlFor="cats">
-                  cats
-                </label>
-              </div>
-              <div className={styles.checkboxOption}>
-                <input
-                  type="checkbox"
-                  className="animalPreferences"
-                  id="fishAndAquariums"
-                  value="fishAndAquariums"
-                  onChange={handleCheck}
-                  checked={value.animalPreferences.includes("fishAndAquariums")}
-                />
-                <label className={value.animalPreferences.includes("fishAndAquariums") ? styles.checkboxLabelSelected : styles.checkboxLabel} htmlFor="fishAndAquariums">
-                  fish & aquariums
-                </label>
-              </div>
-              <div className={styles.checkboxOption}>
-                <input
-                  type="checkbox"
-                  className="animalPreferences"
-                  id="reptilesAndAmphibians"
-                  value="reptilesAndAmphibians"
-                  onChange={handleCheck}
-                  checked={value.animalPreferences.includes("reptilesAndAmphibians")}
-                />
-                <label className={value.animalPreferences.includes("reptilesAndAmphibians") ? styles.checkboxLabelSelected : styles.checkboxLabel} htmlFor="reptilesAndAmphibians">
-                  reptiles & amphibians
-                </label>
-              </div>
-              <div className={styles.checkboxOption}>
-                <input
-                  type="checkbox"
-                  className="animalPreferences"
-                  id="exoticPets"
-                  value="exoticPets"
-                  onChange={handleCheck}
-                  checked={value.animalPreferences.includes("exoticPets")}
-                />
-                <label className={value.animalPreferences.includes("exoticPets") ? styles.checkboxLabelSelected : styles.checkboxLabel} htmlFor="exoticPets">
-                  exotic pets
-                </label>
-              </div>
-              <div className={styles.checkboxOption}>
-                <input
-                  type="checkbox"
-                  className="animalPreferences"
-                  id="rabbits"
-                  value="rabbits"
-                  onChange={handleCheck}
-                  checked={value.animalPreferences.includes("rabbits")}
-                />
-                <label className={value.animalPreferences.includes("rabbits") ? styles.checkboxLabelSelected : styles.checkboxLabel} htmlFor="rabbits">
-                  rabbits
-                </label>
-              </div>
-              <div className={styles.checkboxOption}>
-                <input
-                  type="checkbox"
-                  className="animalPreferences"
-                  id="rodents"
-                  value="rodents"
-                  onChange={handleCheck}
-                  checked={value.animalPreferences.includes("rodents")}
-                />
-                <label className={value.animalPreferences.includes("rodents") ? styles.checkboxLabelSelected : styles.checkboxLabel} htmlFor="rodents">
-                  rodents
-                </label>
-              </div>
-            </div>
+          {/* change to styles.checkboxContainer */}
+          <div className={styles.checkboxes}> 
+            <AnimalOptions options={animals}/>
+          </div>
           <h2 className="heading-2">How far are you willing to go?</h2>
           <BasicInput
             type="number"

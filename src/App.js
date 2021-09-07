@@ -31,6 +31,7 @@ const store = configureStore();
 
 function App() {
 	return (
+<<<<<<< HEAD
 		<ReduxProvider store={store}>
 			<ChakraProvider theme={theme}>
 				<Router>
@@ -51,6 +52,19 @@ function App() {
 				</Router>
 			</ChakraProvider>
 		</ReduxProvider>
+=======
+		<>
+			<Router>
+				<Switch>
+					<NavRoute path="/sample" exact component={SamplePage} />
+					<NavRoute path="/feed" exact component={Feed} />
+					<NavRoute path="/nearby" exact component={NearbyInstitution} />
+					<Route path="/user/onboarding" exact component={UserOnboarding} />
+					<Redirect path="/" to="/sample" exact />
+				</Switch>
+			</Router>
+		</>
+>>>>>>> 0d31886 (Create checkbox component and css to it)
 	);
 }
 

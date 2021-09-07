@@ -10,8 +10,12 @@
     "@testing-library/jest-dom": "^5.11.4",
     "@testing-library/react": "^11.1.0",
     "@testing-library/user-event": "^12.1.10",
+<<<<<<< HEAD
     "framer-motion": "^4",
     "keymirror": "^0.1.1",
+=======
+    "axios": "^0.21.4",
+>>>>>>> 0d31886 (Create checkbox component and css to it)
     "prop-types": "^15.7.2",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
