@@ -107,3 +107,7 @@
 .checkboxes {
   margin-bottom: 40px;
 }
+
+.radioYellow {
+  border: 10px solid var(--color-brand-default)
+}
