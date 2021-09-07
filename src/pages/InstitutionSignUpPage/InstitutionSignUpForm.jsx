@@ -4,14 +4,16 @@ import Button from "components/Button";
 import useSignUp from "./useSignUp";
 import validate from "./validateSignUpInfo";
 import logo from 'assets/logo.svg';
+import useMediaQuery from 'hooks/useMediaQuery';
 
 const FormSignup = ({ submitForm }) => {
     const {handleChange, values, handleSubmit, errors} = useSignUp(submitForm, validate);
+    const matches = useMediaQuery("(min-width: 800px)");
 
     return (
         <div className={styles.formContentRight}>
             <form className={styles.form} onSubmit = {handleSubmit}>
-            <img src = {logo} alt = "logo" className = {styles.logo} />
+            <img src = {logo} alt = "logo" className = {matches ? styles.logo: styles.logo2}/>
                 <h1 className = 'heading-1'>
                     Create an account
                 </h1>

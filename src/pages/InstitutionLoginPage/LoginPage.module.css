@@ -1,4 +1,4 @@
-.formContainer {
+.formContainerBig {
     position: relative;
     height:  100vh;
     display: grid;
@@ -6,26 +6,53 @@
     overflow: hidden;
 }
 
+.formContainerSmall {
+    height: 207vh;
+    overflow: hidden;
+}
+
+::-webkit-scrollbar {
+    width: 0px; 
+    background: transparent;
+}
+
+.lower {
+    position: relative;
+    top: 870px;
+    margin-top: 35px;
+    margin-bottom: 40px;
+    box-sizing: content-box;
+    height: 100%;
+    width: 100%;
+}
+
+.upper {
+    position: absolute;
+    height: 100%;
+    background: var(--color-brand-darker);
+    margin-bottom: 0px;
+}
+
 .formContentRight {
     background: var(--color-brand-darker);
     position: relative;
 }
 
-.formImg {
-    object-fit: cover;
-    object-position: 100% 43%;
-    width: 100%;
-    height: 90%;
-    position: absolute;
-    top: 45%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    z-index: 0;
-}
-
 .formContentLeft {
     position: relative;
     background: var(--color-white);
+}
+
+.formImg {
+    object-fit: cover;
+    object-position: 100% 40%;
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    top: 40%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 0;
 }
 
 .form {
@@ -92,7 +119,6 @@
     font-weight: 400;
 }
 
-
 .form Button {
     margin-top: 27px;
     width: 80%;
@@ -126,7 +152,7 @@
     font-size: 60px;
     font-family: "Rubik";
     width: 100%;
-    margin-top: 40px;
+    margin-top: 30px;
     margin-bottom: 15px;
 }
 
@@ -134,7 +160,7 @@
     text-align: center; 
     position: relative; 
     color: var(--color-white);
-    font-size: 18px;
+    font-size: 16px;
     font-family: "Rubik";
     width: 100%;
     padding-left: 10%;
@@ -154,20 +180,38 @@ label {
     margin-left:10px;
 }
 
-.bgDesign {
+.bgDesignBig {
     position: absolute;
-    width: 300px;
-    height: 300px;
+    width: 23%;
+    height: 50%;
     opacity: 0.6;
-    right: 44%;
-    top: 65%;
+    right: 45%;
+    top: 68%;
+    z-index: 0;
+}
+
+.bgDesignSmall {
+    position: absolute;
+    width: 40%;
+    height: 25%;
+    opacity: 0.6;
+    left: 70%;
+    top: 8%;
     z-index: 0;
 }
 
 .logo {
     position: absolute;
     margin-bottom: 25%;
-    top: 5%;
+    top: 3%;
+    left: 0%;
+    width: 127px;
+    height: 55px;
+}
+
+.logo2 {
+    position: absolute;
+    margin-bottom: 550px;
     left: 0%;
     width: 127px;
     height: 55px;

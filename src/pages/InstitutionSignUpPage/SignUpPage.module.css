@@ -1,9 +1,42 @@
-.formContainer {
+.formContainerBig {
     position: relative;
     height:  100vh;
     display: grid;
     grid-template-columns: 1fr 1fr;
     overflow: hidden;
+}
+
+.formContainerSmall {
+    height: 220vh;
+    overflow: hidden;
+}
+
+::-webkit-scrollbar {
+    width: 0px; 
+    background: transparent;
+}
+
+.lower {
+    position: relative;
+    top: 850px;
+    margin-top: 70px;
+    margin-bottom: 40px;
+    box-sizing: content-box;
+    height: 100%;
+    width: 100%;
+}
+
+.upper {
+    position: absolute;
+    height: 100%;
+    width: 100%;
+    background: var(--color-brand-darker);
+    margin-bottom: 0px;
+}
+
+.formContentRight {
+    position: relative;
+    background: var(--color-white);
 }
 
 .formContentLeft {
@@ -15,17 +48,12 @@
     object-fit: cover;
     object-position: 100% 43%;
     width: 100%;
-    height: 90%;
+    height: 100%;
     position: absolute;
-    top: 45%;
+    top: 40%;
     left: 50%;
     transform: translate(-50%, -50%);
     z-index: 0;
-}
-
-.formContentRight {
-    position: relative;
-    background: var(--color-white);
 }
 
 .form {
@@ -152,20 +180,38 @@ label {
     margin-left:10px;
 }
 
-.bgDesign {
+.bgDesignBig {
     position: absolute;
-    width: 300px;
-    height: 300px;
+    width: 23%;
+    height: 50%;
     opacity: 0.6;
     left: 81%;
-    top: 65%;
+    top: 70%;
+    z-index: 0;
+}
+
+.bgDesignSmall {
+    position: absolute;
+    width: 40%;
+    height: 25%;
+    opacity: 0.6;
+    left: 68%;
+    top: 13%;
     z-index: 0;
 }
 
 .logo {
     position: absolute;
-    margin-bottom: 25%;
-    top: 2%;
+    margin-bottom: 25px;
+    top: 1%;
+    left: 0%;
+    width: 127px;
+    height: 55px;
+}
+
+.logo2 {
+    position: absolute;
+    margin-bottom: 580px;
     left: 0%;
     width: 127px;
     height: 55px;
