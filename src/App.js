@@ -23,6 +23,7 @@ function App() {
 					<NavRoute path="/nearby" exact component={NearbyInstitution} />
 					<Route path="/user/onboarding" exact component={UserOnboarding} />
 					<Redirect path="/" to="/sample" exact />
+					<Route path="/user-onboarding" exact component={UserOnboarding} />
 				</Switch>
 			</Router>
 		</>
