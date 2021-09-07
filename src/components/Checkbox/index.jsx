@@ -13,8 +13,7 @@ function Checkbox(props) {
   
   return (
     
-      <label className={checked ? styles.containerChecked : styles.container}>
-        {label}
+      <label className={checked ? styles.containerChecked : styles.container}>{label}
       <input
         type="checkbox"
         name={name}
