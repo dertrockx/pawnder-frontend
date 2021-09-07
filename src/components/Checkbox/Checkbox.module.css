@@ -5,7 +5,7 @@
   display: block;
   position: relative;
   padding-left: 25px;
-  margin-bottom: 16px;
+  /* margin-bottom: 16px;  */ /* disabled so the style would be based on the design of the specific page  */
   cursor: pointer;
   -webkit-user-select: none;
   -moz-user-select: none;
@@ -23,7 +23,7 @@
   display: block;
   position: relative;
   padding-left: 25px;
-  margin-bottom: 16px;
+  /* margin-bottom: 16px; */
   cursor: pointer;
   -webkit-user-select: none;
   -moz-user-select: none;
