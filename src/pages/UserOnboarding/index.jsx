@@ -5,6 +5,7 @@ import styles from './UserOnboarding.module.css';
 import { IoLocationSharp, IoArrowBack } from 'react-icons/io5';
 
 import Checkbox from 'components/Checkbox';
+import Radio from 'components/Radio';
 
 import dogAdopting from 'assets/dogAdopting.png';
 import catFostering from 'assets/catFostering.png';
@@ -24,7 +25,8 @@ const UserOnboarding = () => {
     address: null, 
     reasonPreferences: "",
     animalPreferences: [],
-    locationPreferences: null
+    locationPreferences: null,
+    trialLang: "",
   });
 
   const animals = [
@@ -42,7 +44,7 @@ const UserOnboarding = () => {
       <> 
         {options.map((choice, index) => (
         <React.Fragment key={index}>
-          <Checkbox 
+          <Checkbox
             id={choice.value}
             label={choice.text}
             onChange={handleCheck}
@@ -151,6 +153,22 @@ const UserOnboarding = () => {
               value={value.address} 
               placeholder="Address"
             />
+          </div>
+          <div>
+          <Radio 
+            name="trialLang"
+            value="first"
+            label="First choice"
+            onChange={handleChange}
+            checked={value.trialLang === "first"}
+          />
+          <Radio 
+            name="trialLang"
+            value="second"
+            label="Second choice"
+            onChange={handleChange}
+            checked={value.trialLang === "second"}
+          />
           </div>
           {/* <Button size="small" color="brand-default"><IoLocationSharp /></Button> */}
         </div>)}
