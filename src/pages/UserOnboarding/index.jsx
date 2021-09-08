@@ -1,22 +1,27 @@
 import React, { useState } from 'react';
 import { IoLocationSharp, IoArrowBack } from 'react-icons/io5';
 
-import Button from "components/Button";
+import Button from 'components/Button';
 import BasicInput from 'components/BasicInput';
 import Checkbox from 'components/Checkbox';
 import Radio from 'components/Radio';
 
+import logo from 'assets/logo.svg';
 import dogAdopting from 'assets/dogAdopting.png';
 import catFostering from 'assets/catFostering.png';
-import logo from 'assets/logo.svg';
+import noPhoto from 'assets/noPhoto.png';
 
-// import styles from './UserOnboarding.module.css';
+import styles from './UserOnboarding.module.css';
+import { useHistory } from 'react-router';
 
 const UserOnboarding = () => {
   const current = new Date().toISOString().split("T")[0];
+  const [imagePreview, setImagePreview] = useState(`${noPhoto}`);
+  const [imagePreviewError, setImagePreviewError] = useState(false);
   const [step, setStep] = useState(1);
+  const history = useHistory();
   const [value, setValue] = useState({
-    // Include picture here
+    photo: '', // or photoURL?
     firstName: '',
     middleName: '',
     lastName: '',
@@ -29,14 +34,13 @@ const UserOnboarding = () => {
     action: '',
     preferredAnimals: [],
     preferredDistance: '',
-    trialLang: '',
   });
 
   // Create custom hook for accessing user's location
   // if ("geolocation" in navigator) {
-  //   console.log("Available");
+  //   console.log('Available');
   // } else {
-  //   console.log("Luh epal");
+  //   console.log('Unavailable');
   // }
 
   // navigator.geolocation.getCurrentPosition((position) => {
@@ -71,6 +75,7 @@ const UserOnboarding = () => {
     );
   }
 
+  // For input of type checkbox
   const handleCheck = (e) => {
     let newArray = [...value.preferredAnimals, e.target.id];
     if (value.preferredAnimals.includes(e.target.id)) {
@@ -82,6 +87,7 @@ const UserOnboarding = () => {
     });
   };
 
+  // For input of types text or radio
   const handleChange = (e) => {
       setValue({
         ...value,
@@ -93,15 +99,55 @@ const UserOnboarding = () => {
   }
 
   const handleSubmit = (e) => {
-    e.preventDefault();
+    e.preventDefault(); 
+    
+    // Redirect to feed after onboarding, put this inside .then when successful
+    // history.push('/feed');
 
     // For testing
     console.log(value);
   }
 
+  // There is no handleStepDown as the button for going back is outside the form.
+  const handleStepUp = (e) => {
+    /*
+      All buttons inside a form trigger the submit event.
+      By using the preventDefault() method, the submit event will be canceled,
+      thus, allowing multiple buttons inside a form.
+    */
+    e.preventDefault();
+    setStep(step + 1);
+  }
+  
+  const handleImageChange = (e) => {
+    const selected = e.target.files[0];
+    const ALLOWED_TYPES=['image/png', 'image/jpg', 'image/jpeg'];
+    if (selected && ALLOWED_TYPES.includes(selected.type)) {
+      let reader = new FileReader();
+      reader.onloadend = () => {
+        setImagePreview(`${reader.result}`)
+      }
+      setValue({
+        ...value,
+        photo: selected
+      });
+      reader.readAsDataURL(selected);
+      setImagePreviewError(false);
+    } else {
+      /* 
+        Selecting a file and cancelling returns undefined to selected.
+        So if you select a file and cancel, the imagePreviewError would be set to true.
+        We don't want that so we check if selected === undefined. If it's true, then we don't give out any errors.
+      */
+      if (selected === undefined) {
+        return;
+      }
+      setImagePreviewError(true);
+    }
+  }
+
   return (
     <div>
-      {/* For testing */}
       <div className="{styles.topItems}" >
         <img src = {logo} alt = "logo" className = "{styles.logo}" />
         {step > 1 && (<Button size="small" onClick={() => setStep(step - 1)}><IoArrowBack /></Button>)}
@@ -111,6 +157,19 @@ const UserOnboarding = () => {
           {step === 1 && (
           <div className="{styles.formGroup}" >
             <h2 className="heading-2">Welcome! Let's create your profile</h2>
+            <div className={styles.imageContainer}>
+              <div className="{styles.imageHolder}">
+                <img src={imagePreview} alt="" className={styles.img}/>
+              </div>
+              <input className={styles.hideInput} type="file" accept="image/jpeg, image/jpg, image/png" id="image" onChange={handleImageChange} />
+              {/* Cannot use button as label for adding photo */}
+              <div>
+                <label className={styles.imageUploadLabel} htmlFor="image">
+                  Choose Photo
+                </label>
+                {imagePreviewError === true && (<p className="paragraph">We don't support that file type.</p>)}
+              </div>
+            </div>
             <div className="{styles.formItem}" >
               <label className="bold-text">First Name</label>
                 <BasicInput
@@ -241,11 +300,8 @@ const UserOnboarding = () => {
               placeholder="Distance in km"
             />
           </div>)}
-        {step === 3 && (<Button type="submit" color="brand-default" block>SUBMIT</Button>)}
+        {step < 3 ? (<Button type="button" color="brand-default" block onClick={handleStepUp} >NEXT</Button>) : (<Button type="submit" color="brand-default" block>SUBMIT</Button>)}
       </form>
-      {step < 3 ? 
-        (<Button color="brand-default" block onClick={() => setStep(step + 1)}>NEXT</Button>) : 
-        null}
       </div>
     </div>
   );
