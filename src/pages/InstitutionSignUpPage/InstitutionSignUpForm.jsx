@@ -1,14 +1,27 @@
-import React from 'react';
+import React, {useState} from 'react';
 import styles from './SignUpPage.module.css';
 import Button from "components/Button";
 import useSignUp from "./useSignUp";
 import validate from "./validateSignUpInfo";
 import logo from 'assets/logo.svg';
+import showPassword from 'assets/showPassword.svg'; 
+import hidePassword from 'assets/hidePassword.svg';
 import useMediaQuery from 'hooks/useMediaQuery';
 
 const FormSignup = ({ submitForm }) => {
     const {handleChange, values, handleSubmit, errors} = useSignUp(submitForm, validate);
     const matches = useMediaQuery("(min-width: 800px)");
+    const [passwordShown, setPasswordShown] = useState(false);
+    const [confirmPasswordShown, setConfirmPasswordShown] = useState(false);
+
+
+    const togglePasswordVisiblity = () => {
+        setPasswordShown(passwordShown ? false : true);
+    };
+
+    const toggleConfirmPasswordVisiblity = () => {
+        setConfirmPasswordShown(confirmPasswordShown ? false : true);
+    };
 
     return (
         <div className={styles.formContentRight}>
@@ -37,11 +50,16 @@ const FormSignup = ({ submitForm }) => {
                     </label>
                     <input
                         className= {errors.password ? styles.formInputError : styles.formInput }
-                        type='password'
+                        type = {passwordShown ? 'text' : 'password'}
                         name='password'
                         placeholder='Enter your password'
                         value = {values.password}
                         onChange = {handleChange}
+                    />
+                    <img 
+                        className = {matches ? styles.eye : styles.eye2}
+                        onClick = {togglePasswordVisiblity}
+                        src = {passwordShown ? hidePassword : showPassword}
                     />
                 </div>
                 <div className= {styles.formInputs}>
@@ -50,11 +68,16 @@ const FormSignup = ({ submitForm }) => {
                     </label>
                     <input
                         className= {errors.password2 ? styles.formInputError : styles.formInput }
-                        type='password'
+                        type= {confirmPasswordShown ? 'text' : 'password'}
                         name='password2'
                         placeholder='Confirm your password'
                         value = {values.password2}
                         onChange = {handleChange}
+                    />
+                    <img 
+                        className = {matches ? styles.eye : styles.eye2}
+                        onClick = {toggleConfirmPasswordVisiblity}
+                        src = {confirmPasswordShown ? hidePassword : showPassword}
                     />
                 </div>
                     <Button color="brand-default" id = {styles.signUpButton} type = "submit">Sign Up</Button>     

@@ -216,3 +216,15 @@ label {
     width: 127px;
     height: 55px;
 }
+
+.eye {
+    position: relative; 
+    bottom: 38%; 
+    left: 91%;
+}
+
+.eye2 {
+    position: relative; 
+    bottom: 38%; 
+    left: 95%;
+}
