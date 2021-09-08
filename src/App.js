@@ -132,7 +132,6 @@ function App() {
 					<NavRoute path="/signup" exact component={ChooseSignup} />
 					<Route path="/user/onboarding" exact component={UserOnboarding} />
 					<Redirect path="/" to="/signup" exact />
-					
 				</Switch>
 			</Router>
 		</Suspense>
