@@ -19,7 +19,7 @@ const UserOnboarding = () => {
   const current = new Date().toISOString().split("T")[0];
   const [imagePreview, setImagePreview] = useState(`${noPhoto}`);
   const [imagePreviewError, setImagePreviewError] = useState(false);
-  const [locationError, setLocationError] = useState(false);
+  const [locationError, setLocationError] = useState('');
   const [step, setStep] = useState(1);
   const [isDisabled, setIsDisabled] = useState(true);
   const history = useHistory();
@@ -31,7 +31,6 @@ const UserOnboarding = () => {
     birthDate: '',
     sex: '',
     contactNumber: '',
-    address: '', // when reverse geocoded
     locationLat: '',
     locationLong: '',
     action: '',
@@ -39,28 +38,32 @@ const UserOnboarding = () => {
     preferredDistance: '',
   });
 
-  const accessToken =
-	"pk.eyJ1IjoiZGVydHJvY2t4IiwiYSI6ImNrMXcwZHB0bjBmb2gzY216ODA0NDZ3MWsifQ.IoDpTejvyHpWvvj_cjjRlw";
+  // For disabling buttons
+  useEffect(() => {
+    // If step 1, check photo, first and last names, bday, sex, number, and loc coordinates
+    // If step 2, check action
+    // If step 3, check preferred animals and distance
 
-  // axios.get(`https://api.mapbox.com/geocoding/v5/mapbox.places/${value.lat},${value.long}.json?access_token=${accessToken}`)
-  // .then(({data})) => {}
-
-  const reverseGeocode = async (lat, long) => {
-    const query = await fetch(
-			`https://api.mapbox.com/geocoding/v5/mapbox.places/${long},${lat}.json?types=poi&access_token=${accessToken}`,
-			{ method: "GET" }
-		);
-    console.log(query);
-    const json = await query.json();
-    console.log(json);
-    const address = json.features[0].place_name;
-    console.log(address);
-
-    setValues({
-      ...values,
-      address: address,
-    })
-  }
+    if (step === 1) {
+      if (values.photo !== '' && values.firstName !== '' && values.lastName !== '' && values.birthDate !== '' && values.sex !== '' && values.contactNumber !== '' && values.locationLat !== '' && values.locationLong !== '') {
+        setIsDisabled(false);
+      } else {
+        setIsDisabled(true);
+      }
+    } else if (step === 2) {
+      if (values.action !== '') {
+        setIsDisabled(false);
+      } else {
+        setIsDisabled(true);
+      }
+    } else if (step === 3) {
+      if (values.preferredAnimals !== [] && values.preferredDistance !== '') {
+        setIsDisabled(false);
+      } else {
+        setIsDisabled(true);
+      }
+    }
+  }, [values, step]);
 
   const animals = [
     { text: 'dogs', value: 'dogs' },
@@ -115,24 +118,14 @@ const UserOnboarding = () => {
   const handleSubmit = (e) => {
     e.preventDefault(); 
     
-    // Redirect to feed after onboarding, put this inside .then when successful
+    // Redirect to feed after onboarding, put inside .then when successful
     // history.push('/feed');
 
     // For testing
     console.log(values);
   }
 
-  // There is no handleStepDown as the button for going back is outside the form.
-  const handleStepUp = (e) => {
-    /*
-      All buttons inside a form trigger the submit event.
-      By using the preventDefault() method, the submit event will be canceled,
-      thus, allowing multiple buttons inside a form.
-    */
-    e.preventDefault();
-    setStep(step + 1);
-  }
-  
+  // TASK: If possible, create custom hook
   const handleImageChange = (e) => {
     const selected = e.target.files[0];
     const ALLOWED_TYPES=['image/png', 'image/jpg', 'image/jpeg'];
@@ -160,40 +153,33 @@ const UserOnboarding = () => {
     }
   }
 
-  // Create custom hook for accessing user's location || NOTE: It's not precise
+  // TASK: Create custom hook for accessing user's location
+  const onSuccess = (position) => {
+    setValues({
+      ...values,
+      locationLat: position.coords.latitude,
+      locationLong: position.coords.longitude,
+    });
+    setLocationError('');
+  }
+
+  const onError = () => {
+    setLocationError('Unable to retrieve your location. Please enable permissions.');
+  }
+
   const handleLocation = (e) => {
+    /*
+      All buttons inside a form trigger the submit event.
+      By using the preventDefault() method, the submit event will be canceled,
+      thus, allowing multiple buttons inside a form.
+    */
     e.preventDefault();
     if (!navigator.geolocation) {
-      setLocationError(true);
-      setValues({
-        ...values, 
-        address: 'Please enable your location.'
-      });
+      setLocationError('Geolocation is not supported by your browser.');
     } else {
-      setLocationError(false);
-      navigator.geolocation.getCurrentPosition((position) => {
-        reverseGeocode(position.coords.latitude, position.coords.longitude);
-        setValues({
-          ...values,
-          locationLat: position.coords.latitude,
-          locationLong: position.coords.longitude,
-        })
-      })
-    }
-
-    // if ("geolocation" in navigator) {
-    //   setLocationError(false);
-    //   navigator.geolocation.getCurrentPosition((position) => {
-    //     reverseGeocode(position.coords.latitude, position.coords.longitude);
-    //     setValues({
-    //       ...values,
-    //       locationLat: position.coords.latitude,
-    //       locationLong: position.coords.longitude,
-    //     })
-    //   })
-    // } else {
+      navigator.geolocation.getCurrentPosition(onSuccess, onError);
       
-    // }
+    }
   }
 
   return (
@@ -288,16 +274,9 @@ const UserOnboarding = () => {
               />
             </div>
             <div className="{styles.formItem}" >
-              <label className="bold-text">Address</label>
-              <BasicInput
-                type="text"
-                name="address"
-                onChange={handleChange}
-                value={values.address} 
-                placeholder="Address"
-                disabled
-              />
-              <Button size="small" color="brand-default" onClick={handleLocation}><IoLocationSharp /></Button>
+              <label className="bold-text">Location</label>
+              {(values.locationLat !== '' && values.locationLong !== '') ? <Button size="small" color="brand-default" onClick={handleLocation}> <span>Location enabled</span><IoLocationSharp /> </Button> : <Button size="small" color="brand-default" onClick={handleLocation} variant="outline"><IoLocationSharp /> <span>Enable location</span></Button> }
+              {locationError !== '' && <p className="paragraph">{locationError}</p>}
             </div>
           </div>)}
           {step === 2 && (
@@ -351,9 +330,9 @@ const UserOnboarding = () => {
               placeholder="Distance in km"
             />
           </div>)}
-        { step < 3 ? (<Button type="button" color="brand-default" block onClick={handleStepUp} >NEXT</Button>) : (<Button type="submit" color="brand-default" block>SUBMIT</Button>)}
-        {/* <ButtonEwan isDisabled={isDisabled}/> */}
+        {step === 3 && <Button type="submit" color="brand-default" block disabled={isDisabled}>SUBMIT</Button>}
       </form>
+      {step < 3 && <Button type="button" color="brand-default" block onClick={() => setStep(step + 1)} disabled={isDisabled} >NEXT</Button>}
       </div>
     </div>
   );
