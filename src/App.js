@@ -6,8 +6,9 @@ import SamplePage from "pages/SamplePage";
 import Feed from "pages/Feed";
 import NearbyInstitution from "pages/NearbyInstitution";
 import NavRoute from "components/NavRoute";
-import InstitutionSignUp from "pages/InstitutionSignUpPage/index";
-import InstitutionLogin from "pages/InstitutionLoginPage/index";
+import InstitutionSignUp from "pages/InstitutionSignUpPage";
+import InstitutionLogin from "pages/InstitutionLoginPage";
+import ShowStoryDetails from "pages/ShowStoryDetails";
 import { Route } from "react-router";
 
 // reset default styles for all html elements - https://en.wikipedia.org/wiki/Reset_style_sheet
@@ -24,6 +25,7 @@ function App() {
 					<NavRoute path="/nearby" exact component={NearbyInstitution} />
 					<Route path="/institution/signup" exact component = {InstitutionSignUp} />
 					<Route path="/institution/login" exact component = {InstitutionLogin} />
+					<NavRoute path = "/stories/1" exact component = {ShowStoryDetails} />
 					<Redirect path="/" to="/sample" exact />
 				</Switch>
 			</Router>
