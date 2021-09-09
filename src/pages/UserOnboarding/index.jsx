@@ -1,5 +1,7 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { useHistory } from 'react-router';
 import { IoLocationSharp, IoArrowBack } from 'react-icons/io5';
+import axios from 'axios';
 
 import Button from 'components/Button';
 import BasicInput from 'components/BasicInput';
@@ -12,15 +14,16 @@ import catFostering from 'assets/catFostering.png';
 import noPhoto from 'assets/noPhoto.png';
 
 import styles from './UserOnboarding.module.css';
-import { useHistory } from 'react-router';
 
 const UserOnboarding = () => {
   const current = new Date().toISOString().split("T")[0];
   const [imagePreview, setImagePreview] = useState(`${noPhoto}`);
   const [imagePreviewError, setImagePreviewError] = useState(false);
+  const [locationError, setLocationError] = useState(false);
   const [step, setStep] = useState(1);
+  const [isDisabled, setIsDisabled] = useState(true);
   const history = useHistory();
-  const [value, setValue] = useState({
+  const [values, setValues] = useState({
     photo: '', // or photoURL?
     firstName: '',
     middleName: '',
@@ -36,17 +39,28 @@ const UserOnboarding = () => {
     preferredDistance: '',
   });
 
-  // Create custom hook for accessing user's location
-  // if ("geolocation" in navigator) {
-  //   console.log('Available');
-  // } else {
-  //   console.log('Unavailable');
-  // }
+  const accessToken =
+	"pk.eyJ1IjoiZGVydHJvY2t4IiwiYSI6ImNrMXcwZHB0bjBmb2gzY216ODA0NDZ3MWsifQ.IoDpTejvyHpWvvj_cjjRlw";
 
-  // navigator.geolocation.getCurrentPosition((position) => {
-  //   console.log("Latitude: " + position.coords.latitude);
-  //   console.log("Longitude: " + position.coords.longitude);
-  // })
+  // axios.get(`https://api.mapbox.com/geocoding/v5/mapbox.places/${value.lat},${value.long}.json?access_token=${accessToken}`)
+  // .then(({data})) => {}
+
+  const reverseGeocode = async (lat, long) => {
+    const query = await fetch(
+			`https://api.mapbox.com/geocoding/v5/mapbox.places/${long},${lat}.json?types=poi&access_token=${accessToken}`,
+			{ method: "GET" }
+		);
+    console.log(query);
+    const json = await query.json();
+    console.log(json);
+    const address = json.features[0].place_name;
+    console.log(address);
+
+    setValues({
+      ...values,
+      address: address,
+    })
+  }
 
   const animals = [
     { text: 'dogs', value: 'dogs' },
@@ -67,7 +81,7 @@ const UserOnboarding = () => {
             id={choice.value}
             label={choice.text}
             onChange={handleCheck}
-            checked={value.preferredAnimals.includes(`${choice.value}`)}
+            checked={values.preferredAnimals.includes(`${choice.value}`)}
           />
         </div>
       ))}
@@ -77,20 +91,20 @@ const UserOnboarding = () => {
 
   // For input of type checkbox
   const handleCheck = (e) => {
-    let newArray = [...value.preferredAnimals, e.target.id];
-    if (value.preferredAnimals.includes(e.target.id)) {
+    let newArray = [...values.preferredAnimals, e.target.id];
+    if (values.preferredAnimals.includes(e.target.id)) {
       newArray = newArray.filter(animal => animal !== e.target.id);
     }
-    setValue({
-      ...value, 
+    setValues({
+      ...values, 
       preferredAnimals: newArray
     });
   };
 
   // For input of types text or radio
   const handleChange = (e) => {
-      setValue({
-        ...value,
+      setValues({
+        ...values,
         [e.target.name]: e.target.value,
       });
   
@@ -105,7 +119,7 @@ const UserOnboarding = () => {
     // history.push('/feed');
 
     // For testing
-    console.log(value);
+    console.log(values);
   }
 
   // There is no handleStepDown as the button for going back is outside the form.
@@ -127,8 +141,8 @@ const UserOnboarding = () => {
       reader.onloadend = () => {
         setImagePreview(`${reader.result}`)
       }
-      setValue({
-        ...value,
+      setValues({
+        ...values,
         photo: selected
       });
       reader.readAsDataURL(selected);
@@ -144,6 +158,42 @@ const UserOnboarding = () => {
       }
       setImagePreviewError(true);
     }
+  }
+
+  // Create custom hook for accessing user's location || NOTE: It's not precise
+  const handleLocation = (e) => {
+    e.preventDefault();
+    if (!navigator.geolocation) {
+      setLocationError(true);
+      setValues({
+        ...values, 
+        address: 'Please enable your location.'
+      });
+    } else {
+      setLocationError(false);
+      navigator.geolocation.getCurrentPosition((position) => {
+        reverseGeocode(position.coords.latitude, position.coords.longitude);
+        setValues({
+          ...values,
+          locationLat: position.coords.latitude,
+          locationLong: position.coords.longitude,
+        })
+      })
+    }
+
+    // if ("geolocation" in navigator) {
+    //   setLocationError(false);
+    //   navigator.geolocation.getCurrentPosition((position) => {
+    //     reverseGeocode(position.coords.latitude, position.coords.longitude);
+    //     setValues({
+    //       ...values,
+    //       locationLat: position.coords.latitude,
+    //       locationLong: position.coords.longitude,
+    //     })
+    //   })
+    // } else {
+      
+    // }
   }
 
   return (
@@ -163,7 +213,7 @@ const UserOnboarding = () => {
               </div>
               <input className={styles.hideInput} type="file" accept="image/jpeg, image/jpg, image/png" id="image" onChange={handleImageChange} />
               {/* Cannot use button as label for adding photo */}
-              <div>
+              <div className={styles.imageContainerRight}>
                 <label className={styles.imageUploadLabel} htmlFor="image">
                   Choose Photo
                 </label>
@@ -176,7 +226,7 @@ const UserOnboarding = () => {
                   type="text"
                   name="firstName"
                   onChange={handleChange}
-                  value={value.firstName}
+                  value={values.firstName}
                   placeholder="First Name"
                 />
             </div>
@@ -186,7 +236,7 @@ const UserOnboarding = () => {
                 type="text"
                 name="middleName"
                 onChange={handleChange}
-                value={value.middleName}
+                value={values.middleName}
                 placeholder="Middle Name (optional)"
               />
             </div>
@@ -196,7 +246,7 @@ const UserOnboarding = () => {
                 type="text"
                 name="lastName"
                 onChange={handleChange}
-                value={value.lastName}
+                value={values.lastName}
                 placeholder="Last Name"
               />
             </div>
@@ -207,14 +257,14 @@ const UserOnboarding = () => {
                 value="male"
                 label="Male"
                 onChange={handleChange}
-                checked={value.sex === "male"}
+                checked={values.sex === "male"}
               />
               <Radio 
                 name="sex"
                 value="female"
                 label="Female"
                 onChange={handleChange}
-                checked={value.sex === "female"}
+                checked={values.sex === "female"}
               />
             </div>
             <div className="{styles.formItem}" >
@@ -223,7 +273,7 @@ const UserOnboarding = () => {
                 type="date"
                 name="birthDate"
                 onChange={handleChange}
-                value={value.birthDate}
+                value={values.birthDate}
                 max={current}
               />
             </div>
@@ -233,7 +283,7 @@ const UserOnboarding = () => {
                 type="text"
                 name="contactNumber"
                 onChange={handleChange}
-                value={value.contactNumber}
+                value={values.contactNumber}
                 placeholder="Contact Number"
               />
             </div>
@@ -243,10 +293,11 @@ const UserOnboarding = () => {
                 type="text"
                 name="address"
                 onChange={handleChange}
-                value={value.address} 
+                value={values.address} 
                 placeholder="Address"
+                disabled
               />
-              {/* <Button size="small" color="brand-default"><IoLocationSharp /></Button> */}
+              <Button size="small" color="brand-default" onClick={handleLocation}><IoLocationSharp /></Button>
             </div>
           </div>)}
           {step === 2 && (
@@ -254,7 +305,7 @@ const UserOnboarding = () => {
             <h2 className="heading-2">What brings you to Pawnder?</h2>
             <div className="{styles.actionCardsContainer}"> 
               <label>
-                <div className="{value.action !== 'adopting' ? styles.actionCard : styles.actionCardSelected}" >
+                <div className="{values.action !== 'adopting' ? styles.actionCard : styles.actionCardSelected}" >
                   <img src={dogAdopting} alt="" className="{styles.actionCardImage}" />
                   <h3 className="heading-3">I'm adopting</h3>
                   <p className="paragraph">Give an animal a second chance by providing a loving furrever home.</p>
@@ -263,12 +314,12 @@ const UserOnboarding = () => {
                     name="action"
                     value="adopting"
                     onChange={handleChange}
-                    checked={value.action === 'adopting'}
+                    checked={values.action === 'adopting'}
                   />
                 </div>
               </label>
               <label>
-                <div className="{value.action !== 'fostering' ? styles.cardPreferences : styles.cardPreferencesSelected}">
+                <div className="{values.action !== 'fostering' ? styles.cardPreferences : styles.cardPreferencesSelected}">
                   <img src={catFostering} alt="" className="{styles.actionCardImage}" />
                   <h3 className="heading-3">I'm fostering</h3>
                   <p className="paragraph">Temporarily care for a furry friend in need until a suitable home is found.</p>
@@ -277,7 +328,7 @@ const UserOnboarding = () => {
                     name="action"
                     value="fostering"
                     onChange={handleChange}
-                    checked={value.action === 'fostering'}
+                    checked={values.action === 'fostering'}
                   />
                 </div>
               </label>
@@ -296,11 +347,12 @@ const UserOnboarding = () => {
               min="1"
               name="preferredDistance"
               onChange={handleChange}
-              value={value.preferredDistance}
+              value={values.preferredDistance}
               placeholder="Distance in km"
             />
           </div>)}
-        {step < 3 ? (<Button type="button" color="brand-default" block onClick={handleStepUp} >NEXT</Button>) : (<Button type="submit" color="brand-default" block>SUBMIT</Button>)}
+        { step < 3 ? (<Button type="button" color="brand-default" block onClick={handleStepUp} >NEXT</Button>) : (<Button type="submit" color="brand-default" block>SUBMIT</Button>)}
+        {/* <ButtonEwan isDisabled={isDisabled}/> */}
       </form>
       </div>
     </div>
