@@ -89,9 +89,15 @@
 
 
 /* Image */
-/* .imageContainer {
 
-} */
+.imageContainer {
+  display: flex;
+  flex-direction: row;
+}
+
+.imageContainerRight {
+  /* display: inline-block; */
+}
 
 .imageHolder{
   width: 150px;
@@ -120,9 +126,7 @@
 	text-transform: uppercase;
 
   /* Base styles */
-  display: flex;
-	align-items: center;
-	justify-content: center;
+  display: inline-block;
 	cursor: pointer;
 	background: #ddd;
 	border-radius: 10px;
