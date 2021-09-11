@@ -33,9 +33,13 @@ function Details() {
 
 	return (
 		<div className={styles.container}>
+<<<<<<< HEAD
 			<h1 className="heading-1" style={{ marginLeft: 90 }}>
 				Manage Pet
 			</h1>
+=======
+			<h1 className="heading-1">Manage Pet</h1>
+>>>>>>> setup chakra ui
 			<div className={styles.content}>
 				<nav className={styles.sidebar}>
 					<div className={styles.sidebarContent}>
