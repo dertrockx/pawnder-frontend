@@ -1,16 +1,23 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import { useHistory } from "react-router-dom";
+import { IoArrowBack } from 'react-icons/io5';
+
 import Button from "components/Button";
 import BasicInput from "components/BasicInput"
 import BasicTextArea from "components/BasicTextArea";
-import { IoLocationSharp, IoArrowBack } from 'react-icons/io5';
+import BasicImageInput from "components/BasicImageInput";
+import BasicLabel from "components/BasicLabel";
+import styles from "./InstitutionOnboarding.module.css"
 
 function InstitutionOnboardingPage() {
+	const history = useHistory();
+
 	const [ step, setStep ] = useState(1);
 	const [ value, setValue ] = useState({
-		image: null,
+		image: '/images/Avatar.png',
 		name: null,
 		description: null,
-		address: null,
+		contactNumber: null,
 		websiteURL: null,
 		facebookURL: null,
 		twitterURL: null,
@@ -18,6 +25,12 @@ function InstitutionOnboardingPage() {
 		instagramURL: null
 	});
 	const [ isEnableLocationClicked, setIsEnableLocationClicked ] = useState(false);
+	const [ imagePreviewError, setImagePreviewError ] = useState(false);
+	const [ nextDisabled, setNextDisabled ] = useState(true);
+
+	useEffect(() => {	
+		if(value.name && value.description && value.contactNumber && value.image !== '/images/Avatar.png') setNextDisabled(false);
+  });
 
 	const handleChange = (e) => {
 		setValue({
@@ -25,273 +38,215 @@ function InstitutionOnboardingPage() {
 			[e.target.name]: e.target.value,
 		});
 
-		// For testing
 		console.log(e.target.value);
 	}
 
 	const handleSubmit = (e) => {
     e.preventDefault();
     console.log(value);
+		
+		history.replace("/")		//must be redirected to user feed page
+
   }
 
-	// function handleValueChange(e, valueCb) {
-	// 	const newValue = e.target.value;
-	// 	valueCb(newValue);
-	// }
-	
-	// function handleFormSubmit(e) {
-	// 	e.preventDefault();
-	// }
-	
-	// function clickNext(e) {
-	// 	e.preventDefault();
-	// 	setIsNextClicked(true);
-	// }
-
-	// function clickSubmit(e) {
-	// 	e.preventDefault();
-	// 	console.log(name, description, websiteURL, facebookURL, twitterURL, instagramURL, messengerURL);
-	// 	//clears the fields of the form
-	// 	const form = document.getElementsByName("onboarding-form");
-	// 	form[0].reset();
-	// }
-
-	function clickEnableLocation() {
+	function clickEnableLocation(e) {
+		e.preventDefault();
 		setIsEnableLocationClicked(true);
 	}
 
-	// function imageSelectedHandler(event) {
-	// 	setSelectedImage(event.target.img);
-	// 	console.log(event.target.img);
-	// }
+	function imageHandler(e) {
+		const selected = e.target.files[0];
+		const ALLOWED_TYPES=['image/png', 'image/jpg', 'image/jpeg'];
+		if(selected && ALLOWED_TYPES.includes(selected.type)) {
+			const reader = new FileReader();
+			reader.onload = () => {
+				if(reader.readyState === 2) {
+					setValue({
+						...value,
+						[e.target.name]: reader.result,
+					})
+				}
+			}
+			reader.readAsDataURL(e.target.files[0]);
+		} else {
+			if (selected === undefined) {
+				return;
+			}
+			setImagePreviewError(true);
+		}
+  }
 
 	return (
-		<div>
-			<div>
+		<div className={styles.container}>
+			<div className={styles.svg}>
 				<img src="/images/paw.svg" alt="paw"/>
-				{step > 1 && (<Button size="small" onClick={() => setStep(step - 1)}><IoArrowBack /></Button>)}
 			</div>
-			<div>
-				<form onSubmit={handleSubmit}>
+			<div className={styles.form}>
+
+				{step > 1 && (<div style={{ "margin-top": 15, "margin-bottom": 15 }}><Button style={{ "margin-top": 10, "margin-bottom": 20 }} size="small" onClick={() => setStep(step - 1)}><IoArrowBack /></Button></div>)}
+				
+				<form onSubmit={handleSubmit} name="onboarding-form">
 
 					{ step === 1 && (
-						<div>
-							<div className="heading-2">Welcome! Let's create your profile.</div>
-							<div>
-								<label>Institution Name</label>
-								<BasicInput
-									type="text"
-									name="name"
-									onChange={handleChange}
-									placeholder="Institution Name"
-									required="true"
-								/>
+						<div className={styles.item}>
+							<div className="heading-2" style={{ "text-align": "center", width: 600 }}>Welcome! Let's create your profile.</div>
+
+							<BasicImageInput image={value.image} onChange={imageHandler} imagePreviewError={imagePreviewError}/>
+							
+							<div style={{ display: "flex" }}>
+								<div style={{ width: 200, "padding-top": 5 }}>
+									<BasicLabel label="Institution Name"/>
+								</div>
+								<div style={{ width: 400 }}>
+									<BasicInput
+										type="text"
+										name="name"
+										onChange={handleChange}
+										value={value.name}
+										placeholder="Institution Name"
+										required="true"
+									/>
+								</div>
 							</div>
-							<div>
-								<label>Description</label>
-								<BasicTextArea
-									rows={5}
-									cols={100}
-									name="description"
-									placeholder="Enter your description"
-									onChange={handleChange}
-									required="true"
-								/>
+
+							<div style={{ display: "flex"}}>
+								<div style={{ width: 200, "padding-top": 5 }}>
+									<BasicLabel label="Description"/>
+								</div>
+								<div style={{ width: 400 }}>
+									<BasicTextArea
+										rows={5}
+										cols={100}
+										name="description"
+										onChange={handleChange}
+										value={value.description}
+										placeholder="Enter your description"
+										required="true"
+									/>
+								</div>
 							</div>
-							<div>
-								<label>Contact Number</label>
-								<BasicInput 
-									type="text"
-									name="contact-number"
-									placeholder="Contact Number"
-									required="true"
-								/>
+
+							<div style={{ display: "flex"}}>
+								<div style={{ width: 200, "padding-top": 5 }}>
+									<BasicLabel label="Contact Number"/>
+								</div>
+								<div style={{ width: 400 }}>
+									<BasicInput 
+										type="text"
+										name="contactNumber"
+										onChange={handleChange}
+										value={value.contactNumber}
+										placeholder="Contact Number"
+										required="true"
+									/>
+								</div>
 							</div>
-							<div>
-								<label>Address</label>
-								<BasicInput 
-									type="text"
-									name="address"
-									placeholder="Address"
-									disabled="true"
-								/>
-								<Button onClick={clickEnableLocation} color="brand-default" variant="outline" size="small">Enable location</Button><br/>
+
+							<div style={{ display: "flex"}}>
+								<div style={{ width: 200, "padding-top": 5 }}>
+									<BasicLabel label="Address"/>
+								</div>
+								<div style={{ width: 400 }}>							
+									{/* <BasicInput 
+										type="text"
+										name="address"
+										onChange={handleChange}
+										value={value.address}
+										placeholder="Address"
+									/><br/> */}
+									<Button onClick={clickEnableLocation} color="brand-default" variant="outline" size="small">Enable location</Button><br/>
+									<Button onClick={() => setStep(step + 1)} color="brand-default" size="small" block disabled={nextDisabled}>Next</Button>
+								</div>
 							</div>
-								<Button onClick={() => setStep(step + 1)} color="brand-default" size="small" block>Next</Button>
 							
 						</div>
 					)}
 
 					{ step === 2 && (
-						<div>
-
-							<div className="heading-2">Welcome! Let's create your profile.</div>
-							External Links
-							Website
-		 					<BasicInput 
-									type="text"
-									name="website"
-									onChange={handleChange}
-									placeholder="Website URL"
-							/>
-							Facebook
-							<BasicInput 
-									type="text"
-									name="facebook"
-									onChange={handleChange}
-									placeholder="Facebook URL"
-							/>
-							Messenger
-							<BasicInput 
-									type="text"
-									name="messenger"
-									onChange={handleChange}
-									placeholder="Messenger URL"
-							/>
-							Twitter
-							<BasicInput 
-									type="text"
-									name="twitter"
-									onChange={handleChange}
-									placeholder="Twitter URL"
-							/>
-							Instagram
-							<BasicInput 
-									type="text"
-									name="instagram"
-									onChange={handleChange}
-									placeholder="Instagram URL"
-							/>
-							<Button onClick={handleSubmit} color="brand-default" size="small" block>Submit</Button>
+						<div className={styles.item}>
+							<div className="heading-2" style={{ "text-align": "center", width: 600, "margin-top": 40, "margin-bottom": 40 }}>Welcome! Let's create your profile.</div>
+							<div className="heading-3">External Links</div>
+							<div style={{ display: "flex", "margin-top": 5, "margin-bottom": 5 }}>
+								<div style={{ width: 200, "padding-top": 5 }}>
+									<BasicLabel label="Website"/>
+								</div>
+								<div  style={{ width: 400 }}>
+									<BasicInput 
+										type="text"
+										name="websiteURL"
+										value={value.websiteURL}
+										onChange={handleChange}
+										placeholder="Website URL"
+									/>
+									
+								</div>
+							</div>
+							<div style={{ display: "flex" }}>
+								<div style={{ width: 200, "padding-top": 5 }}>
+									<BasicLabel label="Facebook"/>
+								</div>
+								<div style={{ width: 400 }}>
+									<BasicInput 
+										type="text"
+										name="facebookURL"
+										value={value.facebookURL}
+										onChange={handleChange}
+										placeholder="Facebook URL"
+									/>
+								</div>
+							</div>
+							<div style={{ display: "flex" }}>
+								<div style={{ width: 200, "padding-top": 5 }}>
+									<BasicLabel label="Messenger"/>
+								</div>
+								<div style={{ width: 400 }}>
+									<BasicInput 
+										type="text"
+										name="messengerURL"
+										value={value.messengerURL}
+										onChange={handleChange}
+										placeholder="Messenger URL"
+									/>							
+								</div>
+							</div>
+							<div style={{ display: "flex" }}>
+								<div style={{ width: 200, "padding-top": 5 }}>
+									<BasicLabel label="Twitter"/>
+								</div>
+								<div style={{ width: 400 }}>
+									<BasicInput 
+										type="text"
+										name="twitterURL"
+										value={value.twitterURL}
+										onChange={handleChange}
+										placeholder="Twitter URL"
+									/>
+								</div>
+							</div>
+							<div style={{ display: "flex" }}>
+								<div style={{ width: 200, "padding-top": 5 }}>
+									<BasicLabel label="Instagram"/>
+								</div>
+								<div style={{ width: 400, "margin-bottom": 4 }}>
+									<BasicInput 
+										type="text"
+										name="instagramURL"
+										value={value.instagramURL}
+										onChange={handleChange}
+										placeholder="Instagram URL"
+									/>
+									<div style={{ "margin-top": 20 }}>
+										<Button onClick={handleSubmit} color="brand-default" size="small" block>Submit</Button>
+									</div>
+								</div>
+							</div>
 
 						</div>
 					)}
 				</form>
+
 			</div>
 		</div>
-
-
-		// <div style={{ display: "flex" }}>
-		// 	<div 
-		// 		style={{
-		// 			width: "50%",
-		// 			height: "50%",
-		// 			// background: "#89CFF0",
-		// 		}}
-		// 	>
-		// 		<img src="/images/paw.svg" alt="paw"/>
-		// 	</div>
-
-		// 	<div 
-		// 		className="paragraph" 
-		// 		style={{
-		// 			padding: 150,
-		// 			"padding-top": 75,
-		// 			width: "50%",
-		// 			height: "50%",
-		// 			// background: "#8B0000"
-		// 		}}
-		// 	>
-		// 		<div className="heading-2">Welcome! Let's create your profile.</div>
-				
-		// 			{!isNextClicked ? (
-		// 				<>
-		// 				{/* <Button color="brand-default" variant="outline" size="small">Add Picture</Button> */}
-		// 				<input type="file" id="default-btn" accept="image/*" style={{ border: "1px solid #A52A2A" }} />
-		// 				{/* <Button onClick={imageSelectedHandler} id="custom-btn" color="brand-default" variant="outline" size="small">Add Picture</Button> */}
-		// 				<BasicHR/>
-		// 				<br/>
-		// 				<form name="onboarding-form" onSubmit={handleFormSubmit}>
-		// 					<>
-		// 						<div style={{ width: 200, display:"inline-block" }}>Institution Name</div>
-		// 						<BasicInput
-		// 							type="text"
-		// 							name="name"
-		// 							onChange={(e) => handleValueChange(e, setName)}
-		// 							placeholder="Institution Name"
-		// 							required="true"
-		// 						/>
-		// 					</>
-		// 						Description
-		// 						<BasicTextArea
-		// 							rows={5}
-		// 							cols={100}
-		// 							name="description"
-		// 							placeholder="Enter your description"
-		// 							onChange={(e) => handleValueChange(e, setDescription)}
-		// 							required="true"
-		// 						/>
-		// 					<>
-		// 						Contact Number
-		// 						<BasicInput 
-		// 							type="text"
-		// 							name="contact-number"
-		// 							placeholder="Contact Number"
-		// 							required="true"
-		// 						/>
-		// 					</>
-		// 						Address
-		// 						<BasicInput 
-		// 							type="text"
-		// 							name="address"
-		// 							placeholder="Address"
-		// 							disabled="true"
-		// 						/>
-		// 					<>
-		// 						<Button onClick={clickEnableLocation} color="brand-default" variant="outline" size="small">Enable location</Button><br/>
-		// 					</>
-		// 					<>
-		// 						<Button onClick={clickNext} color="brand-default" size="small" block>Next</Button>
-		// 					</>
-						
-		// 				</form>
-		// 			</>
-		// 			) : (
-		// 				<>
-		// 				External Links
-		// 				<form name="onboarding-form" onSubmit={handleFormSubmit}>
-		// 					Website
-		// 					<BasicInput 
-		// 							type="text"
-		// 							name="website"
-		// 							onChange={(e) => handleValueChange(e, setWebsiteURL)}
-		// 							placeholder="Website URL"
-		// 					/>
-		// 					Facebook
-		// 					<BasicInput 
-		// 							type="text"
-		// 							name="facebook"
-		// 							onChange={(e) => handleValueChange(e, setFacebookURL)}
-		// 							placeholder="Facebook URL"
-		// 					/>
-		// 					Messenger
-		// 					<BasicInput 
-		// 							type="text"
-		// 							name="messenger"
-		// 							onChange={(e) => handleValueChange(e, setMessengerURL)}
-		// 							placeholder="Messenger URL"
-		// 					/>
-		// 					Twitter
-		// 					<BasicInput 
-		// 							type="text"
-		// 							name="twitter"
-		// 							onChange={(e) => handleValueChange(e, setTwitterURL)}
-		// 							placeholder="Twitter URL"
-		// 					/>
-		// 					Instagram
-		// 					<BasicInput 
-		// 							type="text"
-		// 							name="instagram"
-		// 							onChange={(e) => handleValueChange(e, setInstagramURL)}
-		// 							placeholder="Instagram URL"
-		// 					/>
-		// 					<Button onClick={clickSubmit} color="brand-default" size="small" block>Submit</Button>
-		// 				</form>
-		// 			</>
-		// 			)}
-				
-		// 	</div>
-		// </div>
 	)
 }
 
