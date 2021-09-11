@@ -1,11 +1,32 @@
-import React from "react";
+import React, { useState } from "react";
+import { Input, Select, Textarea } from "@chakra-ui/react";
 import Button from "components/Button";
 import HR from "components/HR";
-import Dropdown from "components/Dropdown";
 import styles from "./Profile.module.css";
-import Input from "./Input";
 
 function Profile() {
+	function handleSave() {
+		alert("Saving");
+	}
+
+	const [info, setInfo] = useState({
+		name: "",
+		breed: "",
+		animalType: "",
+		sex: "",
+		weight: "",
+		height: "",
+		ageY: "",
+		ageM: "",
+		medicalHistory: "",
+		otherInfo: "",
+		action: "",
+	});
+
+	function handleChange(e) {
+		setInfo({ ...info, [e.target.name]: e.target.value });
+	}
+
 	return (
 		<div>
 			<h3 className="heading-3">Main picture</h3>
@@ -72,61 +93,143 @@ function Profile() {
 					<p className="caption">
 						Upload your pet’s basic information to be displayed on their profile
 					</p>
-					<div className={styles.fields}>
-						<div className={styles.field}>
-							<p className="paragraph">Pet Name</p>
-							<Input type="text" placeholder="I am a placeholder" />
+					<div>
+						<div className={styles.twoFields}>
+							<div className={styles.field}>
+								<p className="paragraph">Pet Name</p>
+								<Input
+									type="text"
+									placeholder="I am a placeholder"
+									focusBorderColor="brand.100"
+									name="name"
+									onChange={handleChange}
+								/>
+							</div>
+							<div className={styles.field}>
+								<p className="paragraph">Breed</p>
+								<Input
+									type="text"
+									placeholder="I am a placeholder"
+									focusBorderColor="brand.100"
+									name="breed"
+									onChange={handleChange}
+								/>
+							</div>
+							<div className={styles.field}>
+								<p className="paragraph">Animal type</p>
+								<Select
+									placeholder="Select option"
+									focusBorderColor="brand.100"
+									name="animalType"
+									onChange={handleChange}
+								>
+									<option value="dogs">Dog</option>
+									<option value="cats">Cat</option>
+									<option value="fish and aquariums">Fish and Aquariums</option>
+									<option value="reptiles and amphibians">
+										Reptile / Amphibian
+									</option>
+									<option value="exotic pets">Exotic pet</option>
+
+									<option value="rabbits">Rabbit</option>
+									<option value="rodents">Rodent</option>
+								</Select>
+							</div>
+							<div className={styles.field}>
+								<p className="paragraph">Sex</p>
+								<Select
+									placeholder="Select option"
+									focusBorderColor="brand.100"
+									name="sex"
+									onChange={handleChange}
+								>
+									<option value="m">Male</option>
+									<option value="f">Female</option>
+								</Select>
+							</div>
+							<div className={styles.field}>
+								<p className="paragraph">Weight (kg)</p>
+								<Input
+									type="text"
+									placeholder="I am a placeholder"
+									focusBorderColor="brand.100"
+									name="weight"
+									onChange={handleChange}
+								/>
+							</div>
+							<div className={styles.field}>
+								<p className="paragraph">Height (kg)</p>
+								<Input
+									type="text"
+									placeholder="I am a placeholder"
+									focusBorderColor="brand.100"
+									name="height"
+									onChange={handleChange}
+								/>
+							</div>
+							<div className={styles.field}>
+								<p className="paragraph">Age (years)</p>
+								<Input
+									type="text"
+									placeholder="I am a placeholder"
+									focusBorderColor="brand.100"
+									name="ageY"
+									onChange={handleChange}
+								/>
+							</div>
+							<div className={styles.field}>
+								<p className="paragraph">Age (months)</p>
+								<Input
+									type="text"
+									placeholder="I am a placeholder"
+									focusBorderColor="brand.100"
+									name="ageM"
+									onChange={handleChange}
+								/>
+							</div>
 						</div>
-						<div className={styles.field}>
-							<p className="paragraph">Breed</p>
-							<Input type="text" placeholder="I am a placeholder" />
-						</div>
-						<div className={styles.field}>
-							<p className="paragraph">Animal Type</p>
-							<Dropdown
-								renderOptions={() => (
-									<>
-										<option value="" disabled selected hidden>
-											Please Choose...
-										</option>
-										<option value="dogs">Dog</option>
-										<option value="cats">Cat</option>
-										<option value="fish and aquariums">
-											Reptile / Amphibian
-										</option>
-										<option value="reptiles and amphibians">
-											Reptile / Amphibian
-										</option>
-										<option value="exotic pets">Reptile / Amphibian</option>
-										<option value="rabbits">Reptile / Amphibian</option>
-										<option value="rodents">Reptile / Amphibian</option>
-									</>
-								)}
-							/>
-						</div>
-						<div className={styles.field}>
-							<p className="paragraph">Pet Name</p>
-							<Input type="text" placeholder="I am a placeholder" />
-						</div>
-						<div className={styles.field}>
-							<p className="paragraph">Pet Name</p>
-							<Input type="text" placeholder="I am a placeholder" />
-						</div>
-						<div className={styles.field}>
-							<p className="paragraph">Pet Name</p>
-							<Input type="text" placeholder="I am a placeholder" />
-						</div>
-						<div className={styles.field}>
-							<p className="paragraph">Pet Name</p>
-							<Input type="text" placeholder="I am a placeholder" />
-						</div>
-						<div className={styles.field}>
-							<p className="paragraph">Pet Name</p>
-							<Input type="text" placeholder="I am a placeholder" />
+						<div className={styles.oneField} style={{ marginTop: 20 }}>
+							<div className={styles.field}>
+								<p className="paragraph">Medical History</p>
+								<Textarea
+									type="text"
+									placeholder="I am a placeholder"
+									focusBorderColor="brand.100"
+									rows={3}
+									name="medicalHistory"
+									onChange={handleChange}
+								/>
+							</div>
+							<div className={styles.field}>
+								<p className="paragraph">Other information</p>
+								<Textarea
+									type="text"
+									placeholder="I am a placeholder"
+									focusBorderColor="brand.100"
+									rows={3}
+									name="otherInfo"
+									onChange={handleChange}
+								/>
+							</div>
+							<div className={styles.field}>
+								<p className="paragraph">Open for...</p>
+								<Select
+									placeholder="Select option"
+									focusBorderColor="brand.100"
+									name="action"
+									onChange={handleChange}
+								>
+									<option value="adopt">Adoption</option>
+									<option value="foster">Foster</option>
+								</Select>
+							</div>
 						</div>
 					</div>
 				</div>
 			</div>
+			<Button block color="brand-default" onClick={handleSave}>
+				Save
+			</Button>
 		</div>
 	);
 }

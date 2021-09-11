@@ -13,9 +13,16 @@
 	column-gap: 20px;
 }
 
-.fields {
+.twoFields {
 	display: grid;
 	grid-template-columns: repeat(2, 1fr);
+	column-gap: 20px;
+	row-gap: 20px;
+}
+
+.oneField {
+	display: grid;
+	grid-template-columns: 1fr;
 	column-gap: 20px;
 	row-gap: 20px;
 }

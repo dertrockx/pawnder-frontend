@@ -6,7 +6,11 @@ import SamplePage from "pages/SamplePage";
 import ChakraSample from "pages/ChakraSample";
 import Feed from "pages/Feed";
 import NearbyInstitution from "pages/NearbyInstitution";
-import ManagePetList from "pages/ManagePets/List";
+import {
+	List as ManagePetList,
+	Details as ManagePetDetails,
+} from "pages/ManagePets";
+
 import NavRoute from "components/NavRoute";
 
 import { ChakraProvider } from "@chakra-ui/react";
@@ -24,6 +28,7 @@ function App() {
 					<NavRoute path="/sample" exact component={SamplePage} />
 					<NavRoute path="/feed" exact component={Feed} />
 					<NavRoute path="/nearby" exact component={NearbyInstitution} />
+					<NavRoute path="/manage-pets/:petId" component={ManagePetDetails} />
 					<NavRoute path="/manage-pets" component={ManagePetList} />
 					<Redirect path="/" to="/sample" exact />
 				</Switch>

@@ -405,3 +405,7 @@ textarea,
 [hidden] {
 	display: none;
 }
+
+select {
+	border: none;
+}
