@@ -7,7 +7,10 @@ function BasicInput( props ) {
         name, 
         onChange, 
         placeholder,
+        value,
+        outline,
         children,
+        required,
         disabled
     } = props;
 
@@ -17,10 +20,12 @@ function BasicInput( props ) {
             name={name}
             onChange={onChange}
             placeholder={placeholder}
+            value={value}
             disabled={disabled}
+            required={required}
             className={`
                 input-text
-                ${styles.baseStyles}
+                ${outline === "red" ? styles.inputError : styles.baseStyles}
             `}
         >{children}</input>
     )
