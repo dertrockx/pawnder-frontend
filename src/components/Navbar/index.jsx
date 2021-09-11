@@ -94,6 +94,13 @@ function Navbar() {
 					>
 						Sample
 					</NavLink>
+					<NavLink
+						className={`paragraph ${styles.navbarItem}`}
+						activeClassName="bold-text"
+						to="/chakra-sample"
+					>
+						Chakra Sample
+					</NavLink>
 					{authenticated ? (
 						<Button
 							color="white"
