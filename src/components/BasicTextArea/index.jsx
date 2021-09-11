@@ -6,6 +6,7 @@ function BasicTextArea( props ) {
     rows,
     cols,
     name,
+    value,
     placeholder,
     children,
     onChange
@@ -16,6 +17,7 @@ function BasicTextArea( props ) {
       rows={rows}
       cols={cols}
       name={name}
+      value={value}
       placeholder={placeholder}
       onChange={onChange}
       className={`
