@@ -1,3 +1,11 @@
+.bg {
+  padding-top: 20px;
+  width: 350px;
+  height: 750px;
+  position: fixed;
+  right: 0;
+}
+
 .formContainer {
 	position: absolute;
 	top: 120px;
@@ -134,8 +142,6 @@
   color:red;
   font-weight: bold;
 }
-
-
 
 .img{
   width: 150px;
