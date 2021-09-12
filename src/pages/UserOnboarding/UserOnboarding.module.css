@@ -22,12 +22,14 @@
 .cardDisplay {
   display: flex;
   align-content: space-between;
+  gap: 10px;
   
 }
 
 .cardPreferences {
   display: flex;
   flex-direction: column;
+  gap: 5px;
   align-items: center;
   text-align: center;
   border: 1px solid #D0D0D0;
@@ -46,6 +48,7 @@
 .cardPreferencesSelected {
   display: flex;
   flex-direction: column;
+  gap: 5px;
   align-items: center;
   text-align: center;
   border: 1px solid #FFA500;
@@ -85,7 +88,15 @@
   margin-top: 10px;
 }
 
+.formItem {
+  margin-top: 10px;
+}
 
+.formItemSex{
+  margin-top: 10px;
+  display: flex;
+  flex-flow: row;
+}
 
 
 /* Image */
@@ -96,7 +107,14 @@
 }
 
 .imageContainerRight {
-  /* display: inline-block; */
+  padding-top: 30px;
+  margin-left: 20px;
+}
+
+.imageContainerRight > p {
+  margin-top: 10px;
+  color:red;
+  font-weight: bold;
 }
 
 
@@ -106,6 +124,7 @@
   height: 150px;
   border-radius: 50%;
   object-fit: cover;
+  margin-bottom: 10px;
 }
 
 .imageUploadLabel{
