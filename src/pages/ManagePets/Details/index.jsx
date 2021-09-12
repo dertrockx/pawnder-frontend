@@ -12,7 +12,7 @@ import ApplicantsPage from "./Applicants";
 import ProfilePage from "./Profile";
 import styles from "./Details.module.css";
 import { getPet, fetchApplicants } from "redux/actions/";
-// reference: https://github.com/remix-run/react-router/issues/5496#issuecomment-376499389
+
 const BetterSidebarLink = ({ children, ...linkProps }) => (
 	<Route
 		path={linkProps.to}

@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useHistory } from 'react-router';
 import { IoLocationSharp, IoArrowBack } from 'react-icons/io5';
-import axios from 'axios';
 
 import Button from 'components/Button';
 import BasicInput from 'components/BasicInput';
@@ -15,13 +14,14 @@ import noPhoto from 'assets/noPhoto.png';
 
 import styles from './UserOnboarding.module.css';
 
+
 const UserOnboarding = () => {
   const current = new Date().toISOString().split("T")[0];
   const [imagePreview, setImagePreview] = useState(`${noPhoto}`);
   const [imagePreviewError, setImagePreviewError] = useState(false);
   const [locationError, setLocationError] = useState('');
   const [step, setStep] = useState(1);
-  const [isDisabled, setIsDisabled] = useState(true);
+  const [isDisabled, setIsDisabled] = useState(false); // set to true after
   const history = useHistory();
   const [values, setValues] = useState({
     photo: '', // or photoURL?
@@ -39,31 +39,31 @@ const UserOnboarding = () => {
   });
 
   // For disabling buttons
-  useEffect(() => {
-    // If step 1, check photo, first and last names, bday, sex, number, and loc coordinates
-    // If step 2, check action
-    // If step 3, check preferred animals and distance
+  // useEffect(() => {
+  //   // If step 1, check photo, first and last names, bday, sex, number, and loc coordinates
+  //   // If step 2, check action
+  //   // If step 3, check preferred animals and distance
 
-    if (step === 1) {
-      if (values.photo !== '' && values.firstName !== '' && values.lastName !== '' && values.birthDate !== '' && values.sex !== '' && values.contactNumber !== '' && values.locationLat !== '' && values.locationLong !== '') {
-        setIsDisabled(false);
-      } else {
-        setIsDisabled(true);
-      }
-    } else if (step === 2) {
-      if (values.action !== '') {
-        setIsDisabled(false);
-      } else {
-        setIsDisabled(true);
-      }
-    } else if (step === 3) {
-      if (values.preferredAnimals !== [] && values.preferredDistance !== '') {
-        setIsDisabled(false);
-      } else {
-        setIsDisabled(true);
-      }
-    }
-  }, [values, step]);
+  //   if (step === 1) {
+  //     if (values.photo !== '' && values.firstName !== '' && values.lastName !== '' && values.birthDate !== '' && values.sex !== '' && values.contactNumber !== '' && values.locationLat !== '' && values.locationLong !== '') {
+  //       setIsDisabled(false);
+  //     } else {
+  //       setIsDisabled(true);
+  //     }
+  //   } else if (step === 2) {
+  //     if (values.action !== '') {
+  //       setIsDisabled(false);
+  //     } else {
+  //       setIsDisabled(true);
+  //     }
+  //   } else if (step === 3) {
+  //     if (values.preferredAnimals !== [] && values.preferredDistance !== '') {
+  //       setIsDisabled(false);
+  //     } else {
+  //       setIsDisabled(true);
+  //     }
+  //   }
+  // }, [values, step]);
 
   const animals = [
     { text: 'dogs', value: 'dogs' },
@@ -147,6 +147,7 @@ const UserOnboarding = () => {
         We don't want that so we check if selected === undefined. If it's true, then we don't give out any errors.
       */
       if (selected === undefined) {
+        setImagePreviewError(false);
         return;
       }
       setImagePreviewError(true);
@@ -183,22 +184,20 @@ const UserOnboarding = () => {
   }
 
   return (
-    <div>
-      <div className="{styles.topItems}" >
-        <img src = {logo} alt = "logo" className = "{styles.logo}" />
+    <div className={styles.page}>
+      <div className={styles.topItems} >
+        <img src = {logo} alt = "logo" className={styles.logo} />
         {step > 1 && (<Button size="small" onClick={() => setStep(step - 1)}><IoArrowBack /></Button>)}
       </div>
-      <div className="{styles.formContainer}" >
-        <form className="form" onSubmit={handleSubmit}>
+      <div className={styles.formContainer} >
+        <form className="form" onSubmit={handleSubmit}> 
           {step === 1 && (
-          <div className="{styles.formGroup}" >
+          <div className={styles.formGroup} >
             <h2 className="heading-2">Welcome! Let's create your profile</h2>
             <div className={styles.imageContainer}>
-              <div className="{styles.imageHolder}">
-                <img src={imagePreview} alt="" className={styles.img}/>
-              </div>
+              <img src={imagePreview} alt="" className={styles.img}/>
               <input className={styles.hideInput} type="file" accept="image/jpeg, image/jpg, image/png" id="image" onChange={handleImageChange} />
-              {/* Cannot use button as label for adding photo */}
+              {/* Cannot use button as label for adding photo. */}
               <div className={styles.imageContainerRight}>
                 <label className={styles.imageUploadLabel} htmlFor="image">
                   Choose Photo
@@ -206,77 +205,79 @@ const UserOnboarding = () => {
                 {imagePreviewError === true && (<p className="paragraph">We don't support that file type.</p>)}
               </div>
             </div>
-            <div className="{styles.formItem}" >
-              <label className="bold-text">First Name</label>
+            <div className={styles.formFields} >
+              <div className="{styles.formItem}" >
+                <label className="bold-text">First Name</label>
+                  <BasicInput
+                    type="text"
+                    name="firstName"
+                    onChange={handleChange}
+                    value={values.firstName}
+                    placeholder="First Name"
+                  />
+              </div>
+              <div className="{styles.formItem}" >
+                <label className="bold-text">Middle Name</label>
                 <BasicInput
                   type="text"
-                  name="firstName"
+                  name="middleName"
                   onChange={handleChange}
-                  value={values.firstName}
-                  placeholder="First Name"
+                  value={values.middleName}
+                  placeholder="Middle Name (optional)"
                 />
-            </div>
-            <div className="{styles.formItem}" >
-              <label className="bold-text">Middle Name</label>
-              <BasicInput
-                type="text"
-                name="middleName"
-                onChange={handleChange}
-                value={values.middleName}
-                placeholder="Middle Name (optional)"
-              />
-            </div>
-            <div className="{styles.formItem}" >
-              <label className="bold-text">Last Name</label>
-              <BasicInput
-                type="text"
-                name="lastName"
-                onChange={handleChange}
-                value={values.lastName}
-                placeholder="Last Name"
-              />
-            </div>
-            <div>
-              <label className="bold-text">Sex</label>
-              <Radio 
-                name="sex"
-                value="male"
-                label="Male"
-                onChange={handleChange}
-                checked={values.sex === "male"}
-              />
-              <Radio 
-                name="sex"
-                value="female"
-                label="Female"
-                onChange={handleChange}
-                checked={values.sex === "female"}
-              />
-            </div>
-            <div className="{styles.formItem}" >
-              <label className="bold-text">Date of Birth</label>
-              <BasicInput
-                type="date"
-                name="birthDate"
-                onChange={handleChange}
-                value={values.birthDate}
-                max={current}
-              />
-            </div>
-            <div className="{styles.formItem}" >
-              <label className="bold-text">Contact Number</label>
-              <BasicInput
-                type="text"
-                name="contactNumber"
-                onChange={handleChange}
-                value={values.contactNumber}
-                placeholder="Contact Number"
-              />
-            </div>
-            <div className="{styles.formItem}" >
-              <label className="bold-text">Location</label>
-              {(values.locationLat !== '' && values.locationLong !== '') ? <Button size="small" color="brand-default" onClick={handleLocation}> <span>Location enabled</span><IoLocationSharp /> </Button> : <Button size="small" color="brand-default" onClick={handleLocation} variant="outline"><IoLocationSharp /> <span>Enable location</span></Button> }
-              {locationError !== '' && <p className="paragraph">{locationError}</p>}
+              </div>
+              <div className="{styles.formItem}" >
+                <label className="bold-text">Last Name</label>
+                <BasicInput
+                  type="text"
+                  name="lastName"
+                  onChange={handleChange}
+                  value={values.lastName}
+                  placeholder="Last Name"
+                />
+              </div>
+              <div>
+                <label className="bold-text">Sex</label>
+                <Radio 
+                  name="sex"
+                  value="male"
+                  label="Male"
+                  onChange={handleChange}
+                  checked={values.sex === "male"}
+                />
+                <Radio 
+                  name="sex"
+                  value="female"
+                  label="Female"
+                  onChange={handleChange}
+                  checked={values.sex === "female"}
+                />
+              </div>
+              <div className="{styles.formItem}" >
+                <label className="bold-text">Date of Birth</label>
+                <BasicInput
+                  type="date"
+                  name="birthDate"
+                  onChange={handleChange}
+                  value={values.birthDate}
+                  max={current}
+                />
+              </div>
+              <div className="{styles.formItem}" >
+                <label className="bold-text">Contact Number</label>
+                <BasicInput
+                  type="tel"
+                  name="contactNumber"
+                  onChange={handleChange}
+                  value={values.contactNumber}
+                  placeholder="Contact Number"
+                />
+              </div>
+              <div className="{styles.formItem}" >
+                <label className="bold-text">Location</label>
+                {(values.locationLat !== '' && values.locationLong !== '') ? <Button size="small" color="brand-default" onClick={handleLocation}> <span>Location enabled</span><IoLocationSharp /> </Button> : <Button size="small" color="brand-default" onClick={handleLocation} variant="outline"><IoLocationSharp /> <span>Enable location</span></Button> }
+                {locationError !== '' && <p className="paragraph">{locationError}</p>}
+              </div>
             </div>
           </div>)}
           {step === 2 && (
@@ -321,14 +322,14 @@ const UserOnboarding = () => {
               <AnimalOptions options={animals}/>
             </div>
             <h2 className="heading-2">How far are you willing to go?</h2>
-            <BasicInput
+            {/*  */}
+            {/* <BasicInput
               type="number"
-              min="1"
               name="preferredDistance"
               onChange={handleChange}
               value={values.preferredDistance}
               placeholder="Distance in km"
-            />
+            /> */}
           </div>)}
         {step === 3 && <Button type="submit" color="brand-default" block disabled={isDisabled}>SUBMIT</Button>}
       </form>

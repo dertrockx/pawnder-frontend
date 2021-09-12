@@ -13,13 +13,18 @@
 	column-gap: 20px;
 }
 
+<<<<<<< HEAD
 .twoFields {
+=======
+.fields {
+>>>>>>> Merge
 	display: grid;
 	grid-template-columns: repeat(2, 1fr);
 	column-gap: 20px;
 	row-gap: 20px;
 }
 
+<<<<<<< HEAD
 .oneField {
 	display: grid;
 	grid-template-columns: 1fr;
@@ -27,6 +32,8 @@
 	row-gap: 20px;
 }
 
+=======
+>>>>>>> Merge
 .field {
 	display: flex;
 	flex-direction: column;
