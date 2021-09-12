@@ -1,10 +1,16 @@
 .navbar {
+	width: 100vw;
+	max-width: 100%;
+	background: var(--color-brand-default);
+}
+
+.navbarContainer {
+	margin: auto;
 	display: flex;
 	justify-content: space-between;
 	align-items: center;
-	width: 100%;
-	padding: 20px 40px;
-	background: var(--color-brand-default);
+	max-width: 1200px;
+	padding: 20px 0;
 }
 
 .navbarRightItems {

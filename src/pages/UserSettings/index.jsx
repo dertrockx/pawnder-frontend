@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-
+import BasicSideBar from "components/BasicSideBar";
 import styles from "./UserSettings.module.css"
 import { IoSettingsSharp } from "react-icons/io5"
 
@@ -30,14 +30,15 @@ function UserSettings() {
         <span style={{ width: 50, height: 50 }}><IoSettingsSharp /></span> Settings
       </div>
       <div>
-        <div className="heading-2">
+        <BasicSideBar /> 
+        {/* <div className="heading-3">
           <div onClick={clickInformation}>
             Information
           </div>
           <div onClick={clickPreferences}>
-            Prefernces
+            Preferences
           </div>
-        </div>
+        </div> */}
         <div>
 
         </div>

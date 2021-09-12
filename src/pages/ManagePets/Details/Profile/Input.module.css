@@ -1,0 +1,19 @@
+.baseStyles {
+	padding: 18px 16px;
+	border: 2px solid var(--color-light-grey);
+	border-radius: 4px;
+	width: 100%;
+}
+
+.baseStyles::placeholder {
+	color: var(--color-light-grey);
+}
+
+.baseStyles:focus {
+	outline: none;
+	border-color: var(--color-brand-default);
+}
+
+.baseStyles.errors {
+	border-color: var(--color-red);
+}
