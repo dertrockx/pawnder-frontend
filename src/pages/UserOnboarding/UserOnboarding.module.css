@@ -20,6 +20,7 @@
 }
 
 .cardDisplay {
+<<<<<<< HEAD
 	display: flex;
 	align-content: space-between;
 }
@@ -35,6 +36,26 @@
 	padding: 10px;
 	justify-content: space-around;
 	column-gap: 500px;
+=======
+  display: flex;
+  align-content: space-between;
+  gap: 10px;
+  
+}
+
+.cardPreferences {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  align-items: center;
+  text-align: center;
+  border: 1px solid #D0D0D0;
+  border-radius: 8px;
+  box-shadow: 0px 4px rgba(0, 0, 0, 0.25);
+  padding: 10px;
+  justify-content: space-around;
+  column-gap: 500px;
+>>>>>>> Finish user onboarding page
 }
 
 .cardPreferences:hover {
@@ -42,6 +63,7 @@
 }
 
 .cardPreferencesSelected {
+<<<<<<< HEAD
 	display: flex;
 	flex-direction: column;
 	align-items: center;
@@ -51,6 +73,18 @@
 	box-shadow: 0px 4px rgba(0, 0, 0, 0.25);
 	padding: 10px;
 	column-gap: 500px;
+=======
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  align-items: center;
+  text-align: center;
+  border: 1px solid #FFA500;
+  border-radius: 8px;
+  box-shadow: 0px 4px rgba(0, 0, 0, 0.25);
+  padding: 10px;
+  column-gap: 500px;
+>>>>>>> Finish user onboarding page
 }
 
 .cardPreferencesSelected:hover {
@@ -91,14 +125,24 @@
 }
 
 .imageContainerRight {
-	/* display: inline-block; */
+  padding-top: 30px;
+  margin-left: 20px;
 }
 
-.img {
-	width: 150px;
-	height: 150px;
-	border-radius: 50%;
-	object-fit: cover;
+.imageContainerRight > p {
+  margin-top: 10px;
+  color:red;
+  font-weight: bold;
+}
+
+
+
+.img{
+  width: 150px;
+  height: 150px;
+  border-radius: 50%;
+  object-fit: cover;
+  margin-bottom: 10px;
 }
 
 .imageUploadLabel {
