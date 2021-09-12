@@ -19,7 +19,7 @@ import logo from 'assets/logo.svg';
 import dogAdopting from 'assets/dogAdopting.png';
 import catFostering from 'assets/catFostering.png';
 import noPhoto from 'assets/noPhoto.png';
-
+import bg from 'assets/userOnboardingBackground.png'
 import styles from './UserOnboarding.module.css';
 
 
@@ -354,6 +354,9 @@ const UserOnboarding = () => {
         {step === 3 && <Button type="submit" color="brand-default" block disabled={isDisabled}>SUBMIT</Button>}
       </form>
       {step < 3 && <Button type="button" color="brand-default" block onClick={() => setStep(step + 1)} disabled={isDisabled} >NEXT</Button>}
+      </div>
+      <div className={styles.bg}>
+        <img src={bg} />
       </div>
     </div>
   );
