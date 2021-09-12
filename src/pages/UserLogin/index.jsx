@@ -4,9 +4,9 @@ import { useHistory } from "react-router-dom";
 import BasicInput from "components/BasicInput";
 import Button from "components/Button";
 import BasicLink from "components/BasicLink";
+import BasicPasswordInput from "components/BasicPasswordInput/";
 
 import styles from "./UserLogin.module.css"
-import { IoEyeOff, IoEyeOutline } from "react-icons/io5"
 
 function UserLoginPage() {
 	const history = useHistory();
@@ -78,17 +78,13 @@ function UserLoginPage() {
 							outline={inputError ? "red" : "gray"}
 					/><br/>
 					Password
-					<div className={styles.bottom}>
-						<BasicInput 
-								type={isPasswordShown ? 'text' : 'password'}
-								name="password"
-								onChange={(e) => handleValueChange(e, setPassword)}
-								placeholder="Password"
-								required="true"
-								outline={inputError ? "red" : "gray"}
-						/>
-					</div>
-					<div onClick={togglePassword} className={styles.eye}>{ isPasswordShown ? <IoEyeOff /> : <IoEyeOutline /> }</div> 
+					<BasicPasswordInput 
+						placeholder="Password" 
+						outline={inputError ? "red" : "gray"}
+						name="password"
+						onChange={(e) => handleValueChange(e, setPassword)}
+						required
+					/><br />
 					<Button onClick={handleFormSubmit} color="brand-default" size="small" block>Login</Button><br/>
 					<div 
 						className={`
