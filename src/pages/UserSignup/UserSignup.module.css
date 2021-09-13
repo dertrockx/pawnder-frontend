@@ -34,6 +34,10 @@
   text-align: center;
 }
 
+.rightAlign {
+  text-align: right;
+}
+
 .form {
   margin-top: 25px;
   margin-bottom: 25px;
