@@ -64,7 +64,7 @@ function UserSignupPage() {
 					onSubmit={handleFormSubmit} 
 					className={styles.form}
 				>
-					{isRequired ? <div className={`${styles.error} ${styles.header}`}>All fields required</div> : <br/>}
+					{isRequired ? <div className={`${styles.error} ${styles.rightAlign}`}>All fields required</div> : <br/>}
 					<label>{emailAlreadyExistsError && <div className={styles.error}>Email address already exists!</div>}</label>
 					<div className={styles.row}>
 						<label className={`${styles.column} ${styles.colleft}`}>Email</label>{emailError && <div className={`${styles.error} ${styles.column} ${styles.colright}`}>Incorrect email format!</div>}
