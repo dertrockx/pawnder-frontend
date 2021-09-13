@@ -1,33 +1,31 @@
 import React from "react"
-import { NavLink } from "react-router-dom";
+import { Link } from "react-router-dom";
 import styles from "./BasicSideBar.module.css"
 
-function BasicSideBar(props) {
-  const {
-    clickInformation,
-    clickPreferences
-  } = props;
+function BasicSideBar() {
 
   return (
     <div className={`
       heading-3
       ${styles.sidebar}
-      ${styles.spacing}
     `}>
-      <NavLink exact 
-        to="/user/settings/information"
-        className="main-nav"
-        activeClassName="main-nav-active"
-      >
-        Information
-      </NavLink>
-      <NavLink exact 
-        to="/user/settings/preferences"
-        className="main-nav"
-        activeClassName="main-nav-active"
-      >
-        Preferences
-      </NavLink>
+      <Link to="/user/settings/information">
+        <div className={`
+          ${styles.items}
+          ${styles.activeLink}
+        `}>
+          Information
+        </div>
+      </Link>
+      <Link to="/user/settings/preferences">
+        <div className={`
+          ${styles.items}
+          ${styles.activeLink}
+        `}>
+          Preferences
+        </div>
+      </Link>
+      
     </div>
   )
 }

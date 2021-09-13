@@ -91,7 +91,7 @@ function InstitutionOnboardingPage() {
 						<div className={styles.item}>
 							<div className="heading-2" style={{ "text-align": "center", width: 600 }}>Welcome! Let's create your profile.</div>
 
-							<BasicImageInput image={value.image} onChange={imageHandler} imagePreviewError={imagePreviewError}/>
+							<BasicImageInput label="Add Picture" image={value.image} onChange={imageHandler} imagePreviewError={imagePreviewError}/>
 							
 							<div style={{ display: "flex" }}>
 								<div style={{ width: 200, "padding-top": 5 }}>

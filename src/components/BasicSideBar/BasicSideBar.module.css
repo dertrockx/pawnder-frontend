@@ -1,10 +1,32 @@
 .sidebar {
+  /* position: fixed; */
   height: 100%;
-  /* border: 1px solid var(--color-brand-default); */
-  border-right-width: 1px;
-  border-right-style: solid;
-  border-right-color:  var(--color-brand-default);
+  border-right: 1px solid var(--color-brand-default);
+  padding-bottom: 100%;
+  place-content: center;
 }
+
+.activeLink {
+  padding-left: 5px;
+  padding-right: 5px;
+  padding-top: 2.5px;
+  padding-bottom: 2.5px;
+}
+
+.activeLink:active {
+  background-color: var(--color-brand-lighter);
+}
+
+.items {
+  padding-left: 5px;
+  padding-right: 5px;
+  padding-top: 2.5px;
+  padding-bottom: 2.5px;
+  /* background-color: burlywood; */
+  text-align: center;
+  width: 300px;
+}
+
 
 /* .spacing div {
   padding-top: 10px;
@@ -12,9 +34,9 @@
 } */
 
 /* .spacing div:hover {
-	background-color: var(--color-brand-lighter);
+  background-color: var(--color-brand-lighter);
 } */
 
-.main-nav:hover {
+/* .main-nav:hover {
   background-color: var(--color-brand-lighter);
-}
+} */
