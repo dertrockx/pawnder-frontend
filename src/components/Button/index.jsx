@@ -73,7 +73,7 @@ Button.propTypes = {
 		"black",
 		"white",
 	]),
-	children: PropTypes.elementType,
+	children: PropTypes.node,
 	disabled: PropTypes.bool,
 	block: PropTypes.bool,
 };

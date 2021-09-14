@@ -7,7 +7,7 @@ const ShowStoryDetails = () => {
                 <h1 className = 'heading-1' id = {styles.title}>
                     Title of Success Story
                 </h1>
-                <hr color = "brand-default" />
+                <hr color = "brand-default" className = {styles.bar}/>
                 <div className = {styles.userInfo}>
                     <img 
                         className = {styles.userPhoto}

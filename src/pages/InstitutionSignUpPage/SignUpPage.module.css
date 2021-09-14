@@ -28,7 +28,7 @@
 
 .upper {
     position: absolute;
-    height: 100%;
+    height: 47%;
     width: 100%;
     background: var(--color-brand-darker);
     margin-bottom: 0px;
@@ -86,9 +86,7 @@
     outline-color: var(--color-black);
     display: block;
     padding-left: 10px;
-    border-color: #BBC8D4;
-    border-style: solid;
-    border-radius: 2px;
+    border: 2px solid #BBC8D4;
     height: 50px;
     width: 100%;
 }
@@ -105,9 +103,7 @@
     outline-color: var(--color-red);
     display: block;
     padding-left: 10px;
-    border-color: var(--color-red);
-    border-style: solid;
-    border-radius: 2px;
+    border: 2px solid var(--color-red);
     height: 50px;
     width: 100%;
 }
@@ -226,5 +222,5 @@ label {
 .eye2 {
     position: relative; 
     bottom: 38%; 
-    left: 95%;
+    left: 91%;
 }

@@ -60,6 +60,7 @@ const FormSignup = ({ submitForm }) => {
                         className = {matches ? styles.eye : styles.eye2}
                         onClick = {togglePasswordVisiblity}
                         src = {passwordShown ? hidePassword : showPassword}
+                        alt = ''
                     />
                 </div>
                 <div className= {styles.formInputs}>

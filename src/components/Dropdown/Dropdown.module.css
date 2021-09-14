@@ -1,0 +1,21 @@
+.dropdownWrapper {
+	position: relative;
+	background: var(--color-white);
+	border-radius: 4px;
+	border: 1px solid var(--color-light-grey);
+	display: flex;
+	align-items: center;
+	justify-content: center;
+}
+
+.dropdownWrapper::after {
+	content: "▼";
+	font-size: 1rem;
+}
+
+.dropdownContainer {
+	padding: 15px;
+
+	-webkit-appearance: none;
+	appearance: none;
+}
