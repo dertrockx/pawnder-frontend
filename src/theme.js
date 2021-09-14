@@ -8,6 +8,17 @@ const colors = {
 	},
 };
 
-const theme = extendTheme({ colors });
+const theme = extendTheme({
+	colors,
+	components: {
+		Divider: {
+			colorScheme: {
+				brand: {
+					100: "#ffa500",
+				},
+			},
+		},
+	},
+});
 
 export default theme;

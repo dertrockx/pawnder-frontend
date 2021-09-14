@@ -49,8 +49,8 @@ function Button(props) {
       ${styles.baseStyles} 
       ${size === "small" ? styles.smallButton : styles.defaultButton}
       ${getColorVariant(variant, color)}
-			${disabled && styles.disabled}
-			${block && styles.block}
+			${disabled ? styles.disabled : ""}
+			${block ? styles.block : ""}
       `}
 			disabled={disabled}
 		>
