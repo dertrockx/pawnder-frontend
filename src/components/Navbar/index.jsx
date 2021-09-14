@@ -2,6 +2,9 @@ import React, { useState } from "react";
 import { NavLink } from "react-router-dom";
 import styles from "./Navbar.module.css";
 import Button from "components/Button";
+
+const INSTITUTION_ROOT = "/institution";
+
 function Navbar() {
 	// TODO: use redux and cookeis to check if user is authenticated
 	// as of now just use some basic state
@@ -56,21 +59,28 @@ function Navbar() {
 				<NavLink
 					className={`paragraph ${styles.navbarItem}`}
 					activeClassName="bold-text"
-					to="/manage-pets"
+					to={`${INSTITUTION_ROOT}/dashboard`}
+				>
+					Dashboard
+				</NavLink>
+				<NavLink
+					className={`paragraph ${styles.navbarItem}`}
+					activeClassName="bold-text"
+					to={`${INSTITUTION_ROOT}/manage-pets`}
 				>
 					Manage Pets
 				</NavLink>
 				<NavLink
 					className={`paragraph ${styles.navbarItem}`}
 					activeClassName="bold-text"
-					to="/manage-stories"
+					to={`${INSTITUTION_ROOT}/manage-stories`}
 				>
 					Manage Stories
 				</NavLink>
 				<NavLink
 					className={`paragraph ${styles.navbarItem}`}
 					activeClassName="bold-text"
-					to="/settings"
+					to={`${INSTITUTION_ROOT}/settings`}
 				>
 					Settings
 				</NavLink>
