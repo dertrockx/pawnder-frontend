@@ -12,6 +12,7 @@ import {
 	List as ManagePetList,
 	Details as ManagePetDetails,
 } from "pages/ManagePets";
+import Dashboard from "pages/Dashboard";
 
 import NavRoute from "components/NavRoute";
 
@@ -22,6 +23,7 @@ import "./normalize.css";
 import "./typography.css";
 
 const store = configureStore();
+const INSTITUTION_ROOT = "/institution";
 
 function App() {
 	return (
@@ -33,8 +35,21 @@ function App() {
 						<NavRoute path="/sample" exact component={SamplePage} />
 						<NavRoute path="/feed" exact component={Feed} />
 						<NavRoute path="/nearby" exact component={NearbyInstitution} />
-						<NavRoute path="/manage-pets/:petId" component={ManagePetDetails} />
-						<NavRoute path="/manage-pets" component={ManagePetList} />
+
+						{/* institution pages */}
+						<NavRoute
+							path={`${INSTITUTION_ROOT}/dashboard`}
+							exact
+							component={Dashboard}
+						/>
+						<NavRoute
+							path={`${INSTITUTION_ROOT}/manage-pets/:petId`}
+							component={ManagePetDetails}
+						/>
+						<NavRoute
+							path={`${INSTITUTION_ROOT}/manage-pets`}
+							component={ManagePetList}
+						/>
 						<Redirect path="/" to="/sample" exact />
 					</Switch>
 				</Router>
