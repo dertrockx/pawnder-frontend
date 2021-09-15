@@ -7,7 +7,6 @@ import {
   NumberInputStepper,
   NumberIncrementStepper,
   NumberDecrementStepper,
-  Input,
 } from '@chakra-ui/react';
 
 import Button from 'components/Button';
@@ -188,11 +187,11 @@ const UserOnboarding = () => {
   }
 
   const handleLocation = (e) => {
-    /*
-      All buttons inside a form trigger the submit event.
-      By using the preventDefault() method, the submit event will be canceled,
-      thus, allowing multiple buttons inside a form.
-    */
+    /**
+     * All buttons inside a form trigger the submit event.
+     * By using the preventDefault() method, the submit event will be canceled,
+     * thus, allowing multiple buttons inside a form.
+     */
     e.preventDefault();
     if (!navigator.geolocation) {
       setLocationError('Geolocation is not supported by your browser.');
