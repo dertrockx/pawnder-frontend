@@ -13,13 +13,27 @@
 	column-gap: 20px;
 }
 
+<<<<<<< HEAD
 .fields {
+=======
+.twoFields {
+>>>>>>> 55a2e3ad075bffd99e3891cbe2fc4efbc0e0c102
 	display: grid;
 	grid-template-columns: repeat(2, 1fr);
 	column-gap: 20px;
 	row-gap: 20px;
 }
 
+<<<<<<< HEAD
+=======
+.oneField {
+	display: grid;
+	grid-template-columns: 1fr;
+	column-gap: 20px;
+	row-gap: 20px;
+}
+
+>>>>>>> 55a2e3ad075bffd99e3891cbe2fc4efbc0e0c102
 .field {
 	display: flex;
 	flex-direction: column;
