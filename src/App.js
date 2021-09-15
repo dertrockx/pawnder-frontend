@@ -30,23 +30,6 @@ const store = configureStore();
 
 function App() {
 	return (
-<<<<<<< HEAD
-		<ChakraProvider theme={theme}>
-			<Router>
-				<Switch>
-					<NavRoute path="/chakra-sample" exact component={ChakraSample} />
-					<NavRoute path="/sample" exact component={SamplePage} />
-					<NavRoute path="/feed" exact component={Feed} />
-					<NavRoute path="/nearby" exact component={NearbyInstitution} />
-					<Route path="/institution/signup" exact component = {InstitutionSignUp} />
-					<Route path="/institution/login" exact component = {InstitutionLogin} />
-					<NavRoute path = "/stories/1" exact component = {ShowStoryDetails} />
-					<NavRoute path = "/institution/manage-stories/1" exact component = {ManageStoryDetails} />
-					<Redirect path="/" to="/sample" exact />
-				</Switch>
-			</Router>
-		</ChakraProvider>
-=======
 		<ReduxProvider store={store}>
 			<ChakraProvider theme={theme}>
 				<Router>
@@ -57,12 +40,15 @@ function App() {
 						<NavRoute path="/nearby" exact component={NearbyInstitution} />
 						<NavRoute path="/manage-pets/:petId" component={ManagePetDetails} />
 						<NavRoute path="/manage-pets" component={ManagePetList} />
+						<Route path = "/institution/login" component = {InstitutionLogin} />
+						<Route path = "/institution/signup" component = {InstitutionSignUp} />
+						<NavRoute path = "/institution/manage-stories/:id" component = {ManageStoryDetails} />
+						<NavRoute path = "/stories/:id" component = {ShowStoryDetails} />
 						<Redirect path="/" to="/sample" exact />
 					</Switch>
 				</Router>
 			</ChakraProvider>
 		</ReduxProvider>
->>>>>>> 55a2e3ad075bffd99e3891cbe2fc4efbc0e0c102
 	);
 }
 

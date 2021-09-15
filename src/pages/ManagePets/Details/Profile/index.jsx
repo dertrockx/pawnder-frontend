@@ -1,13 +1,3 @@
-<<<<<<< HEAD
-import React from "react";
-import Button from "components/Button";
-import HR from "components/HR";
-import Dropdown from "components/Dropdown";
-import styles from "./Profile.module.css";
-import Input from "./Input";
-
-function Profile() {
-=======
 import React, { useState } from "react";
 import { Input, Select, Textarea } from "@chakra-ui/react";
 import Button from "components/Button";
@@ -37,7 +27,6 @@ function Profile() {
 		setInfo({ ...info, [e.target.name]: e.target.value });
 	}
 
->>>>>>> 55a2e3ad075bffd99e3891cbe2fc4efbc0e0c102
 	return (
 		<div>
 			<h3 className="heading-3">Main picture</h3>
@@ -104,59 +93,6 @@ function Profile() {
 					<p className="caption">
 						Upload your pet’s basic information to be displayed on their profile
 					</p>
-<<<<<<< HEAD
-					<div className={styles.fields}>
-						<div className={styles.field}>
-							<p className="paragraph">Pet Name</p>
-							<Input type="text" placeholder="I am a placeholder" />
-						</div>
-						<div className={styles.field}>
-							<p className="paragraph">Breed</p>
-							<Input type="text" placeholder="I am a placeholder" />
-						</div>
-						<div className={styles.field}>
-							<p className="paragraph">Animal Type</p>
-							<Dropdown
-								renderOptions={() => (
-									<>
-										<option value="" disabled selected hidden>
-											Please Choose...
-										</option>
-										<option value="dogs">Dog</option>
-										<option value="cats">Cat</option>
-										<option value="fish and aquariums">
-											Reptile / Amphibian
-										</option>
-										<option value="reptiles and amphibians">
-											Reptile / Amphibian
-										</option>
-										<option value="exotic pets">Reptile / Amphibian</option>
-										<option value="rabbits">Reptile / Amphibian</option>
-										<option value="rodents">Reptile / Amphibian</option>
-									</>
-								)}
-							/>
-						</div>
-						<div className={styles.field}>
-							<p className="paragraph">Pet Name</p>
-							<Input type="text" placeholder="I am a placeholder" />
-						</div>
-						<div className={styles.field}>
-							<p className="paragraph">Pet Name</p>
-							<Input type="text" placeholder="I am a placeholder" />
-						</div>
-						<div className={styles.field}>
-							<p className="paragraph">Pet Name</p>
-							<Input type="text" placeholder="I am a placeholder" />
-						</div>
-						<div className={styles.field}>
-							<p className="paragraph">Pet Name</p>
-							<Input type="text" placeholder="I am a placeholder" />
-						</div>
-						<div className={styles.field}>
-							<p className="paragraph">Pet Name</p>
-							<Input type="text" placeholder="I am a placeholder" />
-=======
 					<div>
 						<div className={styles.twoFields}>
 							<div className={styles.field}>
@@ -287,17 +223,13 @@ function Profile() {
 									<option value="foster">Foster</option>
 								</Select>
 							</div>
->>>>>>> 55a2e3ad075bffd99e3891cbe2fc4efbc0e0c102
 						</div>
 					</div>
 				</div>
 			</div>
-<<<<<<< HEAD
-=======
 			<Button block color="brand-default" onClick={handleSave}>
 				Save
 			</Button>
->>>>>>> 55a2e3ad075bffd99e3891cbe2fc4efbc0e0c102
 		</div>
 	);
 }

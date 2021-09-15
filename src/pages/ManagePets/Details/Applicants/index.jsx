@@ -1,9 +1,4 @@
 import React from "react";
-<<<<<<< HEAD
-
-function Applicants() {
-	return <div></div>;
-=======
 import { VStack, useDisclosure } from "@chakra-ui/react";
 
 import HR from "components/HR";
@@ -37,7 +32,6 @@ function Applicants() {
 			<UserInformationModal isOpen={isOpen} onClose={onClose} underReview />
 		</VStack>
 	);
->>>>>>> 55a2e3ad075bffd99e3891cbe2fc4efbc0e0c102
 }
 
 export default Applicants;
