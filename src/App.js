@@ -14,6 +14,11 @@ import {
 } from "pages/ManagePets";
 
 import NavRoute from "components/NavRoute";
+import InstitutionSignUp from "pages/InstitutionSignUpPage";
+import InstitutionLogin from "pages/InstitutionLoginPage";
+import ShowStoryDetails from "pages/ShowStoryDetails";
+import ManageStoryDetails from "pages/ManageStoryDetails";
+import { Route } from "react-router";
 
 import { ChakraProvider } from "@chakra-ui/react";
 import theme from "./theme";
@@ -35,6 +40,10 @@ function App() {
 						<NavRoute path="/nearby" exact component={NearbyInstitution} />
 						<NavRoute path="/manage-pets/:petId" component={ManagePetDetails} />
 						<NavRoute path="/manage-pets" component={ManagePetList} />
+						<Route path = "/institution/login" component = {InstitutionLogin} />
+						<Route path = "/institution/signup" component = {InstitutionSignUp} />
+						<NavRoute path = "/institution/manage-stories/:id" component = {ManageStoryDetails} />
+						<NavRoute path = "/stories/:id" component = {ShowStoryDetails} />
 						<Redirect path="/" to="/sample" exact />
 					</Switch>
 				</Router>
