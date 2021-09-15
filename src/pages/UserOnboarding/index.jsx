@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { useHistory } from 'react-router';
 import { IoLocationSharp, IoArrowBack } from 'react-icons/io5';
 import {
   NumberInput,
@@ -8,55 +9,77 @@ import {
   NumberDecrementStepper,
 } from '@chakra-ui/react';
 
-import Button from "components/Button";
+import Button from 'components/Button';
 import BasicInput from 'components/BasicInput';
 import Checkbox from 'components/Checkbox';
 import Radio from 'components/Radio';
 
+import logo from 'assets/logo.svg';
 import dogAdopting from 'assets/dogAdopting.png';
 import catFostering from 'assets/catFostering.png';
-import logo from 'assets/logo.svg';
+import noPhoto from 'assets/noPhoto.png';
+import bg from 'assets/userOnboardingBackground.png'
+import styles from './UserOnboarding.module.css';
 
-// import styles from './UserOnboarding.module.css';
 
 const UserOnboarding = () => {
   const current = new Date().toISOString().split("T")[0];
+  const [imagePreview, setImagePreview] = useState(`${noPhoto}`);
+  const [imagePreviewError, setImagePreviewError] = useState(false);
+  const [locationError, setLocationError] = useState('');
   const [step, setStep] = useState(1);
-  const [value, setValue] = useState({
-    // Include picture here
+  const [isDisabled, setIsDisabled] = useState(true); // set to false when testing and comment out useEffect
+  const history = useHistory();
+  const [distance, setDistance] = useState(''); // for chakra-ui NumberInput
+  const [values, setValues] = useState({
+    photo: '', // or photoURL?
     firstName: '',
     middleName: '',
     lastName: '',
     birthDate: '',
     sex: '',
     contactNumber: '',
-    address: '', // when reverse geocoded
     locationLat: '',
     locationLong: '',
     action: '',
     preferredAnimals: [],
     preferredDistance: '',
-    trialLang: '',
   });
 
-  // Create custom hook for accessing user's location
-  // if ("geolocation" in navigator) {
-  //   console.log("Available");
-  // } else {
-  //   console.log("Luh epal");
-  // }
+  // For disabling buttons
+  useEffect(() => {
+    // If step 1, check photo, first and last names, bday, sex, number, and loc coordinates
+    // If step 2, check action
+    // If step 3, check preferred animals and distance
 
-  // navigator.geolocation.getCurrentPosition((position) => {
-  //   console.log("Latitude: " + position.coords.latitude);
-  //   console.log("Longitude: " + position.coords.longitude);
-  // })
+    if (step === 1) {
+      if (values.photo !== '' && values.firstName !== '' && values.lastName !== '' && values.birthDate !== '' && values.sex !== '' && values.contactNumber !== '' && values.locationLat !== '' && values.locationLong !== '') {
+        setIsDisabled(false);
+      } else {
+        setIsDisabled(true);
+      }
+      setImagePreviewError(false);
+    } else if (step === 2) {
+      if (values.action !== '') {
+        setIsDisabled(false);
+      } else {
+        setIsDisabled(true);
+      }
+    } else if (step === 3) {
+      if (values.preferredAnimals !== [] && values.preferredDistance !== '') {
+        setIsDisabled(false);
+      } else {
+        setIsDisabled(true);
+      }
+    }
+  }, [values, step]);
 
   const animals = [
     { text: 'dogs', value: 'dogs' },
     { text: 'cats', value: 'cats' },
-    { text: 'fish & aquariums', value: 'fish' },
-    { text: 'reptiles & amphibians', value: 'reptilesAndAmphibians' },
-    { text: 'exotic pets', value: 'exoticPets' },
+    { text: 'fish & aquariums', value: 'fish and aquariums' },
+    { text: 'reptiles & amphibians', value: 'reptiles and amphibians' },
+    { text: 'exotic pets', value: 'exotic pets' },
     { text: 'rabbits', value: 'rabbits' },
     { text: 'rodents', value: 'rodents' }
   ];
@@ -70,7 +93,7 @@ const UserOnboarding = () => {
             id={choice.value}
             label={choice.text}
             onChange={handleCheck}
-            checked={value.preferredAnimals.includes(`${choice.value}`)}
+            checked={values.preferredAnimals.includes(`${choice.value}`)}
           />
         </div>
       ))}
@@ -78,20 +101,31 @@ const UserOnboarding = () => {
     );
   }
 
+  // For chakra-ui's number input
+  const handleNumberChange = (distance) => {
+    setDistance(distance);
+    setValues({
+      ...values, 
+      preferredDistance: distance
+    });
+  }
+
+  // For input of type checkbox
   const handleCheck = (e) => {
-    let newArray = [...value.preferredAnimals, e.target.id];
-    if (value.preferredAnimals.includes(e.target.id)) {
+    let newArray = [...values.preferredAnimals, e.target.id];
+    if (values.preferredAnimals.includes(e.target.id)) {
       newArray = newArray.filter(animal => animal !== e.target.id);
     }
-    setValue({
-      ...value, 
+    setValues({
+      ...values, 
       preferredAnimals: newArray
     });
   };
 
+  // For input of types text or radio
   const handleChange = (e) => {
-      setValue({
-        ...value,
+      setValues({
+        ...values,
         [e.target.name]: e.target.value,
       });
   
@@ -100,7 +134,10 @@ const UserOnboarding = () => {
   }
 
   const handleSubmit = (e) => {
-    e.preventDefault();
+    e.preventDefault(); 
+    
+    // Redirect to feed after onboarding, put inside .then when successful
+    // history.push('/feed');
 
     // For testing
     console.log(values);
@@ -165,152 +202,160 @@ const UserOnboarding = () => {
   }
 
   return (
-    <div>
-      {/* For testing */}
-      <div className="{styles.topItems}" >
-        <img src = {logo} alt = "logo" className = "{styles.logo}" />
+    <div className={styles.page}>
+      <div className={styles.topItems} >
+        <img src = {logo} alt = "logo" className={styles.logo} />
         {step > 1 && (<Button size="small" onClick={() => setStep(step - 1)}><IoArrowBack /></Button>)}
       </div>
-      <div className="{styles.formContainer}" >
-        <form className="form" onSubmit={handleSubmit}>
+      <div className={styles.formContainer} >
+        <form className="form" onSubmit={handleSubmit}> 
           {step === 1 && (
-          <div className="{styles.formGroup}" >
+          <div className={styles.formGroup} >
             <h2 className="heading-2">Welcome! Let's create your profile</h2>
-            <div className="{styles.formItem}" >
-              <label className="bold-text">First Name</label>
+            <div className={styles.imageContainer}>
+              <img src={imagePreview} alt="" className={styles.img}/>
+              <input className={styles.hideInput} type="file" accept="image/jpeg, image/jpg, image/png" id="image" onChange={handleImageChange} />
+              {/* Cannot use button as label for adding photo. */}
+              <div className={styles.imageContainerRight}>
+                <label className={styles.imageUploadLabel} htmlFor="image">
+                  Choose Photo
+                </label>
+                {imagePreviewError === true && (<p className="paragraph">We don't support that file type.</p>)}
+              </div>
+            </div>
+            <div className={styles.formFields} >
+              <div className={styles.formItem} >
+                <label className="bold-text">First Name</label>
+                  <BasicInput
+                    type="text"
+                    name="firstName"
+                    onChange={handleChange}
+                    value={values.firstName}
+                    placeholder="First Name"
+                  />
+              </div>
+              <div className={styles.formItem} >
+                <label className="bold-text">Middle Name</label>
                 <BasicInput
                   type="text"
-                  name="firstName"
+                  name="middleName"
                   onChange={handleChange}
-                  value={value.firstName}
-                  placeholder="First Name"
+                  value={values.middleName}
+                  placeholder="Middle Name (optional)"
                 />
-            </div>
-            <div className="{styles.formItem}" >
-              <label className="bold-text">Middle Name</label>
-              <BasicInput
-                type="text"
-                name="middleName"
-                onChange={handleChange}
-                value={value.middleName}
-                placeholder="Middle Name (optional)"
-              />
-            </div>
-            <div className="{styles.formItem}" >
-              <label className="bold-text">Last Name</label>
-              <BasicInput
-                type="text"
-                name="lastName"
-                onChange={handleChange}
-                value={value.lastName}
-                placeholder="Last Name"
-              />
-            </div>
-            <div>
-              <label className="bold-text">Sex</label>
-              <Radio 
-                name="sex"
-                value="male"
-                label="Male"
-                onChange={handleChange}
-                checked={value.sex === "male"}
-              />
-              <Radio 
-                name="sex"
-                value="female"
-                label="Female"
-                onChange={handleChange}
-                checked={value.sex === "female"}
-              />
-            </div>
-            <div className="{styles.formItem}" >
-              <label className="bold-text">Date of Birth</label>
-              <BasicInput
-                type="date"
-                name="birthDate"
-                onChange={handleChange}
-                value={value.birthDate}
-                max={current}
-              />
-            </div>
-            <div className="{styles.formItem}" >
-              <label className="bold-text">Contact Number</label>
-              <BasicInput
-                type="text"
-                name="contactNumber"
-                onChange={handleChange}
-                value={value.contactNumber}
-                placeholder="Contact Number"
-              />
-            </div>
-            <div className="{styles.formItem}" >
-              <label className="bold-text">Address</label>
-              <BasicInput
-                type="text"
-                name="address"
-                onChange={handleChange}
-                value={value.address} 
-                placeholder="Address"
-              />
-              {/* <Button size="small" color="brand-default"><IoLocationSharp /></Button> */}
+              </div>
+              <div className={styles.formItem} >
+                <label className="bold-text">Last Name</label>
+                <BasicInput
+                  type="text"
+                  name="lastName"
+                  onChange={handleChange}
+                  value={values.lastName}
+                  placeholder="Last Name"
+                />
+              </div>
+              <div className={styles.formItemSex}>
+                <label className="bold-text">Sex</label>
+                <div style={{marginLeft: "10px", display: "flex", flexFlow: "row", gap: "10px"}}>
+                <Radio 
+                  name="sex"
+                  value="m"
+                  label="Male"
+                  onChange={handleChange}
+                  checked={values.sex === "m"}
+                />
+                <Radio 
+                  name="sex"
+                  value="f"
+                  label="Female"
+                  onChange={handleChange}
+                  checked={values.sex === "f"}
+                />
+                </div>
+              </div>
+              <div className={styles.formItem} >
+                <label className="bold-text">Date of Birth</label>
+                <BasicInput
+                  type="date"
+                  name="birthDate"
+                  onChange={handleChange}
+                  value={values.birthDate}
+                  max={current}
+                />
+              </div>
+              <div className={styles.formItem} >
+                <label className="bold-text">Contact Number</label>
+                <BasicInput
+                  type="tel"
+                  name="contactNumber"
+                  onChange={handleChange}
+                  value={values.contactNumber}
+                  placeholder="Contact Number"
+                />
+              </div>
+              <div className={styles.formItem} >
+                <label className="bold-text">Location</label>
+                {(values.locationLat !== '' && values.locationLong !== '') ? <Button size="small" color="brand-default" onClick={handleLocation}> <span>Location enabled</span><IoLocationSharp /> </Button> : <Button size="small" color="brand-default" onClick={handleLocation} variant="outline"><IoLocationSharp /> <span>Enable location</span></Button> }
+                {locationError !== '' && <p className="paragraph">{locationError}</p>}
+              </div>
             </div>
           </div>)}
           {step === 2 && (
-          <div className="{styles.formGroup}" >
+          <div className={styles.formGroup} >
             <h2 className="heading-2">What brings you to Pawnder?</h2>
-            <div className="{styles.actionCardsContainer}"> 
+            <div className={styles.cardDisplay}> 
               <label>
-                <div className="{value.action !== 'adopting' ? styles.actionCard : styles.actionCardSelected}" >
-                  <img src={dogAdopting} alt="" className="{styles.actionCardImage}" />
+                <div className={values.action !== 'adopt' ? styles.cardPreferences : styles.cardPreferencesSelected} >
+                  <img src={dogAdopting} alt="" className={styles.cardImage} />
                   <h3 className="heading-3">I'm adopting</h3>
                   <p className="paragraph">Give an animal a second chance by providing a loving furrever home.</p>
                   <input
                     type="radio"
                     name="action"
-                    value="adopting"
+                    value="adopt"
                     onChange={handleChange}
-                    checked={value.action === 'adopting'}
+                    checked={values.action === 'adopt'}
                   />
                 </div>
               </label>
               <label>
-                <div className="{value.action !== 'fostering' ? styles.cardPreferences : styles.cardPreferencesSelected}">
-                  <img src={catFostering} alt="" className="{styles.actionCardImage}" />
+                <div className={values.action !== 'foster' ? styles.cardPreferences : styles.cardPreferencesSelected}>
+                  <img src={catFostering} alt="" className={styles.cardImage} />
                   <h3 className="heading-3">I'm fostering</h3>
                   <p className="paragraph">Temporarily care for a furry friend in need until a suitable home is found.</p>
                   <input
                     type="radio"
                     name="action"
-                    value="fostering"
+                    value="foster"
                     onChange={handleChange}
-                    checked={value.action === 'fostering'}
+                    checked={values.action === 'foster'}
                   />
                 </div>
               </label>
             </div>
           </div>)}
           {step === 3 && (
-          <div className="{styles.formGroup}">
+          <div className={styles.formGroup}>
             <h2 className="heading-2">Which animal/s would you like to see?</h2>
             <p className="paragraph">You can select multiple</p>
-            <div className="{styles.checkboxesContainer}"> 
+            <div className={styles.checkboxesContainer}> 
               <AnimalOptions options={animals}/>
             </div>
             <h2 className="heading-2">How far are you willing to go?</h2>
-            <BasicInput
-              type="number"
-              min="1"
-              name="preferredDistance"
-              onChange={handleChange}
-              value={value.preferredDistance}
-              placeholder="Distance in km"
-            />
+            <NumberInput focusBorderColor="rgb(255, 165, 0)" min={1} value={distance} onChange={handleNumberChange}>
+              <NumberInputField />
+              <NumberInputStepper color="rgb(109, 125, 139)">
+                <NumberIncrementStepper _active={{ color: "rgb(255, 165, 0)" }} />
+                <NumberDecrementStepper _active={{ color: "rgb(255, 165, 0)" }} />
+              </NumberInputStepper>
+            </NumberInput>
           </div>)}
-        {step === 3 && (<Button type="submit" color="brand-default" block>SUBMIT</Button>)}
+        {step === 3 && <Button type="submit" color="brand-default" block disabled={isDisabled}>SUBMIT</Button>}
       </form>
-      {step < 3 ? 
-        (<Button color="brand-default" block onClick={() => setStep(step + 1)}>NEXT</Button>) : 
-        null}
+      {step < 3 && <Button type="button" color="brand-default" block onClick={() => setStep(step + 1)} disabled={isDisabled} >NEXT</Button>}
+      </div>
+      <div className={styles.bg}>
+        <img src={bg} />
       </div>
     </div>
   );

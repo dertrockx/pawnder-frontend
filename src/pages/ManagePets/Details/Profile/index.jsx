@@ -1,32 +1,11 @@
-import React, { useState } from "react";
-import { Input, Select, Textarea } from "@chakra-ui/react";
+import React from "react";
 import Button from "components/Button";
 import HR from "components/HR";
+import Dropdown from "components/Dropdown";
 import styles from "./Profile.module.css";
+import Input from "./Input";
 
 function Profile() {
-	function handleSave() {
-		alert("Saving");
-	}
-
-	const [info, setInfo] = useState({
-		name: "",
-		breed: "",
-		animalType: "",
-		sex: "",
-		weight: "",
-		height: "",
-		ageY: "",
-		ageM: "",
-		medicalHistory: "",
-		otherInfo: "",
-		action: "",
-	});
-
-	function handleChange(e) {
-		setInfo({ ...info, [e.target.name]: e.target.value });
-	}
-
 	return (
 		<div>
 			<h3 className="heading-3">Main picture</h3>

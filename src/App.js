@@ -47,7 +47,7 @@ function App() {
 						<NavRoute path = "/institution/manage-stories/:id" component = {ManageStoryDetails} />
 						<NavRoute path = "/stories/:id" component = {ShowStoryDetails} />
 						<Route path="/user/onboarding" exact component={UserOnboarding} /> {/* Maybe change to /onboarding kasi depende pa rin kung logged in as user or onboarding? */}
-					<NavRoute path="/institution/settings" component={InstitutionSettings} /> {/* Maybe change to just /settings kapag logged in as insti?*/}
+						<NavRoute path="/institution/settings" component={InstitutionSettings} /> {/* Maybe change to just /settings kapag logged in as insti?*/}
 						<Redirect path="/" to="/sample" exact />
 					</Switch>
 				</Router>
