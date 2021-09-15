@@ -20,6 +20,7 @@ import InstitutionLogin from "pages/InstitutionLoginPage";
 import ShowStoryDetails from "pages/ShowStoryDetails";
 import ManageStoryDetails from "pages/ManageStoryDetails";
 import UserOnboarding from "pages/UserOnboarding";
+import InstitutionSettings from "pages/InstitutionSettings";
 
 import { ChakraProvider } from "@chakra-ui/react";
 import theme from "./theme";
@@ -31,7 +32,6 @@ const store = configureStore();
 
 function App() {
 	return (
-<<<<<<< HEAD
 		<ReduxProvider store={store}>
 			<ChakraProvider theme={theme}>
 				<Router>
@@ -46,25 +46,13 @@ function App() {
 						<Route path = "/institution/signup" component = {InstitutionSignUp} />
 						<NavRoute path = "/institution/manage-stories/:id" component = {ManageStoryDetails} />
 						<NavRoute path = "/stories/:id" component = {ShowStoryDetails} />
-						<Route path="/user-onboarding" exact component={UserOnboarding} />
+						<Route path="/user/onboarding" exact component={UserOnboarding} /> {/* Maybe change to /onboarding kasi depende pa rin kung logged in as user or onboarding? */}
+					<NavRoute path="/institution/settings" component={InstitutionSettings} /> {/* Maybe change to just /settings kapag logged in as insti?*/}
 						<Redirect path="/" to="/sample" exact />
 					</Switch>
 				</Router>
 			</ChakraProvider>
 		</ReduxProvider>
-=======
-		<>
-			<Router>
-				<Switch>
-					<NavRoute path="/sample" exact component={SamplePage} />
-					<NavRoute path="/feed" exact component={Feed} />
-					<NavRoute path="/nearby" exact component={NearbyInstitution} />
-					<Route path="/user/onboarding" exact component={UserOnboarding} />
-					<Redirect path="/" to="/sample" exact />
-				</Switch>
-			</Router>
-		</>
->>>>>>> 0d31886 (Create checkbox component and css to it)
 	);
 }
 

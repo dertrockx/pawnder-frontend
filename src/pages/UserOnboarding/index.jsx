@@ -1,5 +1,12 @@
 import React, { useState } from 'react';
 import { IoLocationSharp, IoArrowBack } from 'react-icons/io5';
+import {
+  NumberInput,
+  NumberInputField,
+  NumberInputStepper,
+  NumberIncrementStepper,
+  NumberDecrementStepper,
+} from '@chakra-ui/react';
 
 import Button from "components/Button";
 import BasicInput from 'components/BasicInput';
@@ -96,7 +103,65 @@ const UserOnboarding = () => {
     e.preventDefault();
 
     // For testing
-    console.log(value);
+    console.log(values);
+  }
+
+  // TASK: If possible, create custom hook
+  const handleImageChange = (e) => {
+    const selected = e.target.files[0];
+    const ALLOWED_TYPES=['image/png', 'image/jpg', 'image/jpeg'];
+    if (selected && ALLOWED_TYPES.includes(selected.type)) {
+      let reader = new FileReader();
+      reader.onloadend = () => {
+        setImagePreview(`${reader.result}`)
+      }
+      setValues({
+        ...values,
+        photo: selected
+      });
+      reader.readAsDataURL(selected);
+      setImagePreviewError(false);
+    } else {
+      /** 
+       * Selecting a file and cancelling returns undefined to selected.
+       * So if you select a file and cancel, the imagePreviewError would be set to true.
+       * We don't want that so we check if selected === undefined. If it's true, then we don't give out any errors.
+       */       
+      if (selected === undefined) {
+        setImagePreviewError(false);
+        return;
+      }
+      setImagePreviewError(true);
+    }
+  }
+
+  // TASK: Create custom hook for accessing user's location
+  const onSuccess = (position) => {
+    setValues({
+      ...values,
+      locationLat: position.coords.latitude,
+      locationLong: position.coords.longitude,
+    });
+    setLocationError('');
+  }
+
+  const onError = () => {
+    setLocationError('Unable to retrieve your location. Please enable permissions.');
+  }
+
+  const handleLocation = (e) => {
+    /**
+     * All buttons inside a form trigger the submit event.
+     * By using the preventDefault() method, the submit event will be canceled,
+     * thus, allowing multiple buttons inside a form.
+     */
+    e.preventDefault();
+    if (!navigator.geolocation) {
+      setLocationError('Geolocation is not supported by your browser.');
+    } else {
+      navigator.geolocation.getCurrentPosition(onSuccess, onError);
+      
+    }
   }
 
   return (

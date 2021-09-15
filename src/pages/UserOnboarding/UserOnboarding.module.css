@@ -1,3 +1,16 @@
+.bg {
+  /* padding-top: 20px;
+  width: 350px;
+  height: 750px;
+  position: fixed;
+  right: 0; */
+
+  overflow: hidden;
+  width: 350px;
+  height: 750px;
+  float: right;
+}
+
 .formContainer {
   position: absolute;
   top: 120px;
@@ -108,6 +121,6 @@
   margin-bottom: 40px;
 }
 
-.radioYellow {
-  border: 10px solid var(--color-brand-default)
+.hideInput {
+	display: none;
 }
