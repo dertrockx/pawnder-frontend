@@ -1,0 +1,55 @@
+/* Image */
+
+.imageContainer {
+  display: flex;
+  flex-direction: row;
+}
+
+.imageContainerRight {
+  padding-top: 30px;
+  margin-left: 20px;
+}
+
+.imageContainerRight > p {
+  margin-top: 10px;
+  color:red;
+  font-weight: bold;
+}
+
+.img{
+  width: 150px;
+  height: 150px;
+  border-radius: 50%;
+  object-fit: cover;
+  margin-bottom: 10px;
+}
+
+.imageUploadLabel{
+  /* Small variant */
+  padding: 10px 20px;
+
+  /* Typography */
+  font-family: "Raleway", sans-serif;
+	font-style: normal;
+	font-weight: bold;
+	font-size: 18px;
+	line-height: 21px;
+	letter-spacing: -0.01em;
+	text-transform: uppercase;
+
+  /* Base styles */
+  display: inline-block;
+	cursor: pointer;
+	background: #ddd;
+	border-radius: 10px;
+	transition: all 0.3s;
+
+  /* Outline brand-default */
+  background: none;
+	color: var(--color-brand-default);
+	border: 1px solid var(--color-brand-default);
+}
+
+.hideInput {
+	display: none;
+}

@@ -1,9 +1,14 @@
 .bg {
-  padding-top: 20px;
+  /* padding-top: 20px;
   width: 350px;
   height: 750px;
   position: fixed;
-  right: 0;
+  right: 0; */
+
+  overflow: hidden;
+  width: 350px;
+  height: 750px;
+  float: right;
 }
 
 .formContainer {

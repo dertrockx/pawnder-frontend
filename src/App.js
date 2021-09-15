@@ -8,6 +8,7 @@ import { UserLoginPage, UserSignupPage } from "pages";
 import InstitutionOnboardingPage from "pages/InstitutionOnboarding";
 import NavRoute from "components/NavRoute";
 import UserOnboarding from "pages/UserOnboarding";
+import InstitutionSettings from "pages/InstitutionSettings";
 
 import history from "utils/history";
 import LoadingPage from "pages/LoadingPage";
@@ -65,7 +66,6 @@ function App() {
 			<Router history={history}>
 				<Switch>
 					{/* NavRoute props are for authenticated sessions */}
-
 					<NavRoute path="/feed" exact component={Feed} type={model.USER} />
 					<NavRoute
 						path="/nearby"
@@ -78,7 +78,6 @@ function App() {
 						component={ShowStoryDetails}
 						type={null}
 					/>
-
 					<Route
 						path={`${INSTITUTION_ROOT}/login`}
 						exact
@@ -110,7 +109,6 @@ function App() {
 						component={ManageStoryDetails}
 						type={model.INSTITUTION}
 					/>
-
 					{/* cutoff */}
 					<Route path={`${USER_ROOT}/login`} exact component={UserLoginPage} />
 					<Route
@@ -130,7 +128,17 @@ function App() {
 					/>
 					<NavRoute path="/login" exact component={ChooseLogin} />
 					<NavRoute path="/signup" exact component={ChooseSignup} />
-					<Route path="/user/onboarding" exact component={UserOnboarding} />
+					<Route
+						path="/user/onboarding"
+						exact
+						component={UserOnboarding}
+					/>{" "}
+					{/* Maybe change to /onboarding kasi depende pa rin kung logged in as user or onboarding? */}
+					<NavRoute
+						path="/institution/settings"
+						component={InstitutionSettings}
+					/>{" "}
+					{/* Maybe change to just /settings kapag logged in as insti?*/}
 					<Redirect path="/" to="/signup" exact />
 				</Switch>
 			</Router>
