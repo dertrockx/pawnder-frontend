@@ -1,0 +1,65 @@
+.page {
+  display: flex;
+}
+
+::-webkit-scrollbar {
+  width: 0px; 
+  background: transparent;
+}
+
+.right {
+  width: 50%;
+  height: 50%;
+}
+
+.logo {
+  margin-bottom: 30px;
+}
+
+.img {
+  height: 100%;
+  width: 100%;
+  object-fit: contain;
+}
+
+.left {
+  padding: 200px;
+  padding-top: 80px;
+  padding-bottom: 130px;
+  width: 50%; 
+  height: 50%;
+}
+
+.header {
+  text-align: center;
+}
+
+.rightAlign {
+  text-align: right;
+}
+
+.form {
+  margin-top: 25px;
+  margin-bottom: 25px;
+}
+
+.error {
+  color: var(--color-red);
+}
+
+.row {
+	width: 100%;
+}
+
+.column {
+  float: left;
+}
+
+.colleft {
+  width: 25%;
+}
+
+.colright {
+  text-align: right;
+  width: 75%;
+}

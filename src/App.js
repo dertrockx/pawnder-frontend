@@ -2,9 +2,13 @@ import React from "react";
 import { BrowserRouter as Router, Switch, Redirect } from "react-router-dom";
 import { Provider as ReduxProvider } from "react-redux";
 import configureStore from "redux/store";
+import { Route } from "react-router";
 
 // TODO: use React.lazy() to lazy-load these pages
 import SamplePage from "pages/SamplePage";
+import { UserLoginPage, UserSignupPage, UserInformationPage, UserPreferencesPage } from "pages";
+import InstitutionOnboardingPage from "pages/InstitutionOnboarding"
+// import Navbar from "components/Navbar";
 import ChakraSample from "pages/ChakraSample";
 import Feed from "pages/Feed";
 import NearbyInstitution from "pages/NearbyInstitution";
@@ -49,6 +53,23 @@ function App() {
 				</Router>
 			</ChakraProvider>
 		</ReduxProvider>
+		<ChakraProvider theme={theme}>
+			<Router>
+				<Switch>
+					<NavRoute  path="/sample" exact component={SamplePage} />
+					<NavRoute  path="/user/login" component={UserLoginPage} />
+					<NavRoute  path="/user/signup" component={UserSignupPage} />
+					<NavRoute  path="/user/settings/information" component={UserInformationPage} />
+					<NavRoute  path="/user/settings/preferences" component={UserPreferencesPage} />
+					<Route  path="/institution/onboarding" component={InstitutionOnboardingPage} />
+					<NavRoute path="/chakra-sample" exact component={ChakraSample} />
+					<NavRoute path="/sample" exact component={SamplePage} />
+					<NavRoute path="/feed" exact component={Feed} />
+					<NavRoute path="/nearby" exact component={NearbyInstitution} />
+					<Redirect path="/" to="/sample" exact />
+				</Switch>
+			</Router>
+		</ChakraProvider>
 	);
 }
 
