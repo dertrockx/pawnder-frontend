@@ -6,7 +6,7 @@ function BasicLabel(props) {
   } = props;
 
   return (
-    <label style={{ width: 50 }} className="input-text">
+    <label style={{ width: 100 }} className="input-text">
       {label}
     </label>
   )

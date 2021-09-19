@@ -22,7 +22,6 @@ import InstitutionSignUp from "pages/InstitutionSignUpPage";
 import InstitutionLogin from "pages/InstitutionLoginPage";
 import ShowStoryDetails from "pages/ShowStoryDetails";
 import ManageStoryDetails from "pages/ManageStoryDetails";
-import { Route } from "react-router";
 
 import { ChakraProvider } from "@chakra-ui/react";
 import theme from "./theme";
@@ -34,6 +33,7 @@ const store = configureStore();
 
 function App() {
 	return (
+		<>
 		<ReduxProvider store={store}>
 			<ChakraProvider theme={theme}>
 				<Router>
@@ -53,23 +53,26 @@ function App() {
 				</Router>
 			</ChakraProvider>
 		</ReduxProvider>
-		<ChakraProvider theme={theme}>
-			<Router>
-				<Switch>
-					<NavRoute  path="/sample" exact component={SamplePage} />
-					<NavRoute  path="/user/login" component={UserLoginPage} />
-					<NavRoute  path="/user/signup" component={UserSignupPage} />
-					<NavRoute  path="/user/settings/information" component={UserInformationPage} />
-					<NavRoute  path="/user/settings/preferences" component={UserPreferencesPage} />
-					<Route  path="/institution/onboarding" component={InstitutionOnboardingPage} />
-					<NavRoute path="/chakra-sample" exact component={ChakraSample} />
-					<NavRoute path="/sample" exact component={SamplePage} />
-					<NavRoute path="/feed" exact component={Feed} />
-					<NavRoute path="/nearby" exact component={NearbyInstitution} />
-					<Redirect path="/" to="/sample" exact />
-				</Switch>
-			</Router>
-		</ChakraProvider>
+		<ReduxProvider store={store}>
+			<ChakraProvider theme={theme}>
+				<Router>
+					<Switch>
+						<NavRoute  path="/sample" exact component={SamplePage} />
+						<Route  path="/user/login" component={UserLoginPage} />
+						<Route  path="/user/signup" component={UserSignupPage} />
+						<NavRoute  path="/user/settings/information" component={UserInformationPage} />
+						<NavRoute  path="/user/settings/preferences" component={UserPreferencesPage} />
+						<Route  path="/institution/onboarding" component={InstitutionOnboardingPage} />
+						<NavRoute path="/chakra-sample" exact component={ChakraSample} />
+						<NavRoute path="/sample" exact component={SamplePage} />
+						<NavRoute path="/feed" exact component={Feed} />
+						<NavRoute path="/nearby" exact component={NearbyInstitution} />
+						<Redirect path="/" to="/sample" exact />
+					</Switch>
+				</Router>
+			</ChakraProvider>
+		</ReduxProvider>
+		</>
 	);
 }
 

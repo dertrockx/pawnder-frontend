@@ -1,5 +1,8 @@
 import { useState, useEffect } from "react";
 import { useHistory } from "react-router-dom";
+import { useSelector, useDispatch } from "react-redux";
+
+import { login as loginUser } from 'redux/actions/authActions'
 
 import BasicInput from "components/BasicInput";
 import Button from "components/Button";
@@ -9,18 +12,23 @@ import BasicPasswordInput from "components/BasicPasswordInput/";
 import styles from "./UserLogin.module.css"
 
 function UserLoginPage() {
+	// const isLoggedIn = useSelector((s) => auth.isLoggedIn);
+	const loginPending = useSelector((s) => s.auth.loginPending);
+	const loginError = useSelector((s) => s.auth.loginError);
+	const isAuthenticated = useSelector((s) => s.auth.isAuthenticated);
+
+	const dispatch = useDispatch();
 	const history = useHistory();
 
 	const [ email, setEmail ] = useState(null);
 	const [ password, setPassword ] = useState(null);
-	const [ isLoggedIn, setIsLoggedIn ] = useState(false);
-	const [ inputError, setInputError ] = useState(false);
-	const [ isPasswordShown, setIsPasswordShown ] = useState(false);
+	// const [ isLoggedIn, setIsLoggedIn ] = useState(false);
+	// const [ inputError, setInputError ] = useState(false);
 
 	function handleValueChange(e, valueCb) {
 			const newValue = e.target.value;
 			valueCb(newValue);
-			if(inputError) setInputError(false);
+			// if(inputError) setInputError(false);
 	}
 	
 	function handleFormSubmit(e) {
@@ -28,27 +36,30 @@ function UserLoginPage() {
 
 			//send a POST request here to validate inputs and authenticate
 
-			setIsLoggedIn(true);
-			console.log(setIsLoggedIn);
+			// setIsLoggedIn(true);
+			// console.log(setIsLoggedIn);
 			console.log(email, password);
-	}
+			if(email && password) {
+				dispatch(loginUser('user'));
+			} else {
 
-	function togglePassword() {
-		setIsPasswordShown(isPasswordShown ? false : true);
+				alert("Email and password required.");
+			}
 	}
 
 	useEffect(() => {
-		if(isLoggedIn) {
-			
+		if(isAuthenticated) {
 			//clears the fields of the form
 			const form = document.getElementsByName("login-form");
 			form[0].reset();
 
 			history.replace("/")		//must be redirected to user feed page
 		} else {
+
+			// may server error or wrong credentials 
 			// setInputError(true);
 		}
-	}, [isLoggedIn]);
+	}, [isAuthenticated]);
 
 	return (
 		<div className={styles.page}>
@@ -67,7 +78,7 @@ function UserLoginPage() {
 					name="login-form"
 					onSubmit={handleFormSubmit} 
 				>
-					{inputError && <div className={`${styles.error} ${styles.header}`}>Email and password combination invalid</div>}
+					{loginError && <div className={`${styles.error} ${styles.header}`}>Email and password combination invalid</div>}
 					<label>Email</label>
 					<BasicInput 
 							type="email"
@@ -75,17 +86,17 @@ function UserLoginPage() {
 							onChange={(e) => handleValueChange(e, setEmail)}
 							placeholder="Email"
 							required="true"
-							outline={inputError ? "red" : "gray"}
+							outline={loginError ? "red" : "gray"}
 					/><br/>
 					Password
 					<BasicPasswordInput 
 						placeholder="Password" 
-						outline={inputError ? "red" : "gray"}
+						outline={loginError ? "red" : "gray"}
 						name="password"
 						onChange={(e) => handleValueChange(e, setPassword)}
 						required
 					/><br />
-					<Button onClick={handleFormSubmit} color="brand-default" size="small" block>Login</Button><br/>
+					<Button onClick={handleFormSubmit} color="brand-default" size="small" disabled={loginPending} block>Login</Button><br/>
 					<div 
 						className={`
 							caption
