@@ -1,34 +1,15 @@
 .halfField {
-	margin-top: 5px;
+  margin-top: 5px;
 	display: grid;
-	grid-template-columns: 1fr 2fr;
-	column-gap: 20px;
+	grid-template-columns: 0.75fr 2fr;
+	column-gap: 60px;
 	margin-bottom: 60px;
-}
-
-.pictures {
-	display: grid;
-	grid-template-columns: 1fr 1fr;
-	row-gap: 20px;
-	column-gap: 20px;
 }
 
 .twoFields {
 	display: grid;
-	grid-template-columns: repeat(2, 1fr);
-	column-gap: 20px;
-	row-gap: 20px;
-}
-
-.oneField {
-	display: grid;
-	grid-template-columns: 1fr;
-	column-gap: 20px;
-	row-gap: 20px;
-}
-
-.field {
-	display: flex;
-	flex-direction: column;
-	gap: 10px;
+	grid-template-columns: 1.25fr 2fr;
+	column-gap: 10px;
+  margin-bottom: 32px;
+  align-items: baseline;
 }

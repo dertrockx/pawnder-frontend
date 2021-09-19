@@ -25,9 +25,6 @@ const BetterSidebarLink = ({ children, ...linkProps }) => (
 function InstitutionSettings() {
 	let { path, url } = useRouteMatch();
 
-  // Get user id and fetch info
-  // Set user's info as the initialState to display sa settings profile
-
 	return (
 		<div className={styles.container}>
       <h1 className="heading-1" style={{display: "flex", gap: "10px", marginLeft: "30px"}} >
@@ -70,11 +67,7 @@ function InstitutionSettings() {
 				<main className={styles.main}>
 					<Switch>
 						<Route path={`${path}/profile`} exact component={ProfilePage} />
-						<Route
-							path={`${path}/security`}
-							exact
-							component={SecurityPage}
-						/>
+						<Route path={`${path}/security`} exact component={SecurityPage}/>
 						<Redirect path={path} to={`${path}/profile`} exact />
 					</Switch>
 				</main>

@@ -9,6 +9,7 @@ import InstitutionOnboardingPage from "pages/InstitutionOnboarding";
 import NavRoute from "components/NavRoute";
 import UserOnboarding from "pages/UserOnboarding";
 import InstitutionSettings from "pages/InstitutionSettings";
+import ShowStoryList from "pages/ShowStoryList";
 
 import history from "utils/history";
 import LoadingPage from "pages/LoadingPage";
@@ -139,6 +140,7 @@ function App() {
 						component={InstitutionSettings}
 					/>{" "}
 					{/* Maybe change to just /settings kapag logged in as insti?*/}
+					<NavRoute path="/stories" component={ShowStoryList} />
 					<Redirect path="/" to="/signup" exact />
 				</Switch>
 			</Router>
