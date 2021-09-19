@@ -1,124 +1,89 @@
-.bg {
-  /* padding-top: 20px;
-  width: 350px;
-  height: 750px;
-  position: fixed;
-  right: 0; */
+/* Desktop-first media queries. Source: https://joegalley.com/articles/mobile-first-vs-desktop-first-media-queries*/
 
-  overflow: hidden;
-  width: 350px;
-  height: 750px;
-  float: right;
-}
+/* All rules outside of @media queries apply to devices 1201px and above */
 
-.formContainer {
-  position: absolute;
-  top: 120px;
-  left: 250px;
-  max-width: 600px;
-}
+.page {
 
-.formGroup {
-  margin-bottom: 40px;
-}
-
-.formGroup > h2 {
-  margin-bottom: 40px;
-  text-align: center;
-}
-
-.formGroup > p {
-  text-align: center;
-  margin-top: -30px;
-}
-
-.cardDisplay {
-  display: flex;
-  align-content: space-between;
-  gap: 10px;
-  
-}
-
-.cardPreferences {
-  text-align: center;
-  border-radius: 8px;
-  box-shadow: 0px 4px rgba(0, 0, 0, 0.25);
-  padding: 10px;
-  justify-content: space-around;
-  column-gap: 500px;
-}
-
-.cardPreferences:hover {
-  cursor: pointer;
-}
-
-
-.cardPreferencesSelected {
-
-  align-items: center;
-  text-align: center;
-  border: 1px solid #FFA500;
-  border-radius: 8px;
-  box-shadow: 0px 4px rgba(0, 0, 0, 0.25);
-  padding: 10px;
-  column-gap: 500px;
-}
-
-.cardPreferencesSelected:hover {
-  cursor: pointer;
-}
-
-.cardImage {
-  height: 240px;
-  width: 240px;
-}
-
-.logo {
-  width: 127px;
-  height: 55px;
-  margin-left: inherit;
 }
 
 .topItems {
-  position: absolute;
-  top: 30px;
-  left: 90px;
+  display: flex;
+  gap: 20px;
+  margin-top: 30px;
+  margin-left: 90px;
+
+}
+
+.logo {
+  width: 128px;
+  height: 56px;
+}
+
+.backButton {
+
+}
+
+.content {
   display: flex;
 }
 
-.topItems > *:not(:first-child) {
-	margin-left: 20px;
+.contentLeft {
+  max-width: 600px;
 }
 
-.profileFormLabel {
-  margin-top: 10px;
+.contentRight {
+  top: 20px;
+  right: 0;
+  width: 350px;
+  height: 750px;
 }
 
+.formGroup {
+  /* margin-bottom: 40px; */
+}
+
+.formGroup > h2 {
+  /* margin-bottom: 40px;
+  text-align: center; */
+}
+
+.formGroup > p {
+  /* text-align: center;
+  margin-top: -30px; */
+}
+
+/* First page form */
 .formItem {
-  margin-top: 10px;
+  /* margin-top: 10px; */
 }
 
 .formItemSex{
-  margin-top: 10px;
+  /* margin-top: 10px;
   display: flex;
   flex-flow: row;
+  gap: 10px; */
+}
+
+.formItemSexOptions {
+  /* display: flex;
+  flex-flow: row;
+  gap: 10px */
 }
 
 
 /* Image */
-
 .imageContainer {
-  display: flex;
-  flex-direction: row;
+  /* display: flex;
+  flex-direction: row; */
 }
 
 .imageContainerRight {
-  padding-top: 30px;
-  margin-left: 20px;
+  /* padding-top: 30px;
+  margin-left: 20px; */
 }
 
 .imageContainerRight > p {
-  margin-top: 10px;
+  /* margin-top: 10px; */
   color:red;
   font-weight: bold;
 }
@@ -128,10 +93,10 @@
   height: 150px;
   border-radius: 50%;
   object-fit: cover;
-  margin-bottom: 10px;
+  /* margin-bottom: 10px; */
 }
 
-.imageUploadLabel{
+.imageUploadButton{
   /* Small variant */
   padding: 10px 20px;
 
@@ -157,6 +122,91 @@
 	border: 1px solid var(--color-brand-default);
 }
 
-.hideInput {
+.hideImageInput {
 	display: none;
+}
+
+/* Action cards */
+
+.cardDisplay {
+  display: flex;
+  align-content: space-between;
+  gap: 10px;
+  
+}
+
+.cardPreferences {
+  text-align: center;
+  border-radius: 8px;
+  box-shadow: 0px 4px rgba(0, 0, 0, 0.25);
+  padding: 10px;
+  justify-content: space-around;
+  column-gap: 500px;
+}
+
+.cardPreferences:hover {
+  cursor: pointer;
+}
+
+.cardPreferencesSelected {
+
+  align-items: center;
+  text-align: center;
+  border: 1px solid #FFA500;
+  border-radius: 8px;
+  box-shadow: 0px 4px rgba(0, 0, 0, 0.25);
+  padding: 10px;
+  column-gap: 500px;
+}
+
+.cardPreferencesSelected:hover {
+  cursor: pointer;
+}
+
+.cardImage {
+  height: 240px;
+  width: 240px;
+}
+
+
+
+
+/* Rules here apply to devices from 993px to 1200px (inclusive) */
+@media only screen and (max-width: 1200px) {
+  .contentRight {
+    top: 20px;
+    margin-right: -50px;
+    width: 350px;
+    height: 750px;
+  }
+}
+
+/* Rules here apply to devices from 769px to 992px (inclusive) */
+@media only screen and (max-width: 992px) {	
+  /*
+    Logo in center and back button left
+
+  */
+  .contentRight {
+    top: 20px;
+    margin-right: -100px;
+    width: 350px;
+    height: 750px;
+  }
+}
+
+/* Rules here apply to devices from 0px to 768px (inclusive) */
+@media (max-width: 768px) {
+  /* 
+    Action cards displayed column
+    Smaller avatar size
+    Logo in center and back button left
+    Heading 1 in center
+    Picture gone
+  */
+  .contentRight {
+    display: none;
+  }
+
+  
 }

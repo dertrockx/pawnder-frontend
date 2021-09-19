@@ -1,5 +1,41 @@
-/* Image */
+.halfField {
+  margin-top: 5px;
+	display: grid;
+	grid-template-columns: 0.75fr 2fr;
+	column-gap: 60px;
+	margin-bottom: 60px;
+}
 
+.leftLabel > p {
+  margin-top: 10px;
+}
+
+.twoFields {
+	display: grid;
+	grid-template-columns: 0.75fr 2fr;
+	column-gap: 10px;
+  margin-bottom: 32px;
+  align-items: baseline;
+}
+
+.bottomButtons{
+  width: 276px;
+  float: right;
+  display: flex;
+  gap: 20px;
+  justify-content: flex-end;
+}
+
+.bottomButtons Button {
+  filter: drop-shadow(0px 4px 4px rgba(0, 0, 0, 0.25));
+}
+
+.bottomButtons :first-child {
+  background-color: var(--color-white);
+}
+
+
+/* Image */
 .imageContainer {
   display: flex;
   flex-direction: row;
@@ -7,7 +43,7 @@
 
 .imageContainerRight {
   padding-top: 30px;
-  margin-left: 20px;
+  margin-left: 30px;
 }
 
 .imageContainerRight > p {
@@ -24,7 +60,7 @@
   margin-bottom: 10px;
 }
 
-.imageUploadLabel{
+.imageUploadButton{
   /* Small variant */
   padding: 10px 20px;
 
@@ -44,10 +80,9 @@
 	border-radius: 10px;
 	transition: all 0.3s;
 
-  /* Outline brand-default */
-  background: none;
-	color: var(--color-brand-default);
-	border: 1px solid var(--color-brand-default);
+  /* Filled brand-default */
+  background: var(--color-brand-default);
+	color: var(--color-white);
 }
 
 .hideInput {
