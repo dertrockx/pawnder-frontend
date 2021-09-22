@@ -7,3 +7,9 @@ export const auth = keyMirror({
 
 	LOGOUT: null,
 });
+
+export const story = keyMirror({
+	FETCH_STORIES_PENDING: null,
+  FETCH_STORIES_COMPLETED: null,
+  FETCH_STORIES_FAILED: null,
+});

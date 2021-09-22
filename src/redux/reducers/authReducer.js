@@ -1,4 +1,4 @@
-import { auth } from "constants/ActionType";
+import { auth } from "constants/ActionTypes";
 
 const initialState = {
 	loginPending: false,
