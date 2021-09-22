@@ -39,3 +39,9 @@ export const applicant = keyMirror({
 	UPDATE_APPLICANT_SUCCESS: null,
 	UPDATE_APPLICANT_ERROR: null,
 });
+
+export const story = keyMirror({
+	FETCH_STORIES_PENDING: null,
+	FETCH_STORIES_COMPLETED: null,
+	FETCH_STORIES_FAILED: null,
+});
