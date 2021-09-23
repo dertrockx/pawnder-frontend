@@ -1,8 +1,13 @@
+.container {
+  width: 1200px;
+  margin: auto;
+}
+
 .options {
   width: 1200px;
   margin: 40px auto 40px;
   display: flex;
-  align-items: center;
+  align-items: baseline;
   justify-content: space-between;
 }
 
