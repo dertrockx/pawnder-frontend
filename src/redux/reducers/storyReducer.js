@@ -29,7 +29,7 @@ export default function reducer(state = initialState, action={}) {
       return {
         ...state,
         fetchingStories: false,
-        fetchErrpr: errorMessage,
+        fetchError: errorMessage,
       };
     }
 
