@@ -22,6 +22,7 @@ import ManageStoryDetails from "pages/ManageStoryDetails";
 import UserOnboarding from "pages/UserOnboarding";
 import InstitutionSettings from "pages/InstitutionSettings";
 import ShowStoryList from "pages/ShowStoryList";
+import ManageStoryList from "pages/ManageStoryList";
 import UserLoginPage from "pages/UserLogin";
 
 
@@ -52,6 +53,7 @@ function App() {
 						<Route path="/user/onboarding" exact component={UserOnboarding} /> {/* Maybe change to /onboarding kasi depende pa rin kung logged in as user or onboarding? */}
 						<NavRoute path="/institution/settings" component={InstitutionSettings} /> {/* Maybe change to just /settings kapag logged in as insti?*/}
 						<NavRoute path="/stories" component={ShowStoryList} />
+						<NavRoute path="/institution/manage-stories" component={ManageStoryList} />
 						<Route  path="/user/login" component={UserLoginPage} />
 						<Redirect path="/" to="/sample" exact />
 					</Switch>

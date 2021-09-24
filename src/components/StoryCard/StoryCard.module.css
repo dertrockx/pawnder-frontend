@@ -21,7 +21,8 @@
 
 .rightContainer {
   /* height: 256px; */
-  /* width: 860px; */
+  /*max-width: 860px; */
+  overflow: hidden;
   padding: 8px 16px 8px 16px;
   display: flex;
   flex-direction: column;
@@ -39,6 +40,7 @@
   display: flex;
   flex-direction: column;
   gap: 16px;
+
 }
 
 .paragraphContainer {
@@ -60,14 +62,29 @@
   color: var(--color-brand-darker);
 }
 
-.bottomContainer {
+.bottomContainerView {
   display: flex;
   margin-top: auto;
   gap: 16px;
-  overflow: hidden;
-  /* For when there are a lot of tags. Unfortunately, the tags do get cut off. */
+  overflow: hidden; /* For when there are a lot of tags. Unfortunately, the tags do get cut off. */
+  /* For date and institution name. */
   display: -webkit-box;
   -webkit-box-orient: horizontal;
+}
+
+.bottomContainerManage {
+  display: flex;
+  flex-direction: column;
+  margin-top: auto;
+  gap: 8px;
+  width: 400px;
+}
+
+.tagContainer {
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 1;
 }
 
 .icon {

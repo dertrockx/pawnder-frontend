@@ -40,7 +40,7 @@ function UserLoginPage() {
 			// console.log(setIsLoggedIn);
 			console.log(email, password);
 			if(email && password) {
-				dispatch(loginUser('institution')); // 'user' dapat ito pero inedit ko kasi to try hahahha
+				dispatch(loginUser('user')); // 'user' dapat ito pero inedit ko kasi to try hahahha
 			} else {
 
 				alert("Email and password required.");
