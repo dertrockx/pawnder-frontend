@@ -1,6 +1,6 @@
 .baseStyles {
-  color: var(--color-brand-default);
-  font-family: "Rubik", sans-serif;
+	color: var(--color-brand-default);
+	font-family: "Rubik", sans-serif;
 	font-style: normal;
 	font-weight: normal;
 	font-size: 16px;
