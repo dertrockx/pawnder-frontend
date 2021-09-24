@@ -8,25 +8,35 @@ const fetchStories = async ({ loginType }) => {
 
   // Insti type is not allowed to view success stories (aka all stories)
   // So if insti user type, get institutionId by passing the instiId from manage stories as props
-  // And query params sa url endpoint (stories?institutionId=:institutionId)
+  // And query params sa url endpoint (`/story?institutionId=${institutionId}`)
   /*
   if (loginType === "institution") {
-    const response = await axios.get(`URL/stories?institutionId=:institutionId`); // Change :institutionId to institutionId props passed from manage stories
+    const response = await axios.get(`URL/story?institutionId=${institutionId}`); // Change :institutionId to institutionId props passed from manage stories
     const stories = response.data;
     return stories;
   } else {
-    const response = await axios.get('URL/stories/published=1');
+    const response = await axios.get('URL/story/published=1');
     const stories = response.data;
     return stories;
   }
   */
 
-  const response = await axios.get('http://localhost:8000/stories');
-  const stories = response.data;
+  // ife-fetch ko lang muna for type insti is instiId=1
+  if (loginType === "institution") {
+    const response = await axios.get('http://localhost:8000/stories?institutionId=1');
+    const stories = response.data;
 
-  console.log(stories); // remove
-  
-  return stories;
+    console.log(stories); // remove
+
+    return stories;
+  } else {
+    const response = await axios.get('http://localhost:8000/stories?isDraft=false');
+    const stories = response.data;
+
+    console.log(stories); // remove
+
+    return stories;
+  }
 }
 
 export default fetchStories;

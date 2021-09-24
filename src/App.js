@@ -10,6 +10,7 @@ import NavRoute from "components/NavRoute";
 import UserOnboarding from "pages/UserOnboarding";
 import InstitutionSettings from "pages/InstitutionSettings";
 import ShowStoryList from "pages/ShowStoryList";
+import ManageStoryList from "pages/ManageStoryList";
 
 import history from "utils/history";
 import LoadingPage from "pages/LoadingPage";
@@ -141,6 +142,10 @@ function App() {
 					/>{" "}
 					{/* Maybe change to just /settings kapag logged in as insti?*/}
 					<NavRoute path="/stories" component={ShowStoryList} />
+					<NavRoute
+						path="/institution/manage-stories"
+						component={ManageStoryList}
+					/>
 					<Redirect path="/" to="/signup" exact />
 				</Switch>
 			</Router>
