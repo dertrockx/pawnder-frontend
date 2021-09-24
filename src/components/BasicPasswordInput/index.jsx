@@ -33,7 +33,7 @@ function PasswordInput(props) {
         focusBorderColor="brand.100"
         required={required}
       />
-      <InputRightElement width="4.5rem" >
+      <InputRightElement width="4.5rem" style={{ 'margin-top': 5, 'margin-bottom': 5 }}>
         <Button h="1.75rem" size="sm" className="input-text" onClick={handleClick}>
           {show ? "Hide" : "Show"}
         </Button>

@@ -21,7 +21,9 @@ import ShowStoryDetails from "pages/ShowStoryDetails";
 import ManageStoryDetails from "pages/ManageStoryDetails";
 import UserOnboarding from "pages/UserOnboarding";
 import InstitutionSettings from "pages/InstitutionSettings";
-import ShowStoryList from "pages/ShowStoryList"
+import ShowStoryList from "pages/ShowStoryList";
+import UserLoginPage from "pages/UserLogin";
+
 
 import { ChakraProvider } from "@chakra-ui/react";
 import theme from "./theme";
@@ -50,6 +52,7 @@ function App() {
 						<Route path="/user/onboarding" exact component={UserOnboarding} /> {/* Maybe change to /onboarding kasi depende pa rin kung logged in as user or onboarding? */}
 						<NavRoute path="/institution/settings" component={InstitutionSettings} /> {/* Maybe change to just /settings kapag logged in as insti?*/}
 						<NavRoute path="/stories" component={ShowStoryList} />
+						<Route  path="/user/login" component={UserLoginPage} />
 						<Redirect path="/" to="/sample" exact />
 					</Switch>
 				</Router>
