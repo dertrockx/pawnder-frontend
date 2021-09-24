@@ -1,3 +1,4 @@
+
 .container {
     align-content: center;
     background-image: url(assets/pawBackground.svg);
@@ -7,6 +8,7 @@
     padding-right: 10%;
     padding-bottom: 56px;
     background-size: 500px 500px;
+    overflow-y: hidden !important;
 }
 
 
@@ -57,21 +59,7 @@ input.visuallyHidden:focus-within + label {
     text-align: center;
     position: absolute; 
     right: 0;
-    top: 28%
-}
-
-.uploadLabel2 {
-    width: 139px;
-    height: 40px;
-    background-color: var(--color-brand-darker);
-    color: var(--color-white);
-    padding: 7px 19px;
-    border-radius: 10px;
-    transition: all 0.3s;
-    text-align: center;
-    margin-top: 20px;
-    left: 0;
-    top: 28%
+    top: 28%;
 }
 
 .uploadLabel:hover {
@@ -82,12 +70,6 @@ input.visuallyHidden:focus-within + label {
     position: absolute !important; 
     right: 0;
     top: 58%;
-}
-
-.removePhoto2 {
-    position: absolute !important; 
-    right: 0;
-    margin-top: 20px;
 }
 
 .buttons {
