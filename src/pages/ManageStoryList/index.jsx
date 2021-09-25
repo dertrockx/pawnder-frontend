@@ -1,8 +1,9 @@
-import React, { useState, useEffect } from 'react';
-import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
+import React, { useState, useEffect, useRef } from 'react';
+import { BrowserRouter as Router, Switch, Route, Link } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
 import { Button as ChakraButton, Menu, MenuButton, MenuList, MenuOptionGroup, MenuItemOption, InputGroup, Input, InputLeftElement, HStack, Stack, Box, Skeleton } from '@chakra-ui/react';
-import { IoSearch, IoCaretDown } from 'react-icons/io5';
+import { IconButton, AlertDialog, AlertDialogOverlay, AlertDialogContent, AlertDialogHeader, AlertDialogBody, AlertDialogFooter } from '@chakra-ui/react';
+import { IoSearch, IoCaretDown, IoTrashBin } from 'react-icons/io5';
 
 import { fetchStories } from 'redux/actions/storyActions';
 
@@ -59,27 +60,132 @@ const ManageStoryList = () => {
       return story;
     }
   });
+
+  const handleDelete = () => {
+    // Make DELETE request
+    alert("You have successfully deleted the post.")
+  }
+
+  const DeleteAlertDialog = () => {
+    const [isOpen, setIsOpen] = useState(false);
+    const onClose = () => setIsOpen(false);
+    const cancelRef = useRef();
+    return(
+      <>
+        <IconButton
+          aria-label="Delete post"
+          icon={<IoTrashBin />}
+          isRound="true"
+          boxShadow="xl"
+          bg="rgb(237, 69, 93)"
+          color="white"
+          _hover={{filter:"brightness(0.8)"}}
+          _focus={{border:"none"}}
+          onClick={() => {setIsOpen(true)}}
+          style={{position: "absolute", top: "-20px", right:"-20px"}}
+        />
+        <AlertDialog
+          isOpen={isOpen}
+          leastDestructiveRef={cancelRef}
+          onClose={onClose}
+        >
+          <AlertDialogOverlay>
+            <AlertDialogContent>
+              <AlertDialogHeader className="heading-3" textAlign="center">
+                You are about to delete a post
+              </AlertDialogHeader>
+              <AlertDialogBody className="bold-text" textAlign="center">
+                This will permanently remove your post from the list.
+                Are you sure?
+              </AlertDialogBody>
+              <AlertDialogFooter>
+                <ChakraButton ref={cancelRef} onClick={onClose} _hover={{filter:"brightness(0.8)"}} _focus={{border:"none"}}>Cancel</ChakraButton>
+                <ChakraButton ref={cancelRef} onClick={handleDelete} bg="rgb(237, 69, 93)" color="white" ml={3} _hover={{filter:"brightness(0.8)"}} _focus={{border:"none"}}>Delete</ChakraButton>
+              </AlertDialogFooter>
+            </AlertDialogContent>
+          </AlertDialogOverlay>
+        </AlertDialog>
+      </>
+    );
+  }
+
+  const handlePublish = () => {
+    // Make PUT request
+
+    alert("Published")
+  }
+
+  const PublishAlertDialog = () => {
+    const [isOpen, setIsOpen] = useState(false);
+    const onClose = () => setIsOpen(false);
+    const cancelRef = useRef();
+    return(
+      <>
+        <div className={styles.default} onClick={() => {setIsOpen(true)}}>Publish</div>
+        <AlertDialog
+          isOpen={isOpen}
+          leastDestructiveRef={cancelRef}
+          onClose={onClose}
+        >
+          <AlertDialogOverlay>
+            <AlertDialogContent>
+              <AlertDialogHeader className="heading-3" textAlign="center">
+                You are about to publish a post
+              </AlertDialogHeader>
+              <AlertDialogBody className="bold-text" textAlign="center">
+                This will allow users to read your story.
+                You can still edit your post after this.
+                Are you sure?
+              </AlertDialogBody>
+              <AlertDialogFooter>
+                <ChakraButton ref={cancelRef} onClick={onClose} _hover={{filter:"brightness(0.8)"}} _focus={{border:"none"}}>Cancel</ChakraButton>
+                <ChakraButton ref={cancelRef} onClick={handlePublish} bg="rgb(0, 192, 77)" color="white" ml={3} _hover={{filter:"brightness(0.8)"}} _focus={{border:"none"}}>Publish</ChakraButton>
+              </AlertDialogFooter>
+            </AlertDialogContent>
+          </AlertDialogOverlay>
+        </AlertDialog>
+      </>
+    );
+  }
   
   return (
     <>
+      {/* Remove 404 Not Found page as Ian would be the one to configure it in the base routing. */}
       {(loginType === 'user' || loginType === null)
-          ? <Route component={() => (<div>404 Not Found</div>)} />
-          : <div className={styles.container}>
-              {fetchingStories
-              ? <HStack height="256px" width="1200px" boxShadow="lg" bg="white" marginTop="120px">
-                  <Skeleton height="256" width="350px" />
-                  <Box>
-                    <Stack width="850px" padding="8px 32px 8px 16px" spacing="16px">
-                      <Skeleton height="48px" />
-                      <Skeleton height="16px" />
-                      <Skeleton height="16px" />
-                      <Skeleton height="16px" />
-                      <Skeleton height="16px" />
-                      <Skeleton height="16px" />
-                    </Stack>
-                  </Box>
-                </HStack>
-              : <Router>
+      ? <div className={styles.center}>
+          <h1 className="heading-1" >404 Not Found</h1>
+          <p className="paragraph">
+            Maybe you wanted to see all &nbsp;
+          <Link to="/stories" className="link-text">
+            stories
+          </Link>
+          ?
+          </p>
+        </div>
+      : <>
+          {fetchingStories
+          ? <div className={styles.container}>
+              <HStack height="256px" width="1200px" boxShadow="lg" bg="white" marginTop="120px">
+                <Skeleton height="256" width="350px" />
+                <Box>
+                  <Stack width="850px" padding="8px 32px 8px 16px" spacing="16px">
+                    <Skeleton height="48px" />
+                    <Skeleton height="16px" />
+                    <Skeleton height="16px" />
+                    <Skeleton height="16px" />
+                    <Skeleton height="16px" />
+                    <Skeleton height="16px" />
+                  </Stack>
+                </Box>
+              </HStack>
+            </div>
+          : <>
+            {fetchError
+            ? <div className={styles.center}>
+                <h1 className="heading-1" >Something went wrong. Please try again later.</h1>
+              </div>
+            : <div className={styles.container}>
+                <Router>
                   <Switch>
                     <Route exact path='/institution/manage-stories'>
                     <div className={styles.options}>
@@ -163,7 +269,9 @@ const ManageStoryList = () => {
                       </div>
                     </div>
                     <div className={styles.container}>
-                      <StoryCard data={ storiesListCopy } type={ loginType } />
+                      <StoryCard data={ storiesListCopy } type={ loginType } publish={ <PublishAlertDialog /> }>
+                        <DeleteAlertDialog />
+                      </StoryCard>
                     </div>
                     </Route>
                     <Route exact path='/manage-stories/:id' render={() => <BasicStoryDetail data={ storiesListCopy } />}>
@@ -171,9 +279,12 @@ const ManageStoryList = () => {
                     </Route>
                   </Switch>
                 </Router>
-              }
-            </div>
-        }
+              </div>
+            }
+            </>
+          }
+        </>
+      }
     </>
   );
 }

@@ -23,18 +23,35 @@ const fetchStories = async ({ loginType }) => {
 
   // ife-fetch ko lang muna for type insti is instiId=1
   if (loginType === "institution") {
+    // await axios.get('http://localhost:8000/stories?institutionId=1')
+    //         .then((response) => {
+    //           const stories = response.data;
+    //           console.log(stories); // remove
+    //           return stories;              
+    //         })
+    //         .catch((error) => {
+    //           console.log(error);
+    //         });
+
     const response = await axios.get('http://localhost:8000/stories?institutionId=1');
     const stories = response.data;
-
     console.log(stories); // remove
-
     return stories;
+
   } else {
+    // await axios.get('http://localhost:8000/stories?isDraft=false')
+    //     .then((response) => {
+    //       const stories = response.data;
+    //       console.log(stories); // remove
+    //       return stories;              
+    //     })
+    //     .catch((error) => {
+    //       console.log(error);
+    //     });
+
     const response = await axios.get('http://localhost:8000/stories?isDraft=false');
     const stories = response.data;
-
     console.log(stories); // remove
-
     return stories;
   }
 }
