@@ -1,3 +1,11 @@
+.center {
+  height: fit-content;
+  width: fit-content;
+  text-align: center;
+  /* flex display not working */
+  margin: 15% auto;
+}
+
 .container {
   width: 1200px;
   margin: auto;
