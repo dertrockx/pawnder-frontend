@@ -6,7 +6,8 @@ import { Route } from "react-router";
 
 // TODO: use React.lazy() to lazy-load these pages
 import SamplePage from "pages/SamplePage";
-import { UserLoginPage, UserSignupPage, UserInformationPage, UserPreferencesPage } from "pages";
+import { UserLoginPage, UserSignupPage } from "pages";
+import UserSettings from "pages/UserSettings";
 import InstitutionOnboardingPage from "pages/InstitutionOnboarding"
 // import Navbar from "components/Navbar";
 import ChakraSample from "pages/ChakraSample";
@@ -58,10 +59,9 @@ function App() {
 				<Router>
 					<Switch>
 						<NavRoute  path="/sample" exact component={SamplePage} />
-						<Route  path="/user/login" component={UserLoginPage} />
-						<Route  path="/user/signup" component={UserSignupPage} />
-						<NavRoute  path="/user/settings/information" component={UserInformationPage} />
-						<NavRoute  path="/user/settings/preferences" component={UserPreferencesPage} />
+						<Route  path="/user/login" exact component={UserLoginPage} />
+						<Route  path="/user/signup" exact component={UserSignupPage} />
+						<NavRoute  path="/user/settings" component={UserSettings} />
 						<Route  path="/institution/onboarding" component={InstitutionOnboardingPage} />
 						<NavRoute path="/chakra-sample" exact component={ChakraSample} />
 						<NavRoute path="/sample" exact component={SamplePage} />
