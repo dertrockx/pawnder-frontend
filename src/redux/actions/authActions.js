@@ -10,20 +10,18 @@ export function login(loginType) {
         });
 
         const hasError = false; //backend
-        setTimeout(() => {
-            if(hasError) {
-                dispatch({
-                    type: auth.LOGIN_FAILED,
-                    payload: {
-                        errorMessage: 'Something went wrong. Please try again later.',
-                    }
-                });
-            } else {
-                dispatch({
-                    type: auth.LOGIN_COMPLETED,
-                });
-            }
-        }, 3000);
+        if(hasError) {
+            dispatch({
+                type: auth.LOGIN_FAILED,
+                payload: {
+                    errorMessage: 'Something went wrong. Please try again later.',
+                }
+            });
+        } else {
+            dispatch({
+                type: auth.LOGIN_COMPLETED,
+            });
+        }
     };
 }
 
