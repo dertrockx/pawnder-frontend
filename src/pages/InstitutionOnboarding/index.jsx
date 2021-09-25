@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useHistory } from "react-router-dom";
+import { useSelector } from "react-redux";
 import { IoArrowBack } from 'react-icons/io5';
 
 import Button from "components/Button";
@@ -27,10 +28,16 @@ function InstitutionOnboardingPage() {
 	const [ isEnableLocationClicked, setIsEnableLocationClicked ] = useState(false);
 	const [ imagePreviewError, setImagePreviewError ] = useState(false);
 	const [ nextDisabled, setNextDisabled ] = useState(true);
+	const isAuthenticated = useSelector((s) => s.auth.isAuthenticated);
+	const loginType = useSelector((s) => s.auth.loginType);
 
-	useEffect(() => {	
-		if(value.name && value.description && value.contactNumber && value.image !== '/images/Avatar.png') setNextDisabled(false);
-  });
+	useEffect(() => {
+		if(!isAuthenticated) history.replace("/institution/login") 
+		else if (loginType === 'institution') {
+			if(value.name && value.description && value.contactNumber && value.image !== '/images/Avatar.png') setNextDisabled(false);
+		}
+		
+	}, []);
 
 	const handleChange = (e) => {
 		setValue({
@@ -47,7 +54,7 @@ function InstitutionOnboardingPage() {
 		
 		history.replace("/")		//must be redirected to user feed page
 
-  }
+	}
 
 	function clickEnableLocation(e) {
 		e.preventDefault();
@@ -74,7 +81,7 @@ function InstitutionOnboardingPage() {
 			}
 			setImagePreviewError(true);
 		}
-  }
+	}
 
 	return (
 		<div className={styles.container}>
