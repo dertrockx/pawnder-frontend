@@ -1,5 +1,4 @@
 import { auth } from "constants/ActionTypes";
-import StateManager from "react-select";
 
 const initialState = {
 	loginPending: false,
