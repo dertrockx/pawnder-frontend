@@ -1,19 +1,26 @@
-import React, { useState } from "react";
-import { NavLink } from "react-router-dom";
+import React from "react";
+import { NavLink, useHistory } from "react-router-dom";
+import { useSelector, useDispatch } from "react-redux";
+
+import { logout as logoutUser } from 'redux/actions/authActions'
+
 import styles from "./Navbar.module.css";
 import Button from "components/Button";
+
 function Navbar() {
 	// TODO: use redux and cookeis to check if user is authenticated
 	// as of now just use some basic state
-	const [authenticated, setAuthenticated] = useState(false);
-	const [isInsti, setIsInsti] = useState(false);
-	const login = () => setAuthenticated(true);
-	const loginAsInsti = () => setIsInsti(true);
+	const history = useHistory();
+	const dispatch = useDispatch();
+	const isAuthenticated = useSelector((s) => s.auth.isAuthenticated);
+	const loginType = useSelector((s) => s.auth.loginType);
 
-	const logout = () => {
-		setAuthenticated(false);
-		setIsInsti(false);
-	};
+	function logout() { 
+		dispatch(logoutUser());
+		if(loginType === 'user') history.replace("/user/login");
+		else history.replace("/institution/login");
+	}
+
 	// render these navbar items if currently signed-in identiy is a user
 	function renderUserItems() {
 		return (
@@ -42,7 +49,7 @@ function Navbar() {
 				<NavLink
 					className={`paragraph ${styles.navbarItem}`}
 					activeClassName="bold-text"
-					to="/settings"
+					to="/user/settings"
 				>
 					Settings
 				</NavLink>
@@ -70,7 +77,7 @@ function Navbar() {
 				<NavLink
 					className={`paragraph ${styles.navbarItem}`}
 					activeClassName="bold-text"
-					to="/settings"
+					to="/institution/settings"
 				>
 					Settings
 				</NavLink>
@@ -85,9 +92,9 @@ function Navbar() {
 					<p className="bold-text">Logo goes here</p>
 				</div>
 				<div className={styles.navbarRightItems}>
-					{authenticated &&
-						(isInsti ? renderInstitutionItems() : renderUserItems())}
-					<NavLink
+					{isAuthenticated &&
+						(loginType === 'institution' ? renderInstitutionItems() : renderUserItems())}
+					{/* <NavLink
 						className={`paragraph ${styles.navbarItem}`}
 						activeClassName="bold-text"
 						to="/sample"
@@ -100,8 +107,8 @@ function Navbar() {
 						to="/chakra-sample"
 					>
 						Chakra Sample
-					</NavLink>
-					{authenticated ? (
+					</NavLink> */}
+					{isAuthenticated ? (
 						<Button
 							color="white"
 							variant="outline"
@@ -116,7 +123,9 @@ function Navbar() {
 								color="white"
 								variant="outline"
 								size="small"
-								onClick={login}
+								onClick={() => {
+									history.push("/user/login")
+								}}
 							>
 								login as user
 							</Button>
@@ -124,7 +133,9 @@ function Navbar() {
 								color="white"
 								variant="outline"
 								size="small"
-								onClick={login}
+								onClick={() => {
+									history.push("/user/signup")
+								}}
 							>
 								signup as user
 							</Button>
@@ -133,8 +144,7 @@ function Navbar() {
 								variant="outline"
 								size="small"
 								onClick={() => {
-									login();
-									loginAsInsti();
+									history.push("/institution/login")
 								}}
 							>
 								login as insti
@@ -144,8 +154,7 @@ function Navbar() {
 								variant="outline"
 								size="small"
 								onClick={() => {
-									login();
-									loginAsInsti();
+									history.push("/institution/signup")
 								}}
 							>
 								signup as insti
