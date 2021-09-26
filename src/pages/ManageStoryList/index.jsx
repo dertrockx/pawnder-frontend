@@ -2,8 +2,8 @@ import React, { useState, useEffect, useRef } from 'react';
 import { BrowserRouter as Router, Switch, Route, Link } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
 import { HStack, Stack, Box, Skeleton } from '@chakra-ui/react';
-import { Button as ChakraButton, Menu, MenuButton, MenuList, MenuOptionGroup, MenuItemOption, InputGroup, Input, InputLeftElement} from '@chakra-ui/react';
-import { IconButton, AlertDialog, AlertDialogOverlay, AlertDialogContent, AlertDialogHeader, AlertDialogBody, AlertDialogFooter } from '@chakra-ui/react';
+import { Button as ChakraButton, IconButton, Tooltip, Menu, MenuButton, MenuList, MenuOptionGroup, MenuItemOption, InputGroup, Input, InputLeftElement} from '@chakra-ui/react';
+import { AlertDialog, AlertDialogOverlay, AlertDialogContent, AlertDialogHeader, AlertDialogBody, AlertDialogFooter } from '@chakra-ui/react';
 import { useDisclosure, Modal, ModalOverlay, ModalContent, ModalHeader, ModalFooter, ModalBody, ModalCloseButton} from '@chakra-ui/react'
 import { IoSearch, IoCaretDown, IoTrashBin, IoAdd } from 'react-icons/io5';
 
@@ -160,18 +160,22 @@ const ManageStoryList = () => {
     const { isOpen, onOpen, onClose } = useDisclosure();
     return (
       <>
-        <IconButton
-          aria-label="Create story"
-          icon={<IoAdd />}
-          isRound="true"
-          boxShadow="xl"
-          bg={`var(--color-brand-default)`}
-          color="white"
-          _hover={{filter:"brightness(0.8)"}}
-          _focus={{border:"none"}}
-          onClick={onOpen}
-          style={{position: "absolute", bottom: "50px", right:"50px"}}
-        />
+        <Tooltip hasArrow label="Create a story" bg={`var(--color-very-light-grey)`} color={`--color-black`} borderRadius="4px" fontFamily="Raleway">
+          <IconButton
+            aria-label="Create a story"
+            icon={<IoAdd />}
+            isRound="true"
+            boxShadow="dark-lg"
+            bg={`var(--color-brand-default)`}
+            color="white"
+            size="lg"
+            fontSize="40px"
+            _hover={{filter:"brightness(0.8)"}}
+            _focus={{border:"none"}}
+            onClick={onOpen}
+            style={{position: "fixed", bottom: "40px", right:"60px"}} // For positioning floating action button to bottom right of screen
+          />
+        </Tooltip>
         <Modal isOpen={isOpen} onClose={onClose}>
           <ModalOverlay />
           <ModalContent>
@@ -192,7 +196,6 @@ const ManageStoryList = () => {
     );
   }
 
-  
   return (
     <>
       {/* Remove 404 Not Found page as Ian would be the one to configure it in the base routing. */}
@@ -233,7 +236,6 @@ const ManageStoryList = () => {
                 <Router>
                   <Switch>
                     <Route exact path='/manage-stories'>
-                      <CreateModal />
                       <div className={styles.container}>
                         <div className={styles.options}>
                           <div>
@@ -318,6 +320,7 @@ const ManageStoryList = () => {
                         <StoryCard data={ storiesListCopy } type={ loginType } publish={ <PublishAlertDialog /> }>
                           <DeleteAlertDialog />
                         </StoryCard>
+                        <CreateModal />
                       </div>
                     </Route>
                     <Route exact path='/manage-stories/:id' render={() => <BasicStoryDetail data={ storiesListCopy } />} />
