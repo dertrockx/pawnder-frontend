@@ -3,6 +3,7 @@ import BasicInput from "components/BasicInput";
 import Button from "components/Button";
 import BasicLink from "components/BasicLink";
 import styles from "./UserSignup.module.css"
+import { IoConstructOutline } from "react-icons/io5";
 
 function UserSignupPage() {
 	const [ email, setEmail ] = useState("");
@@ -18,6 +19,7 @@ function UserSignupPage() {
 		valueCb(newValue);
 		if(isRequired) setIsRequired(false);
 		if(emailError && e.target.name === "email") setEmailError(false);
+		if(emailAlreadyExistsError) setEmailAlreadyExistsError(false)
 		if(passwordError && (e.target.name === "password" || e.target.name === "confirmPassword")) setPasswordError(false);
 	}
 	
@@ -29,16 +31,40 @@ function UserSignupPage() {
 			if(!/\S+@\S+\.\S+/.test(email)) setEmailError(true);
 			if(password === "" || confirmPassword === "" ||email === "") setIsRequired(true);
 		} else {
-
-			//clears the fields of the form
-			const form = document.getElementsByName("signup-form");
-			form[0].reset();
 			
 			//sends a POST request for signing up
 			//if success, user must be redirected to /user/onboarding
 			//else, error message must be displayed
 				//if email already exists, setEmailAlreadyExistsError(true);
-			console.log(email, password, confirmPassword);
+
+			fetch(
+				"http://localhost:8081/api/0.1/user",
+				{
+					method: "POST",
+					headers: {
+						"Content-Type": "application/json"
+					},
+					body: JSON.stringify({
+						email: email,
+						password: password
+					})
+				})
+				.then(response => {
+					if(response.status === 201) {
+						//clears the fields of the form
+						const form = document.getElementsByName("signup-form");
+						form[0].reset();
+
+						//redirect somewhere
+					}
+					return response.json()
+				})
+				.then(data => {
+					if (data.code) {
+						setEmailAlreadyExistsError(true);
+					}
+				})
+			
 		}
 	}
 
