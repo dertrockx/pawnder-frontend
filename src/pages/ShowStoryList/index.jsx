@@ -88,56 +88,55 @@ const ShowStoryList = () => {
             ? <div className={styles.center}>
                 <h1 className="heading-1" >Something went wrong. Please try again later.</h1>
               </div> 
-            : <div className={styles.container}>
+            : <>
                 <Router>
                   <Switch>
                     <Route exact path='/stories'>
-                    <div className={styles.options}>
-                      <div className={styles.sortDate}>
-                        <p className="bold-text">Sort Date by:</p>
-                        <Radio
-                          name="sort"
-                          label="Ascending"
-                          onChange={() => {setSortDate("ascending")}}
-                          checked={sortDate === "ascending"}
-                        />
-                        <Radio
-                          name="sort"
-                          label="Descending"
-                          onChange={() => {setSortDate("descending")}}
-                          checked={sortDate === "descending"}
-                        />
-                      </div>
-                      <div className={styles.searchBar}>
-                        <InputGroup>
-                          <InputLeftElement
-                            pointerEvents="none"
-                            children={<IoSearch color="rgb(187, 200, 212)" />}
-                          />
-                          <Input
-                            name="search"
-                            placeholder="Search"
-                            value={searchTerm}
-                            onChange={(e) => {setSearchTerm(e.target.value)}}
-                            fontFamily="Raleway"
-                            borderWidth="2px"
-                            borderColor="rgb(187, 200, 212)"
-                            _hover={{borderColor: "rgb(109, 125, 139)"}}
-                            focusBorderColor="brand.100"
-                          />
-                        </InputGroup>
-                      </div>
-                    </div>
                     <div className={styles.container}>
+                      <div className={styles.options}>
+                        <div className={styles.sortDate}>
+                          <p className="bold-text">Sort Date by:</p>
+                          <Radio
+                            name="sort"
+                            label="Ascending"
+                            onChange={() => {setSortDate("ascending")}}
+                            checked={sortDate === "ascending"}
+                          />
+                          <Radio
+                            name="sort"
+                            label="Descending"
+                            onChange={() => {setSortDate("descending")}}
+                            checked={sortDate === "descending"}
+                          />
+                        </div>
+                        <div className={styles.searchBar}>
+                          <InputGroup>
+                            <InputLeftElement
+                              pointerEvents="none"
+                              children={<IoSearch color="rgb(187, 200, 212)" />}
+                            />
+                            <Input
+                              name="search"
+                              placeholder="Search"
+                              value={searchTerm}
+                              onChange={(e) => {setSearchTerm(e.target.value)}}
+                              fontFamily="Raleway"
+                              borderWidth="2px"
+                              borderColor="rgb(187, 200, 212)"
+                              _hover={{borderColor: "rgb(109, 125, 139)"}}
+                              focusBorderColor="brand.100"
+                            />
+                          </InputGroup>
+                        </div>
+                      </div>
                       <StoryCard data={ storiesListCopy } type={ loginType } />
-                    </div>
+                      </div>
                     </Route>
-                    <Route exact path='/stories/:id' render={() => <BasicStoryDetail data={ storiesListCopy } />}>
+                    <Route exact path='/stories/:id' render={() => <BasicStoryDetail data={ storiesListCopy } />}/>
                       {/* <BasicStoryDetail data={ storiesListCopy } /> */}
-                    </Route>
                   </Switch>
                 </Router>
-              </div>
+              </>
             } 
             </>
           }

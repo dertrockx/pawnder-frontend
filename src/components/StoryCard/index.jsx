@@ -49,7 +49,7 @@ const StoryCard = (props) => {
         <div key={story.id} className={styles.baseStyles}>
           <img src={story.headlineURL} alt="" className={styles.image} />
           <div className={styles.rightContainer}>
-          <React.Fragment className={styles.delete}>{children}</React.Fragment>
+          <React.Fragment>{children}</React.Fragment>
             <div className={styles.titleContainer}>
               <h2 className="heading-2">{story.title}</h2>
             </div>
@@ -68,7 +68,7 @@ const StoryCard = (props) => {
                 </div>
               </div>
               <div className={styles.buttons}>
-                <Link to={`/institution/manage-stories/${story.id}`}>
+                <Link to={`/manage-stories/${story.id}`}>
                   <div className={styles.outline}>Edit</div>
                 </Link>
                 {story.isDraft === true && <>{publish}</>}

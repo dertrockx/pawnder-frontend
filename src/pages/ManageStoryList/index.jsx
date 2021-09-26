@@ -1,9 +1,11 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { BrowserRouter as Router, Switch, Route, Link } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
-import { Button as ChakraButton, Menu, MenuButton, MenuList, MenuOptionGroup, MenuItemOption, InputGroup, Input, InputLeftElement, HStack, Stack, Box, Skeleton } from '@chakra-ui/react';
+import { HStack, Stack, Box, Skeleton } from '@chakra-ui/react';
+import { Button as ChakraButton, Menu, MenuButton, MenuList, MenuOptionGroup, MenuItemOption, InputGroup, Input, InputLeftElement} from '@chakra-ui/react';
 import { IconButton, AlertDialog, AlertDialogOverlay, AlertDialogContent, AlertDialogHeader, AlertDialogBody, AlertDialogFooter } from '@chakra-ui/react';
-import { IoSearch, IoCaretDown, IoTrashBin } from 'react-icons/io5';
+import { useDisclosure, Modal, ModalOverlay, ModalContent, ModalHeader, ModalFooter, ModalBody, ModalCloseButton} from '@chakra-ui/react'
+import { IoSearch, IoCaretDown, IoTrashBin, IoAdd } from 'react-icons/io5';
 
 import { fetchStories } from 'redux/actions/storyActions';
 
@@ -12,6 +14,10 @@ import styles from './ManageStoryList.module.css';
 import StoryCard from 'components/StoryCard';
 import Radio from 'components/Radio';
 import BasicStoryDetail from './BasicStoryDetail'; // Change to ManageStoryDetails page
+// import ManageStoryDetails from "pages/ManageStoryDetails";
+
+
+// Guide: https://medium.com/geekculture/how-to-use-react-router-useparams-436851fd5ef6
 
 const ManageStoryList = () => {
   // get login type, pass login type as props to story card component
@@ -95,8 +101,7 @@ const ManageStoryList = () => {
                 You are about to delete a post
               </AlertDialogHeader>
               <AlertDialogBody className="bold-text" textAlign="center">
-                This will permanently remove your post from the list.
-                Are you sure?
+                This will permanently remove your post from the list. Are you sure?
               </AlertDialogBody>
               <AlertDialogFooter>
                 <ChakraButton ref={cancelRef} onClick={onClose} _hover={{filter:"brightness(0.8)"}} _focus={{border:"none"}}>Cancel</ChakraButton>
@@ -133,9 +138,7 @@ const ManageStoryList = () => {
                 You are about to publish a post
               </AlertDialogHeader>
               <AlertDialogBody className="bold-text" textAlign="center">
-                This will allow users to read your story.
-                You can still edit your post after this.
-                Are you sure?
+                This will allow users to read your story. You can still edit your post after this. Are you sure?
               </AlertDialogBody>
               <AlertDialogFooter>
                 <ChakraButton ref={cancelRef} onClick={onClose} _hover={{filter:"brightness(0.8)"}} _focus={{border:"none"}}>Cancel</ChakraButton>
@@ -147,6 +150,48 @@ const ManageStoryList = () => {
       </>
     );
   }
+
+  const handleCreate = () => {
+    // put toast here na you have successfully created a story
+    alert("Successfully created a story");
+  }
+
+  const CreateModal = () => {
+    const { isOpen, onOpen, onClose } = useDisclosure();
+    return (
+      <>
+        <IconButton
+          aria-label="Create story"
+          icon={<IoAdd />}
+          isRound="true"
+          boxShadow="xl"
+          bg={`var(--color-brand-default)`}
+          color="white"
+          _hover={{filter:"brightness(0.8)"}}
+          _focus={{border:"none"}}
+          onClick={onOpen}
+          style={{position: "absolute", bottom: "50px", right:"50px"}}
+        />
+        <Modal isOpen={isOpen} onClose={onClose}>
+          <ModalOverlay />
+          <ModalContent>
+            <ModalHeader>
+              Create a story
+            </ModalHeader>
+            <ModalCloseButton /> {/* Might remove if I don't need a close button */}
+            <ModalBody>
+              Put form here
+            </ModalBody>
+            <ModalFooter>
+              <ChakraButton onClick={onClose} _hover={{filter:"brightness(0.8)"}} _focus={{border:"none"}}>Cancel</ChakraButton>
+              <ChakraButton onClick={handleCreate} bg="rgb(0, 192, 77)" color="white" ml={3} _hover={{filter:"brightness(0.8)"}} _focus={{border:"none"}}>Create</ChakraButton>
+            </ModalFooter>
+          </ModalContent>
+        </Modal>
+      </>
+    );
+  }
+
   
   return (
     <>
@@ -184,102 +229,102 @@ const ManageStoryList = () => {
             ? <div className={styles.center}>
                 <h1 className="heading-1" >Something went wrong. Please try again later.</h1>
               </div>
-            : <div className={styles.container}>
+            : <>
                 <Router>
                   <Switch>
-                    <Route exact path='/institution/manage-stories'>
-                    <div className={styles.options}>
-                      <div>
-                      <Menu>
-                        <MenuButton
-                          as={ChakraButton}
-                          rightIcon={<IoCaretDown />}
-                          bg="rgb(255, 165, 0)"
-                          color="white"
-                          fontFamily="Raleway"
-                          _hover={{filter:"brightness(0.8)"}}
-                          _expanded={{bg:"rgb(255, 165, 0)"}}
-                          _focus={{border:"none"}}
-                        >
-                          Filter
-                        </MenuButton>
-                        <MenuList>
-                          <MenuOptionGroup onChange={(value) => setFilterStory(value)} type="radio">
-                            <MenuItemOption 
-                              className="paragraph"
-                              value=""
-                              _checked={{bg: "none", color:"rgb(255, 165, 0)", fontWeight:"bold"}}
-                              _hover={{bg:"none", fontWeight:"bold"}}
+                    <Route exact path='/manage-stories'>
+                      <CreateModal />
+                      <div className={styles.container}>
+                        <div className={styles.options}>
+                          <div>
+                          <Menu>
+                            <MenuButton
+                              as={ChakraButton}
+                              rightIcon={<IoCaretDown />}
+                              bg="rgb(255, 165, 0)"
+                              color="white"
+                              fontFamily="Raleway"
+                              _hover={{filter:"brightness(0.8)"}}
+                              _expanded={{bg:"rgb(255, 165, 0)"}}
+                              _focus={{border:"none"}}
                             >
-                              None
-                            </MenuItemOption>
-                            <MenuItemOption 
-                              className="paragraph"
-                              value="draft" 
-                              _checked={{bg: "none", color:"rgb(255, 165, 0)", fontWeight:"bold"}}
-                              _hover={{bg:"none", fontWeight:"bold"}}
-                            >
-                              Draft
-                            </MenuItemOption>
-                            <MenuItemOption 
-                              className="paragraph"
-                              value="published" 
-                              _checked={{bg: "none", color:"rgb(255, 165, 0)", fontWeight:"bold"}}
-                              _hover={{bg:"none", fontWeight:"bold"}}
-                            >
-                              Published
-                            </MenuItemOption>
-                          </MenuOptionGroup>
-                        </MenuList>
-                    </Menu>
+                              Filter
+                            </MenuButton>
+                            <MenuList>
+                              <MenuOptionGroup onChange={(value) => setFilterStory(value)} type="radio">
+                                <MenuItemOption 
+                                  className="paragraph"
+                                  value=""
+                                  _checked={{bg: "none", color:"rgb(255, 165, 0)", fontWeight:"bold"}}
+                                  _hover={{bg:"none", fontWeight:"bold"}}
+                                >
+                                  None
+                                </MenuItemOption>
+                                <MenuItemOption 
+                                  className="paragraph"
+                                  value="draft" 
+                                  _checked={{bg: "none", color:"rgb(255, 165, 0)", fontWeight:"bold"}}
+                                  _hover={{bg:"none", fontWeight:"bold"}}
+                                >
+                                  Draft
+                                </MenuItemOption>
+                                <MenuItemOption 
+                                  className="paragraph"
+                                  value="published" 
+                                  _checked={{bg: "none", color:"rgb(255, 165, 0)", fontWeight:"bold"}}
+                                  _hover={{bg:"none", fontWeight:"bold"}}
+                                >
+                                  Published
+                                </MenuItemOption>
+                              </MenuOptionGroup>
+                            </MenuList>
+                        </Menu>
+                          </div>
+                          <div className={styles.sortDate}>
+                            <p className="bold-text">Sort Date by:</p>
+                            <Radio
+                              name="sort"
+                              label="Ascending"
+                              onChange={() => {setSortDate("ascending")}}
+                              checked={sortDate === "ascending"}
+                            />
+                            <Radio
+                              name="sort"
+                              label="Descending"
+                              onChange={() => {setSortDate("descending")}}
+                              checked={sortDate === "descending"}
+                            />
+                          </div>
+                          <div className={styles.searchBar}>
+                            <InputGroup>
+                              <InputLeftElement
+                                pointerEvents="none"
+                                children={<IoSearch color="rgb(187, 200, 212)" />}
+                              />
+                              <Input
+                                name="search"
+                                placeholder="Search"
+                                value={searchTerm}
+                                onChange={(e) => {setSearchTerm(e.target.value)}}
+                                fontFamily="Raleway"
+                                borderWidth="2px"
+                                borderColor="rgb(187, 200, 212)"
+                                _hover={{borderColor: "rgb(109, 125, 139)"}}
+                                focusBorderColor="brand.100"
+                              />
+                            </InputGroup>
+                          </div>
+                        </div>
+                        <StoryCard data={ storiesListCopy } type={ loginType } publish={ <PublishAlertDialog /> }>
+                          <DeleteAlertDialog />
+                        </StoryCard>
                       </div>
-                      <div className={styles.sortDate}>
-                        <p className="bold-text">Sort Date by:</p>
-                        <Radio
-                          name="sort"
-                          label="Ascending"
-                          onChange={() => {setSortDate("ascending")}}
-                          checked={sortDate === "ascending"}
-                        />
-                        <Radio
-                          name="sort"
-                          label="Descending"
-                          onChange={() => {setSortDate("descending")}}
-                          checked={sortDate === "descending"}
-                        />
-                      </div>
-                      <div className={styles.searchBar}>
-                        <InputGroup>
-                          <InputLeftElement
-                            pointerEvents="none"
-                            children={<IoSearch color="rgb(187, 200, 212)" />}
-                          />
-                          <Input
-                            name="search"
-                            placeholder="Search"
-                            value={searchTerm}
-                            onChange={(e) => {setSearchTerm(e.target.value)}}
-                            fontFamily="Raleway"
-                            borderWidth="2px"
-                            borderColor="rgb(187, 200, 212)"
-                            _hover={{borderColor: "rgb(109, 125, 139)"}}
-                            focusBorderColor="brand.100"
-                          />
-                        </InputGroup>
-                      </div>
-                    </div>
-                    <div className={styles.container}>
-                      <StoryCard data={ storiesListCopy } type={ loginType } publish={ <PublishAlertDialog /> }>
-                        <DeleteAlertDialog />
-                      </StoryCard>
-                    </div>
                     </Route>
-                    <Route exact path='/manage-stories/:id' render={() => <BasicStoryDetail data={ storiesListCopy } />}>
+                    <Route exact path='/manage-stories/:id' render={() => <BasicStoryDetail data={ storiesListCopy } />} />
                       {/* <BasicStoryDetail data={ storiesListCopy } /> */}
-                    </Route>
                   </Switch>
                 </Router>
-              </div>
+              </>
             }
             </>
           }
