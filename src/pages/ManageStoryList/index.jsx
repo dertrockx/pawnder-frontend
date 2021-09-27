@@ -164,7 +164,7 @@ const ManageStoryList = () => {
             aria-label="Create a story"
             icon={<IoAdd />}
             isRound="true"
-            boxShadow="dark-lg"
+            boxShadow="xl"
             bg={`var(--color-brand-default)`}
             color="white"
             size="lg"

@@ -21,7 +21,7 @@ function Checkbox(props) {
         className={styles.Checkbox}
       />
       <span className={styles.checkmark}></span>
-      </label>
+    </label>
   );
 }
 
