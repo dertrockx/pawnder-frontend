@@ -2,25 +2,11 @@
 
 /* All rules outside of @media queries apply to devices 1201px and above */
 
-.formContainer {
-	position: absolute;
-	top: 120px;
-	left: 250px;
-	max-width: 600px;
-}
-
-.formGroup {
-	margin-bottom: 40px;
-}
-
-.formGroup > h2 {
-	margin-bottom: 40px;
-	text-align: center;
-}
-
-.formGroup > p {
-	text-align: center;
-	margin-top: -30px;
+.topItems {
+	display: flex;
+	gap: 20px;
+	margin-top: 30px;
+	margin-left: 90px;
 }
 
 .cardDisplay {
@@ -55,89 +41,55 @@
 	column-gap: 500px;
 }
 
-.cardPreferences:hover {
-	cursor: pointer;
-}
-
-.cardPreferencesSelected {
-	display: flex;
-	flex-direction: column;
-	align-items: center;
-	text-align: center;
-	border: 1px solid #ffa500;
-	border-radius: 8px;
-	box-shadow: 0px 4px rgba(0, 0, 0, 0.25);
-	padding: 10px;
-	column-gap: 500px;
-}
-
-.cardPreferencesSelected:hover {
-	cursor: pointer;
-}
-
-.cardImage {
-	height: 240px;
-	width: 240px;
-}
-
-.logo {
-	width: 127px;
-	height: 55px;
-	margin-left: inherit;
-}
-
-.topItems {
-	position: absolute;
-	top: 30px;
-	left: 90px;
-	display: flex;
-}
-
 .content {
-	display: flex;
-}
-
-.contentLeft {
 	max-width: 600px;
-}
-
-.contentRight {
-	top: 20px;
-	right: 0;
-	width: 350px;
-	height: 750px;
+	margin-top: 40px;
+	margin-left: 15%;
+	margin-bottom: 40px;
 }
 
 .formGroup {
-	/* margin-bottom: 40px; */
+	margin-bottom: 40px;
 }
 
 .formGroup > h2 {
-	/* margin-bottom: 40px;
-  text-align: center; */
+	margin-bottom: 40px;
+	text-align: center;
 }
 
-.profileFormLabel {
-	margin-top: 10px;
+.formGroup > p {
+	text-align: center;
+	margin-top: -30px;
+}
+
+/* First page form */
+.formFields {
+	display: flex;
+	flex-direction: column;
+	gap: 10px;
+}
+
+.formItemSex {
+	display: flex;
+	flex-direction: column;
+	gap: 3px;
+}
+
+.formItemSexOptions {
+	display: flex;
+	gap: 16px;
+	/* margin-left: 10px; */
 }
 
 /* Image */
 
-/* Image */
+/* Image upload */
 .imageContainer {
 	display: flex;
 	flex-direction: row;
-}
-
-.imageContainerRight {
-	/* padding-top: 30px;
-  margin-left: 20px; */
-}
-
-.imageContainerRight > p {
-	/* margin-top: 10px; */
-	color: red;
-	font-weight: bold;
+	align-items: center; /* Will be using toasts for when there are image errors so no space needed for error message at the bottom */
+	gap: 20px;
+	margin-bottom: 50px;
 }
 
 .img {
@@ -145,7 +97,6 @@
 	height: 150px;
 	border-radius: 50%;
 	object-fit: cover;
-	/* margin-bottom: 10px; */
 }
 
 .imageUploadLabel {
@@ -174,25 +125,30 @@
 	border: 1px solid var(--color-brand-default);
 }
 
+.imageUploadButton:hover {
+	filter: brightness(0.8);
+}
+
 .hideImageInput {
 	display: none;
 }
 
-/* Action cards */
-
+/* Second page form, action cards */
 .cardDisplay {
 	display: flex;
-	align-content: space-between;
-	gap: 10px;
+	justify-content: space-evenly;
 }
 
 .cardPreferences {
+	width: 256px;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	gap: 8px;
 	text-align: center;
 	border-radius: 8px;
 	box-shadow: 0px 4px rgba(0, 0, 0, 0.25);
 	padding: 10px;
-	justify-content: space-around;
-	column-gap: 500px;
 }
 
 .cardPreferences:hover {
@@ -200,13 +156,16 @@
 }
 
 .cardPreferencesSelected {
+	width: 256px;
+	display: flex;
+	flex-direction: column;
 	align-items: center;
+	gap: 8px;
 	text-align: center;
-	border: 1px solid #ffa500;
 	border-radius: 8px;
 	box-shadow: 0px 4px rgba(0, 0, 0, 0.25);
-	padding: 10px;
-	column-gap: 500px;
+	padding: 9px; /* https://stackoverflow.com/a/21342725 */
+	border: 1px solid #ffa500;
 }
 
 .cardPreferencesSelected:hover {
@@ -218,11 +177,35 @@
 	width: 240px;
 }
 
+/* Third page form */
+.checkboxesContainer {
+	/* https://stackoverflow.com/a/64430096 */
+	column-count: 2;
+	margin-top: 24px;
+	margin-bottom: 40px;
+	/* padding-left: 15% */
+}
+
+.checkboxItem {
+	display: block;
+	width: 100%;
+	margin-left: 25%;
+	margin-bottom: 12px;
+}
+
+.bg {
+	position: fixed;
+	width: 350px;
+	height: 750px;
+	top: 20px;
+	right: 0px;
+}
+
 /* Rules here apply to devices from 993px to 1200px (inclusive) */
 @media only screen and (max-width: 1200px) {
-	.contentRight {
+	.bg {
 		top: 20px;
-		margin-right: -50px;
+		margin-right: -150px;
 		width: 350px;
 		height: 750px;
 	}
@@ -230,28 +213,54 @@
 
 /* Rules here apply to devices from 769px to 992px (inclusive) */
 @media only screen and (max-width: 992px) {
-	/*
-    Logo in center and back button left
-
-  */
-	.contentRight {
+	.bg {
 		top: 20px;
-		margin-right: -100px;
+		margin-right: -295px;
 		width: 350px;
 		height: 750px;
 	}
 }
 
 /* Rules here apply to devices from 0px to 768px (inclusive) */
-@media (max-width: 768px) {
+@media only screen and (max-width: 768px) {
 	/* 
-    Action cards displayed column
     Smaller avatar size
-    Logo in center and back button left
-    Heading 1 in center
-    Picture gone
+    Bg gone
   */
-	.contentRight {
+	.bg {
 		display: none;
+	}
+
+	.content {
+		margin: auto;
+		padding: 40px 20px;
+	}
+
+	.img {
+		width: 120px;
+		height: 120px;
+	}
+
+	.topItems {
+		gap: 20px;
+		margin-top: 30px;
+		margin-left: 20px;
+	}
+}
+
+@media only screen and (max-width: 480px) {
+	.cardDisplay {
+		flex-direction: column;
+		gap: 20px;
+		align-items: center;
+	}
+
+	.imageUploadButton {
+		text-align: center;
+		padding: 10px 10px;
+	}
+
+	.checkboxItem {
+		margin-left: 15%;
 	}
 }
