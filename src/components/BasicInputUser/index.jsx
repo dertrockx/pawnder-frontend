@@ -1,7 +1,7 @@
 import React from "react";
-import styles from "./BasicInput.module.css";
+import styles from "./BasicInputUser.module.css";
 
-function BasicInput( props ) {
+const BasicInputUser = (props) => {
     const { 
         type, 
         name, 
@@ -28,4 +28,4 @@ function BasicInput( props ) {
     )
 }
 
-export default BasicInput;
+export default BasicInputUser;

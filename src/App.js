@@ -23,7 +23,6 @@ import UserOnboarding from "pages/UserOnboarding";
 import InstitutionSettings from "pages/InstitutionSettings";
 import ShowStoryList from "pages/ShowStoryList";
 import ManageStoryList from "pages/ManageStoryList";
-import UserLoginPage from "pages/UserLogin";
 
 
 import { ChakraProvider } from "@chakra-ui/react";
@@ -54,7 +53,6 @@ function App() {
 						<NavRoute path="/institution/settings" component={InstitutionSettings} /> {/* Maybe change to just /settings kapag logged in as insti?*/}
 						<NavRoute path="/stories" component={ShowStoryList} />
 						<NavRoute path="/manage-stories" component={ManageStoryList} />
-						<Route  path="/user/login" component={UserLoginPage} />
 						<Redirect path="/" to="/sample" exact />
 					</Switch>
 				</Router>

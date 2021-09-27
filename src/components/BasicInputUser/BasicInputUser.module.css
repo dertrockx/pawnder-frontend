@@ -16,6 +16,11 @@
   outline: none;
 }
 
+.baseStyles:hover:not(:focus) {
+  border: 2px solid var(--color-grey);
+  outline: none;
+}
+
 .baseStyles::placeholder {
   color: #BBC8D4;
   font-size: 16px;

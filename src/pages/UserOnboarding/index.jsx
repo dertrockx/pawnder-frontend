@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useHistory } from 'react-router';
-import { IoLocationSharp, IoArrowBack, IoCall } from 'react-icons/io5';
+import { IoLocationSharp, IoArrowBack } from 'react-icons/io5';
 import {
   Input,
   InputGroup,
@@ -14,7 +14,7 @@ import {
 } from '@chakra-ui/react';
 
 import Button from 'components/Button';
-import BasicInput from 'components/BasicInput';
+import BasicInputUser from 'components/BasicInputUser';
 import Checkbox from 'components/Checkbox';
 import Radio from 'components/Radio';
 
@@ -153,13 +153,6 @@ const handleImageChange = (e) => {
     });
     reader.readAsDataURL(selected);
     setImagePreviewError(false);
-    toast({
-      title: 'Image successfully uploaded',
-      status: 'success',
-      position: 'top',
-      duration: 5000,
-      isClosable: true,
-    });
   } else {
     /** 
      * Selecting a file and cancelling returns undefined to selected.
@@ -200,13 +193,6 @@ const handleImageChange = (e) => {
       locationLong: position.coords.longitude,
     });
     setLocationError(false);
-    toast({
-      title: 'Location successfully added.',
-      status: 'success',
-      position: 'top',
-      duration: 5000,
-      isClosable: true,
-    });
   }
 
   const onError = () => {
@@ -226,7 +212,7 @@ const handleImageChange = (e) => {
     if (!navigator.geolocation) {
       setLocationError(true);
       toast({
-        title: 'Geolocation is not supported by your browser.',
+        title: 'Geolocation is not supported by your browser. Please use another.',
         status: 'error',
         position: 'top',
         duration: 5000,
@@ -258,7 +244,7 @@ const handleImageChange = (e) => {
             <div className={styles.formFields}>
               <div>
                 <label className="bold-text">First Name</label>
-                  <BasicInput
+                  <BasicInputUser
                     type="text"
                     name="firstName"
                     onChange={handleChange}
@@ -268,7 +254,7 @@ const handleImageChange = (e) => {
               </div>
               <div>
                 <label className="bold-text">Middle Name</label>
-                <BasicInput
+                <BasicInputUser
                   type="text"
                   name="middleName"
                   onChange={handleChange}
@@ -278,7 +264,7 @@ const handleImageChange = (e) => {
               </div>
               <div>
                 <label className="bold-text">Last Name</label>
-                <BasicInput
+                <BasicInputUser
                   type="text"
                   name="lastName"
                   onChange={handleChange}
@@ -307,7 +293,7 @@ const handleImageChange = (e) => {
               </div>
               <div>
                 <label className="bold-text">Date of Birth</label>
-                <BasicInput
+                <BasicInputUser
                   type="date"
                   name="birthDate"
                   onChange={handleChange}
