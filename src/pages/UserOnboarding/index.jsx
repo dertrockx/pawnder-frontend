@@ -1,7 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { useHistory } from 'react-router';
-import { IoLocationSharp, IoArrowBack } from 'react-icons/io5';
+import { IoLocationSharp, IoArrowBack, IoCall } from 'react-icons/io5';
 import {
+  Input,
+  InputGroup,
+  InputLeftAddon,
   NumberInput,
   NumberInputField,
   NumberInputStepper,
@@ -53,7 +56,7 @@ const UserOnboarding = () => {
     // If step 3, check preferred animals and distance
 
     if (step === 1) {
-      if (values.photo !== '' && values.firstName !== '' && values.lastName !== '' && values.birthDate !== '' && values.sex !== '' && values.contactNumber !== '' && values.locationLat !== '' && values.locationLong !== '') {
+      if (values.photo !== '' && values.firstName !== '' && values.lastName !== '' && values.birthDate !== '' && values.sex !== '' && values.contactNumber !== '' && values.contactNumber.match(/^\d{10}$/) && values.locationLat !== '' && values.locationLong !== '') {
         setIsDisabled(false);
       } else {
         setIsDisabled(true);
@@ -122,9 +125,6 @@ const UserOnboarding = () => {
       ...values,
       [e.target.name]: e.target.value,
     });
-
-  // For testing
-  console.log(e.target.value);
 }
 
 // For input of type checkbox
@@ -317,13 +317,27 @@ const handleImageChange = (e) => {
               </div>
               <div>
                 <label className="bold-text">Contact Number</label>
-                <BasicInput
+              <InputGroup marginTop="10px">
+                <InputLeftAddon children="+63" fontFamily="Raleway" />
+                <Input
                   type="tel"
+                  placeholder="Contact Number"
                   name="contactNumber"
                   onChange={handleChange}
+                  onKeyPress={(e) => {
+                    if (e.target.value.length > 9) {
+                      e.preventDefault();
+                      e.stopPropagation();
+                    }
+                  }}
                   value={values.contactNumber}
-                  placeholder="Contact Number"
-                />
+                  fontFamily="Raleway"
+                  borderWidth="2px"
+                  borderColor="rgb(187, 200, 212)"
+                  _hover={{borderColor: "rgb(109, 125, 139)"}}
+                  _focus={{borderColor: "brand.100", borderWidth: "2px"}}
+                  />
+              </InputGroup>
               </div>
               <div>
                 <label className="bold-text">Location</label>
