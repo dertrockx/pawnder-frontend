@@ -3,53 +3,15 @@ import ReactMapGL from "react-map-gl";
 import Pin from "./Pin";
 import PolylineOverlay from "./PolylineOverlay";
 import Button from "components/Button";
+import axios from "utils/axios";
+
 import "mapbox-gl/dist/mapbox-gl.css";
 import styles from "./NearbyInstitution.module.css";
 
 // TODO: move access token to .env file
-const accessToken =
-	"pk.eyJ1IjoiZGVydHJvY2t4IiwiYSI6ImNrMXcwZHB0bjBmb2gzY216ODA0NDZ3MWsifQ.IoDpTejvyHpWvvj_cjjRlw";
-
-const randomPoints = [
-	[122.539, 13.9623],
-	[122.5453, 13.9572],
-	[122.5396, 13.9685],
-	[122.5318, 13.9697],
-	[122.5423, 13.9775],
-];
-
-const cardInfos = [
-	{
-		photoUrl:
-			"https://media.philstar.com/photos/2019/05/10/panelo-meme_2019-05-10_10-13-16.jpg",
-		header: "Panelo's House of Mysteries",
-		caption: "600m away from you",
-	},
-	{
-		photoUrl:
-			"https://d1mf53gmgg2cqd.cloudfront.net/wp-content/uploads/2021/08/SEC.-DUQUE-1.jpg",
-		header: "Duque Destruction Dungeon",
-		caption: "700m away from you",
-	},
-	{
-		photoUrl:
-			"https://assets2.rappler.com/2352E1D5E07A40DE92D51BBBB1C9AF0D/img/60D351305CAA415D8053E6143FCC7344/duterte-kiss-skor_copy.jpg",
-		header: "Du30's Penthouse",
-		caption: "60m away from you",
-	},
-	{
-		photoUrl:
-			"https://media.philstar.com/photos/2019/05/10/panelo-meme_2019-05-10_10-13-16.jpg",
-		header: "Panelo's House of Mysteries",
-		caption: "600m away from you",
-	},
-	{
-		photoUrl:
-			"https://media.philstar.com/photos/2019/05/10/panelo-meme_2019-05-10_10-13-16.jpg",
-		header: "Panelo's House of Mysteries",
-		caption: "600m away from you",
-	},
-];
+// const accessToken =
+// 	"pk.eyJ1IjoiZGVydHJvY2t4IiwiYSI6ImNrMXcwZHB0bjBmb2gzY216ODA0NDZ3MWsifQ.IoDpTejvyHpWvvj_cjjRlw";
+const accessToken = process.env.REACT_APP_MAPBOX_ACCESS_TOKEN;
 
 function NearbyInstitution({ history }) {
 	const [center, setCenter] = useState({
@@ -60,8 +22,6 @@ function NearbyInstitution({ history }) {
 	const [route, setRoute] = useState([]);
 
 	const [show, setShow] = useState(false);
-
-	// TODO: change the ff states kapag na-setup na ang redux
 	const [loading, setLoading] = useState(true);
 	const [location] = useState(true);
 
@@ -72,6 +32,8 @@ function NearbyInstitution({ history }) {
 		longitude: 122.542972,
 		zoom: 14,
 	});
+	const [institutions, setInstitutions] = useState({});
+	const [focusedInsti, setFocusedInsti] = useState(null);
 	/*
   {
     photoUrl: "",
@@ -79,14 +41,36 @@ function NearbyInstitution({ history }) {
     caption: "Card caption"
   } 
   */
-	const [cardInfo, setCardInfo] = useState(null);
 
 	useEffect(() => {
+		const getInstitutions = async (lat, long, distance = 100) => {
+			try {
+				const res = await axios.get(
+					`/api/0.1/institution?nearby=true&centerLat=${lat}&centerLong=${long}&distance=${distance}`
+				);
+				const { institutions } = res.data;
+				const converted = {};
+				Object.assign(
+					converted,
+					institutions.reduce((a, v) => ({ ...a, [v.id]: v }), {})
+				);
+				setInstitutions(converted);
+			} catch (err) {
+				console.log(err);
+			}
+		};
+
 		navigator.geolocation.getCurrentPosition((position) => {
 			const { latitude, longitude } = position.coords;
+
+			const parsedLat = parseFloat(latitude.toFixed(6));
+			const parsedLng = parseFloat(longitude.toFixed(6));
+			getInstitutions(parsedLat, parsedLng);
+			console.log(parsedLat, parsedLng);
+
 			setCenter({
-				lat: parseFloat(latitude.toFixed(4)),
-				lng: parseFloat(longitude.toFixed(4)),
+				lat: parsedLat,
+				lng: parsedLng,
 			});
 
 			setViewport({
@@ -103,16 +87,19 @@ function NearbyInstitution({ history }) {
 
 	const pins = useMemo(
 		() =>
-			randomPoints.map(([lng, lat], idx) => (
-				<Pin
-					key={idx}
-					longitude={lng}
-					latitude={lat}
-					onClick={() => handleMarkerClick(lng, lat, idx)}
-				/>
-			)),
+			Object.keys(institutions).map((id) => {
+				const { locationLat: lat, locationLong: lng } = institutions[id];
+				return (
+					<Pin
+						key={id}
+						longitude={lng}
+						latitude={lat}
+						onClick={() => handleMarkerClick(lng, lat, id)}
+					/>
+				);
+			}),
 		// eslint-disable-next-line
-		[]
+		[institutions]
 	);
 
 	async function getRoute(start, end) {
@@ -131,15 +118,15 @@ function NearbyInstitution({ history }) {
 	function handleMapClick(evt) {
 		setRoute([]);
 		setShow(false);
-		setCardInfo(null);
+		setFocusedInsti(null);
 	}
 
-	async function handleMarkerClick(lng, lat, idx) {
+	async function handleMarkerClick(lng, lat, id) {
 		const route = await getRoute([center.lng, center.lat], [lng, lat]);
 
 		setRoute(route);
 		setShow(true);
-		setCardInfo(cardInfos[idx]);
+		setFocusedInsti(id);
 	}
 
 	function goToSettings() {
@@ -201,13 +188,19 @@ function NearbyInstitution({ history }) {
 
 				{pins}
 			</ReactMapGL>
-			{show && cardInfo && (
+			{show && focusedInsti && (
 				<div className={styles.floatingCard}>
-					<img src={cardInfo.photoUrl} alt="" />
+					<img
+						src={
+							institutions[focusedInsti].photoUrl ||
+							"https://assets2.rappler.com/2352E1D5E07A40DE92D51BBBB1C9AF0D/img/60D351305CAA415D8053E6143FCC7344/duterte-kiss-skor_copy.jpg"
+						}
+						alt=""
+					/>
 					<div className={styles.imgOverlay}></div>
 					<div className={styles.content}>
-						<h2 className="heading-2">{cardInfo.header}</h2>
-						<p className="caption">{cardInfo.caption}</p>
+						<h2 className="heading-2">{institutions[focusedInsti].name}</h2>
+						<p className="caption">I am a caption</p>
 					</div>
 				</div>
 			)}
