@@ -10,7 +10,7 @@ import styles from './ShowStoryList.module.css';
 
 import StoryCard from 'components/StoryCard';
 import Radio from 'components/Radio';
-import BasicStoryDetail from './BasicStoryDetail'; // Change to ShowStoryDetails page
+import StoryDetails from 'pages/ShowStoryDetails'; // Change to ShowStoryDetails page
 
 // Guide: https://medium.com/geekculture/how-to-use-react-router-useparams-436851fd5ef6
 
@@ -132,7 +132,7 @@ const ShowStoryList = () => {
                       <StoryCard data={ storiesListCopy } type={ loginType } />
                       </div>
                     </Route>
-                    <Route exact path='/stories/:id' render={() => <BasicStoryDetail data={ storiesListCopy } />}/>
+                    <Route exact path='/stories/:id' render={() => <StoryDetails data={ storiesListCopy } />}/>
                       {/* <BasicStoryDetail data={ storiesListCopy } /> */}
                   </Switch>
                 </Router>

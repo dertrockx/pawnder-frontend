@@ -1,0 +1,10 @@
+.tags {
+    background-color: var(--color-white);
+    width: auto;
+    padding-left: 10px;
+    padding-right: 10px;
+    height: 27px;
+    margin: -2px 5px;
+    border-radius: 50px;
+    padding-top: 0px;
+}
