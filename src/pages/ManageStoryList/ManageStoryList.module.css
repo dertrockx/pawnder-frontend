@@ -28,35 +28,3 @@
 .searchBar {
   width: 600px;
 }
-
-/* Publish button */
-.default {
-  /* Base styles */
-  display: flex;
-	align-items: center;
-	justify-content: center;
-	cursor: pointer;
-	background: #ddd;
-	border-radius: 10px;
-	transition: all 0.3s;
-
-  /* Small filled button */
-  padding: 10px 20px;
-  background: var(--color-brand-default);
-	color: var(--color-white);
-
-  /* Typography */
-  font-family: "Raleway", sans-serif;
-	font-style: normal;
-	font-weight: bold;
-	font-size: 18px;
-	line-height: 21px;
-	letter-spacing: -0.01em;
-	text-transform: uppercase;
-
-  width: 125px;
-}
-
-.default:hover {
-  filter: brightness(0.8);
-}

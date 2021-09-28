@@ -2,14 +2,14 @@ import React, { useState } from 'react';
 import Button from 'components/Button';
 import HR from 'components/HR';
 import { IoLocationSharp } from 'react-icons/io5';
-import { Input, Textarea } from '@chakra-ui/react';
+import { Input, InputGroup, InputLeftAddon, Textarea, useToast} from '@chakra-ui/react';
 
 import styles from './Profile.module.css';
 
 import noPhoto from 'assets/noPhoto.png'; // Delete when states have moved up
 
 const Profile = () => {
-  const [ values, setValues ] = useState({
+  const [values, setValues] = useState({
 		image: '',
 		name: '',
     email: '',
@@ -24,8 +24,11 @@ const Profile = () => {
     locationLong: '',
 	});
 	const [imagePreview, setImagePreview] = useState(`${noPhoto}`);
+  const [isImageDisabled, setIsImageDisabled] = useState(true); // set to false kapag may picture na talaga from fetched data
   const [imagePreviewError, setImagePreviewError] = useState(false);
-  const [locationError, setLocationError] = useState('');
+  const [locationError, setLocationError] = useState(false);
+
+  const toast = useToast();
 
   const handleChange = (e) => {
     setValues({
@@ -51,6 +54,7 @@ const Profile = () => {
       });
       reader.readAsDataURL(selected);
       setImagePreviewError(false);
+      setIsImageDisabled(false);
     } else {
       /** 
        * Selecting a file and cancelling returns undefined to selected.
@@ -62,6 +66,13 @@ const Profile = () => {
         return;
       }
       setImagePreviewError(true);
+      toast({
+        title: 'We don\'t support that file type.',
+        status: 'error',
+        position: 'top',
+        duration: 5000,
+        isClosable: true,
+      });
     }
   }
 
@@ -71,6 +82,8 @@ const Profile = () => {
       ...values,
       image: ''
     });
+    setImagePreviewError(false);
+    setIsImageDisabled(true);
   }
 
   // Location handler
@@ -80,12 +93,19 @@ const Profile = () => {
       locationLat: position.coords.latitude,
       locationLong: position.coords.longitude,
     });
-    setLocationError('');
+    setLocationError(false);
   }
 
   
   const onError = () => {
-    setLocationError('Unable to retrieve your location. Please enable permissions.');
+    setLocationError(true);
+    toast({
+      title: 'Unable to retrieve your location. Please enable permissions.',
+      status: 'error',
+      position: 'top',
+      duration: 5000,
+      isClosable: true,
+    });
   }
 
   const handleLocation = (e) => {
@@ -96,10 +116,16 @@ const Profile = () => {
      */
     e.preventDefault();
     if (!navigator.geolocation) {
-      setLocationError('Geolocation is not supported by your browser.');
+      setLocationError(true);
+      toast({
+        title: 'Geolocation is not supported by your browser. Please use another.',
+        status: 'error',
+        position: 'top',
+        duration: 5000,
+        isClosable: true,
+      });
     } else {
       navigator.geolocation.getCurrentPosition(onSuccess, onError);
-      
     }
   }
 
@@ -110,7 +136,9 @@ const Profile = () => {
   }
 
   const handleSubmit = (e) => {
-    e.preventDefault(); // if 
+    e.preventDefault(); 
+    // Should check contact number for pattern before submitting lol
+    // values.contactNumber.match(/^\d{10}$/)
     
     // Redirect to feed after onboarding, put inside .then when successful
     // history.push('/feed');
@@ -134,8 +162,10 @@ const Profile = () => {
             <label className={styles.imageUploadButton} htmlFor="image">
               Choose Picture
             </label>
-            <Button size="small" color="brand-default" variant="outline" onClick={handleImageRemove} >Remove picture</Button>
-            {imagePreviewError === true && (<p className="paragraph">We don't support that file type.</p>)}
+            {values.image === ''
+            ? <Button size="small" color="brand-default" variant="outline" onClick={handleImageRemove} disabled={isImageDisabled}>Remove picture</Button>
+            : <Button size="small" color="brand-default" variant="outline" onClick={handleImageRemove}>Remove picture</Button>
+            }
           </div>
         </div>
       </div>
@@ -144,7 +174,15 @@ const Profile = () => {
           <h3 className="heading-3">Description</h3>
           <p className="caption">Edit your description to let users get to know you better</p>
         </div>
-        <Textarea name="description" onChange={handleChange} placeholder="Description" fontFamily="Raleway" borderWidth="2px" focusBorderColor="brand.100" />
+        <Textarea name="description"
+          onChange={handleChange}
+          placeholder="Description"
+          fontFamily="Raleway"
+          borderWidth="2px"
+          borderColor={"var(--color-light-grey)"}
+          _hover={{borderColor: "var(--color-grey)"}}
+          _focus={{borderColor: "brand.100", borderWidth: "2px"}}
+        />
       </div>
       <HR />
       <div style={{marginTop: "60px", marginBottom:"28px"}} className={styles.halfField} >
@@ -155,20 +193,57 @@ const Profile = () => {
         <div>
           <div className={styles.twoFields}>
             <p className="paragraph">Name</p>
-            <Input name="name" onChange={handleChange} placeholder="Institution Name" fontFamily="Raleway" borderWidth="2px" focusBorderColor="brand.100" />
+            <Input
+              name="name"
+              onChange={handleChange}
+              placeholder="Institution Name"
+              fontFamily="Raleway"
+              borderWidth="2px"
+              borderColor={"var(--color-light-grey)"}
+              _hover={{borderColor: "var(--color-grey)"}}
+              _focus={{borderColor: "brand.100", borderWidth: "2px"}}
+            />
           </div>
           <div className={styles.twoFields}>
             <p className="paragraph">Email Address</p>
-            <Input type="email" name="email" onChange={handleChange} placeholder="Email Address" fontFamily="Raleway" borderWidth="2px" focusBorderColor="brand.100" />
+            <Input
+              type="email"
+              name="email"
+              onChange={handleChange}
+              placeholder="Email Address"
+              fontFamily="Raleway"
+              borderWidth="2px"
+              borderColor={"var(--color-light-grey)"}
+              _hover={{borderColor: "var(--color-grey)"}}
+              _focus={{borderColor: "brand.100", borderWidth: "2px"}}
+            />
           </div>
           <div className={styles.twoFields}>
             <p className="paragraph">Contact Number</p>
-            <Input type="number" name="contactNumber" onChange={handleChange} placeholder="639xxxxxxxxx" fontFamily="Raleway" borderWidth="2px" focusBorderColor="brand.100" />
+            <InputGroup marginTop="10px">
+              <InputLeftAddon children="+63" fontFamily="Raleway" />
+              <Input
+                type="tel"
+                placeholder="Contact Number"
+                name="contactNumber"
+                onChange={handleChange}
+                onKeyPress={(e) => {
+                  if (e.target.value.length > 9) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                  }
+                }}
+                fontFamily="Raleway"
+                borderWidth="2px"
+                borderColor={"var(--color-light-grey)"}
+                _hover={{borderColor: "var(--color-grey)"}}
+                _focus={{borderColor: "brand.100", borderWidth: "2px"}}
+                />
+              </InputGroup>
           </div>
           <div className={styles.twoFields}>
             <p className="paragraph">Location</p>
             {(values.locationLat !== '' && values.locationLong !== '') ? <Button size="small" color="brand-default" onClick={handleLocation}> <span>Location updated</span><IoLocationSharp /> </Button> : <Button size="small" color="brand-default" onClick={handleLocation} variant="outline"><IoLocationSharp /> <span>Update location</span></Button> }
-            {locationError !== '' && <p className="paragraph">{locationError}</p>}
           </div>
         </div>
       </div>
@@ -181,23 +256,64 @@ const Profile = () => {
         <div>
           <div className={styles.twoFields}>
             <p className="paragraph">Website</p>
-            <Input name="websiteURL" onChange={handleChange} placeholder="www.yoursite.com" fontFamily="Raleway" borderWidth="2px" focusBorderColor="brand.100" />
+            <Input name="websiteURL"
+              onChange={handleChange}
+              placeholder="www.yoursite.com"
+              fontFamily="Raleway"
+              borderWidth="2px"
+              borderColor={"var(--color-light-grey)"}
+              _hover={{borderColor: "var(--color-grey)"}}
+              _focus={{borderColor: "brand.100", borderWidth: "2px"}}
+            />
           </div>
           <div className={styles.twoFields}>
             <p className="paragraph">Facebook Link</p>
-            <Input name="facebookURL" onChange={handleChange} placeholder="www.facebook.com/yourpage" fontFamily="Raleway" borderWidth="2px" focusBorderColor="brand.100" />
+            <Input
+              name="facebookURL"
+              onChange={handleChange}
+              placeholder="www.facebook.com/yourpage"
+              fontFamily="Raleway"
+              borderWidth="2px"
+              borderColor={"var(--color-light-grey)"}
+              _hover={{borderColor: "var(--color-grey)"}}
+              _focus={{borderColor: "brand.100", borderWidth: "2px"}}
+            />
           </div>
           <div className={styles.twoFields}>
             <p className="paragraph">Messenger Link</p>
-            <Input name="messengerURL" onChange={handleChange} placeholder="www.messenger.com/yourpage" fontFamily="Raleway" borderWidth="2px" focusBorderColor="brand.100" />
+            <Input
+              name="messengerURL"
+              onChange={handleChange}
+              placeholder="www.messenger.com/yourpage"
+              fontFamily="Raleway"
+              borderWidth="2px"
+              borderColor={"var(--color-light-grey)"}
+              _hover={{borderColor: "var(--color-grey)"}}
+              _focus={{borderColor: "brand.100", borderWidth: "2px"}}
+            />
           </div>
           <div className={styles.twoFields}>
             <p className="paragraph">Instagram Link</p>
-            <Input name="instagramURL" onChange={handleChange} placeholder="www.instagram.com/yourpage" fontFamily="Raleway" borderWidth="2px" focusBorderColor="brand.100" />
+            <Input
+              name="instagramURL"
+              onChange={handleChange}
+              placeholder="www.instagram.com/yourpage"
+              fontFamily="Raleway" borderWidth="2px"
+              focusBorderColor="brand.100"
+            />
           </div>
           <div className={styles.twoFields}>
             <p className="paragraph">Twitter Link</p>
-            <Input name="twitterURL" onChange={handleChange} placeholder="www.twitter.com/yourpage" fontFamily="Raleway" borderWidth="2px" focusBorderColor="brand.100" />
+            <Input
+              name="twitterURL"
+              onChange={handleChange}
+              placeholder="www.twitter.com/yourpage"
+              fontFamily="Raleway"
+              borderWidth="2px"
+              borderColor={"var(--color-light-grey)"}
+              _hover={{borderColor: "var(--color-grey)"}}
+              _focus={{borderColor: "brand.100", borderWidth: "2px"}}
+            />
           </div>
         </div>
       </div>

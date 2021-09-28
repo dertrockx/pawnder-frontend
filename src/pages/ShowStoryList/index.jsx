@@ -8,7 +8,7 @@ import { fetchStories } from 'redux/actions/storyActions';
 
 import styles from './ShowStoryList.module.css';
 
-import StoryCard from 'components/StoryCard';
+import StoryCardShow from './StoryCardShow';
 import Radio from 'components/Radio';
 import StoryDetails from 'pages/ShowStoryDetails'; // Change to ShowStoryDetails page
 
@@ -47,7 +47,7 @@ const ShowStoryList = () => {
   storiesListCopy = storiesList.filter((story) => {
     if (searchTerm === '') {
       return story;
-    } else if (story.title.toLowerCase().includes(searchTerm.toLowerCase()) || (story.tags.toLowerCase().includes(searchTerm.toLowerCase()))) {
+    } else if (story.title.toLowerCase().includes(searchTerm.toLowerCase()) || (story.tags.toLowerCase().includes(searchTerm.toLowerCase())) || (story.institutionName.toLowerCase().includes(searchTerm.toLowerCase()))) {
       return story;
     }
   });
@@ -84,60 +84,69 @@ const ShowStoryList = () => {
               </HStack>
             </div>
           : <>
-            {fetchError
-            ? <div className={styles.center}>
-                <h1 className="heading-1" >Something went wrong. Please try again later.</h1>
-              </div> 
-            : <>
-                <Router>
-                  <Switch>
-                    <Route exact path='/stories'>
-                    <div className={styles.container}>
-                      <div className={styles.options}>
-                        <div className={styles.sortDate}>
-                          <p className="bold-text">Sort Date by:</p>
-                          <Radio
-                            name="sort"
-                            label="Ascending"
-                            onChange={() => {setSortDate("ascending")}}
-                            checked={sortDate === "ascending"}
-                          />
-                          <Radio
-                            name="sort"
-                            label="Descending"
-                            onChange={() => {setSortDate("descending")}}
-                            checked={sortDate === "descending"}
-                          />
-                        </div>
-                        <div className={styles.searchBar}>
-                          <InputGroup>
-                            <InputLeftElement
-                              pointerEvents="none"
-                              children={<IoSearch color="rgb(187, 200, 212)" />}
+              {fetchError
+              ? <div className={styles.center}>
+                  <h1 className="heading-1" >Something went wrong. Please try again later.</h1>
+                </div> 
+              : <>
+                  { storiesListCopy.length === 0
+                  ? <div className={styles.center}>
+                      <h1 className="heading-1">Nothing to see here...yet.</h1>
+                    </div>
+                  : <Router>
+                      <Switch>
+                        <Route exact path='/stories'>
+                        <div className={styles.container}>
+                          <div className={styles.options}>
+                            <div className={styles.sortDate}>
+                              <p className="bold-text">Sort Date by:</p>
+                              <Radio
+                                name="sort"
+                                label="Ascending"
+                                onChange={() => {setSortDate("ascending")}}
+                                checked={sortDate === "ascending"}
+                              />
+                              <Radio
+                                name="sort"
+                                label="Descending"
+                                onChange={() => {setSortDate("descending")}}
+                                checked={sortDate === "descending"}
+                              />
+                            </div>
+                            <div className={styles.searchBar}>
+                              <InputGroup>
+                                <InputLeftElement
+                                  pointerEvents="none"
+                                  children={<IoSearch color="rgb(187, 200, 212)" />}
+                                />
+                                <Input
+                                  name="search"
+                                  placeholder="Search"
+                                  value={searchTerm}
+                                  onChange={(e) => {setSearchTerm(e.target.value)}}
+                                  fontFamily="Raleway"
+                                  borderWidth="2px"
+                                  borderColor={`var(--color-light-grey)`}
+                                  _hover={{borderColor: "var(--color-grey)"}}
+                                  _focus={{borderColor: "brand.100", borderWidth: "2px"}}
+                                />
+                              </InputGroup>
+                            </div>
+                          </div>
+                          {storiesListCopy.map(story => (
+                            <StoryCardShow
+                              key={story.id}
+                              story={story}
                             />
-                            <Input
-                              name="search"
-                              placeholder="Search"
-                              value={searchTerm}
-                              onChange={(e) => {setSearchTerm(e.target.value)}}
-                              fontFamily="Raleway"
-                              borderWidth="2px"
-                              borderColor="rgb(187, 200, 212)"
-                              _hover={{borderColor: "rgb(109, 125, 139)"}}
-                              focusBorderColor="brand.100"
-                            />
-                          </InputGroup>
-                        </div>
-                      </div>
-                      <StoryCard data={ storiesListCopy } type={ loginType } />
-                      </div>
-                    </Route>
-                    <Route exact path='/stories/:id' render={() => <StoryDetails data={ storiesListCopy } />}/>
-                      {/* <BasicStoryDetail data={ storiesListCopy } /> */}
-                  </Switch>
-                </Router>
-              </>
-            } 
+                          ))}
+                          </div>
+                        </Route>
+                        <Route exact path='/stories/:id' render={() => <StoryDetails data={ storiesListCopy } />}/>
+                      </Switch>
+                    </Router>
+                  }
+                </>
+              } 
             </>
           }
         </>

@@ -1,7 +1,5 @@
 import React from 'react';
-import { Input, InputGroup, InputRightElement, IconButton } from '@chakra-ui/react';
-import { IoEye, IoEyeOff } from 'react-icons/io5';
-
+import { Input, InputGroup, InputRightElement, Button } from '@chakra-ui/react';
 function PasswordInput(props) {
   const [show, setShow] = React.useState(false)
   const handleClick = () => setShow(!show)
@@ -10,7 +8,6 @@ function PasswordInput(props) {
     placeholder,
     name,
     onChange,
-    required = false,
   } = props;
 
   return (
@@ -22,11 +19,19 @@ function PasswordInput(props) {
         onChange={onChange}
         placeholder={placeholder}
         borderWidth="2px"
-        focusBorderColor="brand.100"
-        required={required}
+        borderColor={"var(--color-light-grey)"}
+        _hover={{borderColor: "var(--color-grey)"}}
+        _focus={{borderColor: "brand.100", borderWidth: "2px"}}
       />
-      <InputRightElement width="4.5rem" >
-        <IconButton icon={show ? <IoEyeOff /> : <IoEye /> } backgroundColor="white" h="2rem" size="lg" className="input-text" onClick={handleClick} focusBorderColor="none" />
+      <InputRightElement width="4.5rem">
+        <Button
+          h="1.75rem"
+          size="sm"
+          onClick={handleClick}
+          _focus={{border: "none"}}
+        >
+          {show ? "Hide" : "Show"}
+        </Button>
       </InputRightElement>
     </InputGroup>
   )
