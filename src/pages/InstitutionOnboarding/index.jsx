@@ -9,35 +9,38 @@ import BasicTextArea from "components/BasicTextArea";
 import BasicImageInput from "components/BasicImageInput";
 import BasicLabel from "components/BasicLabel";
 import styles from "./InstitutionOnboarding.module.css"
+import { useToast } from '@chakra-ui/react';
 
 function InstitutionOnboardingPage() {
 	const history = useHistory();
-
+	const toast = useToast();
 	const [ step, setStep ] = useState(1);
 	const [ value, setValue ] = useState({
 		image: '/images/Avatar.png',
-		name: null,
-		description: null,
-		contactNumber: null,
-		websiteURL: null,
-		facebookURL: null,
-		twitterURL: null,
-		messengerURL: null,
-		instagramURL: null
+		name: "",
+		description: "",
+		contactNumber: "",
+		locationLat: "",
+		locationLong: "",
+		websiteURL: "",
+		facebookURL: "",
+		twitterURL: "",
+		messengerURL: "",
+		instagramURL: ""
 	});
-	const [ isEnableLocationClicked, setIsEnableLocationClicked ] = useState(false);
+	const [ locationError, setLocationError ] = useState(false);
 	const [ imagePreviewError, setImagePreviewError ] = useState(false);
 	const [ nextDisabled, setNextDisabled ] = useState(true);
 	const isAuthenticated = useSelector((s) => s.auth.isAuthenticated);
 	const loginType = useSelector((s) => s.auth.loginType);
 
 	useEffect(() => {
-		if(!isAuthenticated) history.replace("/institution/login") 
-		else if (loginType === 'institution') {
-			if(value.name && value.description && value.contactNumber && value.image !== '/images/Avatar.png') setNextDisabled(false);
-		}
+		// if(!isAuthenticated) history.replace("/institution/login") 
+		// else if (loginType === 'institution') {
+			if(value.name !== "" && value.description !== "" && value.contactNumber !== "") setNextDisabled(false);
+		// }
 		
-	}, []);
+	});
 
 	const handleChange = (e) => {
 		setValue({
@@ -51,14 +54,29 @@ function InstitutionOnboardingPage() {
 	const handleSubmit = (e) => {
     e.preventDefault();
     console.log(value);
-		
-		history.replace("/")		//must be redirected to user feed page
 
-	}
+		//sends POST request
+		fetch(
+			`http://localhost:8081/api/0.1/institution/` + `1`,	//hardcoded id
+			{
+				method: "PUT",
+				headers: {
+					"Content-Type": "application/json"
+				},
+				body: JSON.stringify(value)
+			})
+			.then(response =>
+				{
+				if(response.status === 200){
+					history.replace("/feed")		//must be redirected to user feed page
+				}
+				return response.json();
+			}
+			)
+			.then(body => {
+				console.log(body)
+			})
 
-	function clickEnableLocation(e) {
-		e.preventDefault();
-		setIsEnableLocationClicked(true);
 	}
 
 	function imageHandler(e) {
@@ -80,6 +98,44 @@ function InstitutionOnboardingPage() {
 				return;
 			}
 			setImagePreviewError(true);
+		}
+	}
+
+	// For location
+	const onSuccess = (position) => {
+		setValue({
+			...value,
+			locationLat: position.coords.latitude,
+			locationLong: position.coords.longitude,
+		});
+		setLocationError(false);
+	}
+	
+	const onError = () => {
+		setLocationError(true);
+		toast({
+			title: 'Unable to retrieve your location. Please enable permissions.',
+			status: 'error',
+			position: 'top',
+			duration: 5000,
+			isClosable: true,
+		});
+	}
+
+	const handleLocation = (e) => {
+		/* See note in image handler. */
+		e.preventDefault();
+		if (!navigator.geolocation) {
+		setLocationError(true);
+		toast({
+			title: 'Geolocation is not supported by your browser. Please use another.',
+			status: 'error',
+			position: 'top',
+			duration: 5000,
+			isClosable: true,
+		});
+		} else {
+			navigator.geolocation.getCurrentPosition(onSuccess, onError);
 		}
 	}
 
@@ -161,7 +217,7 @@ function InstitutionOnboardingPage() {
 										value={value.address}
 										placeholder="Address"
 									/><br/> */}
-									<Button onClick={clickEnableLocation} color="brand-default" variant="outline" size="small">Enable location</Button><br/>
+									<Button onClick={handleLocation} color="brand-default" variant="outline" size="small">Enable location</Button><br/>
 									<Button onClick={() => setStep(step + 1)} color="brand-default" size="small" block disabled={nextDisabled}>Next</Button>
 								</div>
 							</div>
