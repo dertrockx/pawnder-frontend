@@ -27,12 +27,13 @@ import styles from './UserOnboarding.module.css';
 
 const UserOnboarding = () => {
   const current = new Date().toISOString().split("T")[0];
+  const history = useHistory();
+  const toast = useToast();
   const [imagePreview, setImagePreview] = useState(`${noPhoto}`);
   const [imagePreviewError, setImagePreviewError] = useState(false);
   const [locationError, setLocationError] = useState(false);
   const [step, setStep] = useState(1);
   const [isDisabled, setIsDisabled] = useState(true); // set to false when testing and comment out useEffect
-  const history = useHistory();
   const [distance, setDistance] = useState(''); // for Chakra-UI NumberInput
   const [values, setValues] = useState({
     photo: '',
@@ -62,6 +63,7 @@ const UserOnboarding = () => {
         setIsDisabled(true);
       }
       setImagePreviewError(false);
+      setLocationError(false);
     } else if (step === 2) {
       if (values.action !== '') {
         setIsDisabled(false);
@@ -69,7 +71,7 @@ const UserOnboarding = () => {
         setIsDisabled(true);
       }
     } else if (step === 3) {
-      if (values.preferredAnimals !== [] && values.preferredDistance !== '') {
+      if (values.preferredAnimals.length !== 0 && values.preferredDistance !== '') {
         setIsDisabled(false);
       } else {
         setIsDisabled(true);
@@ -104,8 +106,6 @@ const UserOnboarding = () => {
       </>
     );
   }
-
-  const toast = useToast();
 
   const handleSubmit = (e) => {
     e.preventDefault(); 
@@ -319,8 +319,8 @@ const handleImageChange = (e) => {
                   value={values.contactNumber}
                   fontFamily="Raleway"
                   borderWidth="2px"
-                  borderColor="rgb(187, 200, 212)"
-                  _hover={{borderColor: "rgb(109, 125, 139)"}}
+                  borderColor={"var(--color-light-grey)"}
+                  _hover={{borderColor: "var(--color-grey)"}}
                   _focus={{borderColor: "brand.100", borderWidth: "2px"}}
                   />
               </InputGroup>
@@ -373,7 +373,7 @@ const handleImageChange = (e) => {
               <AnimalOptions options={animals}/>
             </div>
             <h2 className="heading-2">How far are you willing to go?</h2>
-            <NumberInput focusBorderColor="rgb(255, 165, 0)" min={1} value={distance} onChange={handleNumberChange}>
+            <NumberInput fontFamily="Raleway" focusBorderColor="brand.100" min={1} value={distance} onChange={handleNumberChange}>
               <NumberInputField placeholder="km" />
               <NumberInputStepper color="rgb(109, 125, 139)">
                 <NumberIncrementStepper _active={{ color: "rgb(255, 165, 0)" }} />
