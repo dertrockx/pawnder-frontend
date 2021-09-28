@@ -54,3 +54,7 @@
   z-index: 4;
   position: relative;
 }
+
+.rightAlign {
+  text-align: right;
+}

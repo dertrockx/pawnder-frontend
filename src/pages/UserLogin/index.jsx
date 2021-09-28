@@ -21,6 +21,7 @@ function UserLoginPage() {
 
 	const [ email, setEmail ] = useState(null);
 	const [ password, setPassword ] = useState(null);
+	const [ isRequired, setIsRequired ] = useState(false);
 
 	function handleValueChange(e, valueCb) {
 			const newValue = e.target.value;
@@ -38,8 +39,8 @@ function UserLoginPage() {
 			if(email && password) {
 				dispatch(login('user'));
 			} else {
-
-				alert("Email and password required.");
+				setIsRequired(true)
+				// alert("Email and password required.");
 			}
 	}
 
@@ -74,6 +75,7 @@ function UserLoginPage() {
 					name="login-form"
 					onSubmit={handleFormSubmit} 
 				>
+					{isRequired ? <div className={styles.error}>All fields required</div> : <br/>}
 					{loginError && <div className={`${styles.error} ${styles.header}`}>Email and password combination invalid</div>}
 					<label>Email</label>
 					<BasicInput 
@@ -82,12 +84,10 @@ function UserLoginPage() {
 							onChange={(e) => handleValueChange(e, setEmail)}
 							placeholder="Email"
 							required="true"
-							outline={loginError ? "red" : "gray"}
 					/><br/>
 					Password
 					<BasicPasswordInput 
 						placeholder="Password" 
-						outline={loginError ? "red" : "gray"}
 						name="password"
 						onChange={(e) => handleValueChange(e, setPassword)}
 						required
