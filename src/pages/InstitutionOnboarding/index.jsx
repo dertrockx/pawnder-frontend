@@ -55,7 +55,7 @@ function InstitutionOnboardingPage() {
     e.preventDefault();
     console.log(value);
 
-		//sends POST request
+		//sends PUT request
 		fetch(
 			`http://localhost:8081/api/0.1/institution/` + `1`,	//hardcoded id
 			{
