@@ -21,7 +21,7 @@ function BasicImageInput2(props) {
           type="file" 
           accept="image/jpeg, image/jpg, image/png" 
           id="input"
-          name="image"
+          name="photoUrl"
           onChange={onChange} 
           className={styles.input} 
           hidden>
