@@ -13,8 +13,7 @@ import styles from './ManageStoryList.module.css';
 
 import StoryCard from 'components/StoryCard';
 import Radio from 'components/Radio';
-import BasicStoryDetail from './BasicStoryDetail'; // Change to ManageStoryDetails page
-// import ManageStoryDetails from "pages/ManageStoryDetails";
+import StoryDetails from 'pages/ManageStoryDetails';
 
 
 // Guide: https://medium.com/geekculture/how-to-use-react-router-useparams-436851fd5ef6
@@ -323,7 +322,7 @@ const ManageStoryList = () => {
                         <CreateModal />
                       </div>
                     </Route>
-                    <Route exact path='/manage-stories/:id' render={() => <BasicStoryDetail data={ storiesListCopy } />} />
+                    <Route exact path='/manage-stories/:id' render={() => <StoryDetails data={ storiesListCopy } />} />
                       {/* <BasicStoryDetail data={ storiesListCopy } /> */}
                   </Switch>
                 </Router>
