@@ -13,6 +13,10 @@ import ChakraSample from "pages/ChakraSample";
 import Feed from "pages/Feed";
 import NearbyInstitution from "pages/NearbyInstitution";
 import NavRoute from "components/NavRoute";
+import InstitutionSignUp from "pages/InstitutionSignUpPage";
+import InstitutionLogin from "pages/InstitutionLoginPage";
+import ShowStoryDetails from "pages/ShowStoryDetails";
+import ManageStoryDetails from "pages/ManageStoryDetails";
 
 import { ChakraProvider } from "@chakra-ui/react";
 import theme from "./theme";
