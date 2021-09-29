@@ -6,13 +6,18 @@ import configureStore from "redux/store";
 import { Route } from "react-router";
 // reset default styles for all html elements - https://en.wikipedia.org/wiki/Reset_style_sheet
 import SamplePage from "pages/SamplePage";
-import { UserLoginPage, UserSignupPage, InstitutionOnboardingPage } from "pages";
-import Navbar from "components/Navbar";
+import { UserLoginPage, UserSignupPage, UserInformationPage, UserPreferencesPage } from "pages";
+import InstitutionOnboardingPage from "pages/InstitutionOnboarding"
+// import Navbar from "components/Navbar";
+import ChakraSample from "pages/ChakraSample";
+import Feed from "pages/Feed";
+import NearbyInstitution from "pages/NearbyInstitution";
+import NavRoute from "components/NavRoute";
 
 import { ChakraProvider } from "@chakra-ui/react";
 import theme from "./theme";
 import history from "utils/history";
-import NavRoute from "components/NavRoute";
+// import NavRoute from "components/NavRoute";
 import LoadingPage from "pages/LoadingPage";
 // reset default styles for all html elements - https://en.wikipedia.org/wiki/Reset_style_sheet
 import "./normalize.css";

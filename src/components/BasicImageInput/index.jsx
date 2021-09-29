@@ -1,9 +1,9 @@
 import React from "react"
 import styles from "./BasicImageInput.module.css";
-import { IoPersonCircleOutline } from 'react-icons/io5';
 
 function BasicImageInput(props) {
   const {
+    label,
     image,
     onChange,
     imagePreviewError
@@ -30,7 +30,7 @@ function BasicImageInput(props) {
             button-text
             ${styles.upload}
           `}
-        >Add Picture</label>
+        >{label}</label>
         {imagePreviewError && (<p className="paragraph" style={{ color: "red" }}>We don't support that file type.</p>)}
       </div>
     </div>
