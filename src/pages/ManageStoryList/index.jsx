@@ -18,7 +18,9 @@ import StoryDetails from 'pages/ManageStoryDetails';
 
 const ManageStoryList = () => {
   const loginType = 'institution'; // null, user, or institution
-  // const loginType = useSelector(s => s.auth.loginType);
+  const institutionId = 1;
+
+  // const loginType = useSelector(s => s.auth.loginType); // this should also get instiId and pass instiId to fetchStories
   const fetchingStories = useSelector(s => s.story.fetchingStories);
   const fetchError = useSelector(s => s.story.fetchError);
   const storiesList = useSelector(s => s.story.storiesList);
@@ -31,12 +33,12 @@ const ManageStoryList = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [filterStory, setFilterStory] = useState('');  
 
-  let storiesListCopy = storiesList; // So I won't overwrite the storiesListArray (also used for the filter)
+  let storiesListCopy = storiesList; // So I won't overwrite the storiesListArray (also used for the filter and for when there are no stories)
 
   // Might put loginType because someone might log out while while viewing stories.
   // Might also use for pagination
   useEffect(() => {
-    dispatch(fetchStories({ loginType }));
+    dispatch(fetchStories({ loginType, institutionId }));
   }, [])
 
   // Uses id to sort
@@ -70,7 +72,7 @@ const ManageStoryList = () => {
   const handleDelete = (id) => {
     // DELETE request here
 
-    // For backend, change it to /story/ + id
+    // For backend, change it to '/story/' + id
     axios.delete('http://localhost:8000/stories/' + id)
     .then(() => {
       toast({
@@ -80,9 +82,17 @@ const ManageStoryList = () => {
         duration: 5000,
         isClosable: true,
       });
-      dispatch(fetchStories({ loginType }));
+      dispatch(fetchStories({ loginType, institutionId }));
     })
-    // Put .catch for error and add toast for when there is error
+    .catch(() => {
+      toast({
+        title: 'Something went wrong. Please try again later.',
+        status: 'error',
+        position: 'top',
+        duration: 5000,
+        isClosable: true,
+      });
+    })
   }
 
   const handlePublish = (id) => {
@@ -105,45 +115,45 @@ const ManageStoryList = () => {
           ?
           </p>
         </div>
-      : <>
-          {fetchingStories
-          ? <div className={styles.container}>
-              <HStack height="256px" width="1200px" boxShadow="lg" bg="white" marginTop="120px">
-                <Skeleton height="256" width="350px" />
-                <Box>
-                  <Stack width="850px" padding="8px 32px 8px 16px" spacing="16px">
-                    <Skeleton height="48px" />
-                    <Skeleton height="16px" />
-                    <Skeleton height="16px" />
-                    <Skeleton height="16px" />
-                    <Skeleton height="16px" />
-                    <Skeleton height="16px" />
-                  </Stack>
-                </Box>
-              </HStack>
-            </div>
-          : <>
-              {fetchError
-              ? <div className={styles.center}>
-                  <h1 className="heading-1" >Something went wrong. Please try again later.</h1>
-                </div>
+      : <Router>
+          <Switch>
+            <Route exact path='/manage-stories'>
+              {fetchingStories
+              ? <div className={styles.container}>
+                <HStack height="256px" width="1200px" boxShadow="lg" bg="white" marginTop="120px">
+                  <Skeleton height="256" width="350px" />
+                  <Box>
+                    <Stack width="850px" padding="8px 32px 8px 16px" spacing="16px">
+                      <Skeleton height="48px" />
+                      <Skeleton height="16px" />
+                      <Skeleton height="16px" />
+                      <Skeleton height="16px" />
+                      <Skeleton height="16px" />
+                      <Skeleton height="16px" />
+                    </Stack>
+                  </Box>
+                </HStack>
+              </div>
               : <>
-                {storiesListCopy.length === 0
-                ? <div className={styles.center}>
-                    <h1 className="heading-1">You haven't written any stories.<br />Make one below.</h1>
-                      {/* This should link to /manage-stories/create */}
-                      <ChakraButton
-                        leftIcon={<IoAdd />}
-                        fontFamily="Raleway"
-                        marginTop="16px"
-                      >
-                        Create a story
-                      </ChakraButton>
-                  </div>
-                : <Router>
-                    <Switch>
-                      <Route exact path='/manage-stories'>
-                        <div className={styles.container}>
+                  {fetchError
+                  ? <div className={styles.center}>
+                      <h1 className="heading-1" >Something went wrong. Please try again later.</h1>
+                    </div>  
+                  : <>
+                      { storiesList.length === 0
+                      ? <div className={styles.center}>
+                          <h1 className="heading-1">You haven't written any stories.<br />Make one below.</h1>
+                            <Link to="/manage-stories/create">
+                              <ChakraButton
+                                leftIcon={<IoAdd />}
+                                fontFamily="Raleway"
+                                marginTop="16px"
+                              >
+                                Create a story
+                              </ChakraButton>
+                            </Link>
+                        </div>
+                      : <div className={styles.container}>
                           <div className={styles.options}>
                             <div>
                             <Menu>
@@ -160,7 +170,7 @@ const ManageStoryList = () => {
                                 Filter
                               </MenuButton>
                               <MenuList>
-                                <MenuOptionGroup onChange={(value) => setFilterStory(value)} type="radio">
+                                <MenuOptionGroup onChange={(value) => setFilterStory(value)} value={filterStory} type="radio">
                                   <MenuItemOption 
                                     className="paragraph"
                                     value=""
@@ -232,33 +242,34 @@ const ManageStoryList = () => {
                               handlePublish={handlePublish}
                             />
                           ))}
-                          {/* This should link to /manage-stories/create */}
                           <Tooltip hasArrow label="Create a story" bg={`var(--color-very-light-grey)`} color={`--color-black`} borderRadius="4px" fontFamily="Raleway">
-                          <IconButton
-                            aria-label="Create a story"
-                            icon={<IoAdd />}
-                            isRound="true"
-                            boxShadow="xl"
-                            bg={`var(--color-brand-default)`}
-                            color="white"
-                            size="lg"
-                            fontSize="40px"
-                            _hover={{filter:"brightness(0.8)"}}
-                            _focus={{border:"none"}}
-                            style={{position: "fixed", bottom: "40px", right:"60px"}} // For positioning floating action button to bottom right of screen
-                          />
+                          <Link to="manage-stories/create">
+                            <IconButton
+                              aria-label="Create a story"
+                              icon={<IoAdd />}
+                              isRound="true"
+                              boxShadow="xl"
+                              bg={`var(--color-brand-default)`}
+                              color="white"
+                              size="lg"
+                              fontSize="40px"
+                              _hover={{filter:"brightness(0.8)"}}
+                              _focus={{border:"none"}}
+                              style={{position: "fixed", bottom: "40px", right:"60px"}} // For positioning floating action button to bottom right of screen
+                            />
+                          </Link> 
                         </Tooltip>
                         </div>
-                      </Route>
-                      <Route exact path='/manage-stories/:id' render={() => <StoryDetails  data={ storiesListCopy } />} />
-                    </Switch>
-                  </Router>
-                }
-              </>
+                      }
+                    </>
+                  }
+                </>
               }
-            </>
-          }
-        </>
+            </Route>
+            <Route exact path="/manage-stories/create" component={StoryDetails} /> {/* This should always be above the route for with :id. */}
+            <Route exact path="/manage-stories/:id" render={() => <StoryDetails  data={ storiesListCopy } />} />
+          </Switch>
+        </Router>
       }
     </>
   );
