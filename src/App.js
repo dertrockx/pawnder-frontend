@@ -7,17 +7,27 @@ import { Route } from "react-router";
 import { UserLoginPage, UserSignupPage } from "pages";
 import InstitutionOnboardingPage from "pages/InstitutionOnboarding";
 import NavRoute from "components/NavRoute";
+<<<<<<< HEAD
+=======
+import InstitutionSignUp from "pages/InstitutionSignUpPage";
+import InstitutionLogin from "pages/InstitutionLoginPage";
+>>>>>>> Fix redux for fetching stories and routing in manage stories
 import UserOnboarding from "pages/UserOnboarding";
 import InstitutionSettings from "pages/InstitutionSettings";
 import ShowStoryList from "pages/ShowStoryList";
 import ManageStoryList from "pages/ManageStoryList";
 
+<<<<<<< HEAD
 import history from "utils/history";
 import LoadingPage from "pages/LoadingPage";
 import { useDispatch, useSelector } from "react-redux";
 
 import { silentRefresh } from "redux/actions/authActions";
 import { model } from "constants/EntityType";
+=======
+import { ChakraProvider } from "@chakra-ui/react";
+import theme from "./theme";
+>>>>>>> Fix redux for fetching stories and routing in manage stories
 // reset default styles for all html elements - https://en.wikipedia.org/wiki/Reset_style_sheet
 import "./normalize.css";
 import "./typography.css";

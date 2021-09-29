@@ -60,43 +60,42 @@ const ShowStoryList = () => {
           <h1 className="heading-1" >404 Not Found</h1>
           <p className="paragraph">
             Maybe you wanted to see &nbsp;
-          <Link to="/institution/manage-stories" className="link-text">
+          <Link to="/manage-stories" className="link-text">
             your stories
           </Link>
           ?
           </p>
         </div>
-      : <>
-          {fetchingStories
-          ? <div className={styles.container}>
-              <HStack height="256px" width="1200px" boxShadow="lg" bg="white" marginTop="120px">
-                <Skeleton height="256" width="350px" />
-                <Box>
-                  <Stack width="850px" padding="8px 32px 8px 16px" spacing="16px">
-                    <Skeleton height="48px" />
-                    <Skeleton height="16px" />
-                    <Skeleton height="16px" />
-                    <Skeleton height="16px" />
-                    <Skeleton height="16px" />
-                    <Skeleton height="16px" />
-                  </Stack>
-                </Box>
-              </HStack>
-            </div>
-          : <>
-              {fetchError
-              ? <div className={styles.center}>
-                  <h1 className="heading-1" >Something went wrong. Please try again later.</h1>
-                </div> 
+      : <Router>
+          <Switch>
+            <Route exact path='/stories'>
+              {fetchingStories
+              ? <div className={styles.container}>
+                  <HStack height="256px" width="1200px" boxShadow="lg" bg="white" marginTop="120px">
+                    <Skeleton height="256" width="350px" />
+                    <Box>
+                      <Stack width="850px" padding="8px 32px 8px 16px" spacing="16px">
+                        <Skeleton height="48px" />
+                        <Skeleton height="16px" />
+                        <Skeleton height="16px" />
+                        <Skeleton height="16px" />
+                        <Skeleton height="16px" />
+                        <Skeleton height="16px" />
+                      </Stack>
+                    </Box>
+                  </HStack>
+                </div>
               : <>
-                  { storiesListCopy.length === 0
+                  {fetchError
                   ? <div className={styles.center}>
-                      <h1 className="heading-1">Nothing to see here...yet.</h1>
-                    </div>
-                  : <Router>
-                      <Switch>
-                        <Route exact path='/stories'>
-                        <div className={styles.container}>
+                      <h1 className="heading-1" >Something went wrong. Please try again later.</h1>
+                    </div> 
+                  : <>
+                      { storiesList.length === 0
+                      ? <div className={styles.center}>
+                          <h1 className="heading-1">Nothing to see here...yet.</h1>
+                        </div>
+                      : <div className={styles.container}>
                           <div className={styles.options}>
                             <div className={styles.sortDate}>
                               <p className="bold-text">Sort Date by:</p>
@@ -139,17 +138,16 @@ const ShowStoryList = () => {
                               story={story}
                             />
                           ))}
-                          </div>
-                        </Route>
-                        <Route exact path='/stories/:id' render={() => <StoryDetails data={ storiesListCopy } />}/>
-                      </Switch>
-                    </Router>
+                        </div>
+                      }
+                    </>
                   }
                 </>
-              } 
-            </>
-          }
-        </>
+              }
+            </Route>
+            <Route exact path='/stories/:id' render={() => <StoryDetails data={ storiesListCopy } />}/>
+          </Switch>
+        </Router>
       }
     </>
   );

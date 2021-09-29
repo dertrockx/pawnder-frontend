@@ -1,50 +1,44 @@
 import { story } from 'constants/ActionTypes';
+import axios from 'axios';
 
-import { default as fetchStoriesAPI } from 'utils/fetchStories';
-
-export const fetchStories = ({ loginType }) => {
+export const fetchStories = ({ loginType, institutionId }) => {
   return async (dispatch) => {
     dispatch({
       type: story.FETCH_STORIES_PENDING,
     });
 
-    console.log("fetching"); // remove
-    // const storiesList = await fetchStoriesAPI({ loginType })
-    //   .then((res) => {
-    //     dispatch({
-    //       type: story.FETCH_STORIES_COMPLETED,
-    //       payload: {
-    //         storiesList,
-    //       },
-    //     });
-    //   })
-    //   .catch((error) => {
-    //     dispatch({
-    //       type: story.FETCH_STORIES_FAILED,
-    //       payload: {
-    //         errorMessage: 'Something went wrong. Please try again later.',
-    //       }
-    //     });
-    //   });
+    // Change kapag connected na sa backend
+    // If institution: '/story?institutionId=' + institutionId
+    // If user: '/story?published=1'
 
-    const hasError = false; // backend
-    const storiesList = await fetchStoriesAPI({loginType});
-
-    if (hasError) {
+    try {
+      if (loginType === 'institution') {
+        const res = await axios.get('http://localhost:8000/stories?institutionId=' + institutionId)
+        const storiesList = res.data;
+        dispatch({
+          type: story.FETCH_STORIES_COMPLETED,
+          payload: {
+            storiesList,
+          },
+        });
+      } else {
+        const res = await axios.get('http://localhost:8000/stories?isDraft=false');
+        const storiesList = res.data;
+        dispatch({
+          type: story.FETCH_STORIES_COMPLETED,
+          payload: {
+            storiesList,
+          },
+        });
+      }
+    } catch (err) {
+      console.log(err);
       dispatch({
         type: story.FETCH_STORIES_FAILED,
         payload: {
-          errorMessage: 'Something went wrong. Please try again later.',
+          errorMessage: 'Request error.',
         }
       });
-    } else {
-      dispatch({
-        type: story.FETCH_STORIES_COMPLETED,
-        payload: {
-          storiesList,
-        },
-      });
-      console.log(storiesList);
     }
   };
 }
