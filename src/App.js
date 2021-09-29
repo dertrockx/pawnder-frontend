@@ -6,7 +6,8 @@ import configureStore from "redux/store";
 import { Route } from "react-router";
 // reset default styles for all html elements - https://en.wikipedia.org/wiki/Reset_style_sheet
 import SamplePage from "pages/SamplePage";
-import { UserLoginPage, UserSignupPage, UserInformationPage, UserPreferencesPage } from "pages";
+import { UserLoginPage, UserSignupPage } from "pages";
+import UserSettings from "pages/UserSettings";
 import InstitutionOnboardingPage from "pages/InstitutionOnboarding"
 // import Navbar from "components/Navbar";
 import ChakraSample from "pages/ChakraSample";
