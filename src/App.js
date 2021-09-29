@@ -5,19 +5,19 @@ import configureStore from "redux/store";
 
 import { Route } from "react-router";
 // reset default styles for all html elements - https://en.wikipedia.org/wiki/Reset_style_sheet
-import SamplePage from "pages/SamplePage";
+// import SamplePage from "pages/SamplePage";
 import { UserLoginPage, UserSignupPage } from "pages";
-import UserSettings from "pages/UserSettings";
+// import UserSettings from "pages/UserSettings";
 import InstitutionOnboardingPage from "pages/InstitutionOnboarding"
 // import Navbar from "components/Navbar";
-import ChakraSample from "pages/ChakraSample";
-import Feed from "pages/Feed";
-import NearbyInstitution from "pages/NearbyInstitution";
+// import ChakraSample from "pages/ChakraSample";
+// import Feed from "pages/Feed";
+// import NearbyInstitution from "pages/NearbyInstitution";
 import NavRoute from "components/NavRoute";
-import InstitutionSignUp from "pages/InstitutionSignUpPage";
-import InstitutionLogin from "pages/InstitutionLoginPage";
-import ShowStoryDetails from "pages/ShowStoryDetails";
-import ManageStoryDetails from "pages/ManageStoryDetails";
+// import InstitutionSignUp from "pages/InstitutionSignUpPage";
+// import InstitutionLogin from "pages/InstitutionLoginPage";
+// import ShowStoryDetails from "pages/ShowStoryDetails";
+// import ManageStoryDetails from "pages/ManageStoryDetails";
 
 import { ChakraProvider } from "@chakra-ui/react";
 import theme from "./theme";
