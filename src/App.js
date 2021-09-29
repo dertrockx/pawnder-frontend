@@ -1,5 +1,5 @@
 import React from "react";
-import { BrowserRouter as Router, Switch, Redirect } from "react-router-dom";
+import { Router, Switch, Redirect } from "react-router-dom";
 import { Provider as ReduxProvider } from "react-redux";
 import configureStore from "redux/store";
 
@@ -23,6 +23,7 @@ import { Route } from "react-router";
 
 import { ChakraProvider } from "@chakra-ui/react";
 import theme from "./theme";
+import history from "utils/history";
 // reset default styles for all html elements - https://en.wikipedia.org/wiki/Reset_style_sheet
 import "./normalize.css";
 import "./typography.css";
@@ -34,14 +35,25 @@ function App() {
 	return (
 		<ReduxProvider store={store}>
 			<ChakraProvider theme={theme}>
-				<Router>
+				<Router history={history}>
 					<Switch>
 						<NavRoute path="/chakra-sample" exact component={ChakraSample} />
 						<NavRoute path="/sample" exact component={SamplePage} />
 						<NavRoute path="/feed" exact component={Feed} />
 						<NavRoute path="/nearby" exact component={NearbyInstitution} />
+						<NavRoute path="/stories/:id" component={ShowStoryDetails} />
 
 						{/* institution pages */}
+						<Route
+							path={`${INSTITUTION_ROOT}/login`}
+							exact
+							component={InstitutionLogin}
+						/>
+						<Route
+							path={`${INSTITUTION_ROOT}/signup`}
+							exact
+							component={InstitutionSignUp}
+						/>
 						<NavRoute
 							path={`${INSTITUTION_ROOT}/dashboard`}
 							exact
@@ -55,6 +67,11 @@ function App() {
 							path={`${INSTITUTION_ROOT}/manage-pets`}
 							component={ManagePetList}
 						/>
+						<NavRoute
+							path={`${INSTITUTION_ROOT}/manage-stories/:id`}
+							component={ManageStoryDetails}
+						/>
+
 						<Redirect path="/" to="/sample" exact />
 					</Switch>
 				</Router>

@@ -1,21 +1,20 @@
-import React, { useState } from "react";
+import React from "react";
 import { NavLink } from "react-router-dom";
 import styles from "./Navbar.module.css";
 import Button from "components/Button";
+import { useSelector, useDispatch } from "react-redux";
+import { model } from "constants/EntityType";
+import { logout as onLogout } from "redux/actions/authActions";
 
 const INSTITUTION_ROOT = "/institution";
 
 function Navbar() {
-	// TODO: use redux and cookeis to check if user is authenticated
-	// as of now just use some basic state
-	const [authenticated, setAuthenticated] = useState(false);
-	const [isInsti, setIsInsti] = useState(false);
-	const login = () => setAuthenticated(true);
-	const loginAsInsti = () => setIsInsti(true);
+	const auth = useSelector((s) => s.auth);
+	const dispatch = useDispatch();
+	const { token, type } = auth;
 
 	const logout = () => {
-		setAuthenticated(false);
-		setIsInsti(false);
+		dispatch(onLogout());
 	};
 	// render these navbar items if currently signed-in identiy is a user
 	function renderUserItems() {
@@ -95,8 +94,10 @@ function Navbar() {
 					<p className="bold-text">Logo goes here</p>
 				</div>
 				<div className={styles.navbarRightItems}>
-					{authenticated &&
-						(isInsti ? renderInstitutionItems() : renderUserItems())}
+					{token &&
+						(type === model.INSTITUTION
+							? renderInstitutionItems()
+							: renderUserItems())}
 					<NavLink
 						className={`paragraph ${styles.navbarItem}`}
 						activeClassName="bold-text"
@@ -111,7 +112,7 @@ function Navbar() {
 					>
 						Chakra Sample
 					</NavLink>
-					{authenticated ? (
+					{token ? (
 						<Button
 							color="white"
 							variant="outline"
@@ -122,43 +123,11 @@ function Navbar() {
 						</Button>
 					) : (
 						<>
-							<Button
-								color="white"
-								variant="outline"
-								size="small"
-								onClick={login}
-							>
-								login as user
+							<Button color="white" variant="outline" size="small">
+								Sign up
 							</Button>
-							<Button
-								color="white"
-								variant="outline"
-								size="small"
-								onClick={login}
-							>
-								signup as user
-							</Button>
-							<Button
-								color="white"
-								variant="outline"
-								size="small"
-								onClick={() => {
-									login();
-									loginAsInsti();
-								}}
-							>
-								login as insti
-							</Button>
-							<Button
-								color="white"
-								variant="outline"
-								size="small"
-								onClick={() => {
-									login();
-									loginAsInsti();
-								}}
-							>
-								signup as insti
+							<Button color="white" variant="outline" size="small">
+								Login
 							</Button>
 						</>
 					)}
