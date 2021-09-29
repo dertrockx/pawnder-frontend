@@ -5,7 +5,7 @@ import Button from "components/Button";
 import { useSelector, useDispatch } from "react-redux";
 import { model } from "constants/EntityType";
 import { logout as onLogout } from "redux/actions/authActions";
-
+import history from "utils/history";
 const INSTITUTION_ROOT = "/institution";
 
 function Navbar() {
@@ -16,6 +16,9 @@ function Navbar() {
 	const logout = () => {
 		dispatch(onLogout());
 	};
+
+	const login = () => history.push("/login");
+	const signup = () => history.push("/signup");
 	// render these navbar items if currently signed-in identiy is a user
 	function renderUserItems() {
 		return (
@@ -123,10 +126,20 @@ function Navbar() {
 						</Button>
 					) : (
 						<>
-							<Button color="white" variant="outline" size="small">
+							<Button
+								color="white"
+								variant="outline"
+								size="small"
+								onClick={signup}
+							>
 								Sign up
 							</Button>
-							<Button color="white" variant="outline" size="small">
+							<Button
+								color="white"
+								variant="outline"
+								size="small"
+								onClick={login}
+							>
 								Login
 							</Button>
 						</>
