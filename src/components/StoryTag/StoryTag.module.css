@@ -22,11 +22,11 @@
   height: 0;
   border: 9px solid transparent;
   border-left: 0;
-  border-right: 18px solid var(--color-brand-default)
+  border-right: 18px solid var(--color-brand-lighter)
 }
 
 .baseStyles p {
   padding: 0px 10px 0px 5px;
-  background-color:var(--color-brand-default);
+  background-color:var(--color-brand-lighter);
   overflow: hidden; /* Because people might create sentence tags. Hopefully not though. */
 }
