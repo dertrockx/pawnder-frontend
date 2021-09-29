@@ -4,6 +4,10 @@ import { Provider as ReduxProvider } from "react-redux";
 import configureStore from "redux/store";
 
 import { Route } from "react-router";
+// reset default styles for all html elements - https://en.wikipedia.org/wiki/Reset_style_sheet
+import SamplePage from "pages/SamplePage";
+import { UserLoginPage, UserSignupPage, InstitutionOnboardingPage } from "pages";
+import Navbar from "components/Navbar";
 
 import { ChakraProvider } from "@chakra-ui/react";
 import theme from "./theme";
@@ -33,6 +37,7 @@ const ChooseLogin = lazy(() => import("pages/ChooseLogin"));
 const ChooseSignup = lazy(() => import("pages/ChooseSignup"));
 const store = configureStore();
 const INSTITUTION_ROOT = "/institution";
+const USER_ROOT = "/user";
 
 function App() {
 	return (
@@ -72,15 +77,30 @@ function App() {
 								path={`${INSTITUTION_ROOT}/manage-stories/:id`}
 								component={ManageStoryDetails}
 							/>
+							<Route
+								path={`${USER_ROOT}/login`}
+								exact
+								component={UserLoginPage}
+							/>
+							<Route
+								path={`${USER_ROOT}/signup`}
+								exact
+								component={UserSignupPage}
+							/>
+							<Route
+								path={`${INSTITUTION_ROOT}/onboarding`}
+								exact
+								component={InstitutionOnboardingPage}
+							/>
 							<NavRoute path="/login" exact component={ChooseLogin} />
 							<NavRoute path="/signup" exact component={ChooseSignup} />
-
 							<Redirect path="/" to="/signup" exact />
 						</Switch>
 					</Router>
 				</Suspense>
 			</ChakraProvider>
 		</ReduxProvider>
+		
 	);
 }
 
