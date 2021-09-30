@@ -1,19 +1,24 @@
-import React, { useState } from "react";
+import React from "react";
 import { NavLink } from "react-router-dom";
 import styles from "./Navbar.module.css";
 import Button from "components/Button";
+import { useSelector, useDispatch } from "react-redux";
+import { model } from "constants/EntityType";
+import { logout as onLogout } from "redux/actions/authActions";
+import history from "utils/history";
+const INSTITUTION_ROOT = "/institution";
+
 function Navbar() {
-	// TODO: use redux and cookeis to check if user is authenticated
-	// as of now just use some basic state
-	const [authenticated, setAuthenticated] = useState(false);
-	const [isInsti, setIsInsti] = useState(false);
-	const login = () => setAuthenticated(true);
-	const loginAsInsti = () => setIsInsti(true);
+	const auth = useSelector((s) => s.auth);
+	const dispatch = useDispatch();
+	const { token, type } = auth;
 
 	const logout = () => {
-		setAuthenticated(false);
-		setIsInsti(false);
+		dispatch(onLogout());
 	};
+
+	const login = () => history.push("/login");
+	const signup = () => history.push("/signup");
 	// render these navbar items if currently signed-in identiy is a user
 	function renderUserItems() {
 		return (
@@ -56,21 +61,28 @@ function Navbar() {
 				<NavLink
 					className={`paragraph ${styles.navbarItem}`}
 					activeClassName="bold-text"
-					to="/manage-pets"
+					to={`${INSTITUTION_ROOT}/dashboard`}
+				>
+					Dashboard
+				</NavLink>
+				<NavLink
+					className={`paragraph ${styles.navbarItem}`}
+					activeClassName="bold-text"
+					to={`${INSTITUTION_ROOT}/manage-pets`}
 				>
 					Manage Pets
 				</NavLink>
 				<NavLink
 					className={`paragraph ${styles.navbarItem}`}
 					activeClassName="bold-text"
-					to="/manage-stories"
+					to={`${INSTITUTION_ROOT}/manage-stories`}
 				>
 					Manage Stories
 				</NavLink>
 				<NavLink
 					className={`paragraph ${styles.navbarItem}`}
 					activeClassName="bold-text"
-					to="/settings"
+					to={`${INSTITUTION_ROOT}/settings`}
 				>
 					Settings
 				</NavLink>
@@ -85,8 +97,10 @@ function Navbar() {
 					<p className="bold-text">Logo goes here</p>
 				</div>
 				<div className={styles.navbarRightItems}>
-					{authenticated &&
-						(isInsti ? renderInstitutionItems() : renderUserItems())}
+					{token &&
+						(type === model.INSTITUTION
+							? renderInstitutionItems()
+							: renderUserItems())}
 					<NavLink
 						className={`paragraph ${styles.navbarItem}`}
 						activeClassName="bold-text"
@@ -101,7 +115,7 @@ function Navbar() {
 					>
 						Chakra Sample
 					</NavLink>
-					{authenticated ? (
+					{token ? (
 						<Button
 							color="white"
 							variant="outline"
@@ -116,9 +130,9 @@ function Navbar() {
 								color="white"
 								variant="outline"
 								size="small"
-								onClick={login}
+								onClick={signup}
 							>
-								login as user
+								Sign up
 							</Button>
 							<Button
 								color="white"
@@ -126,29 +140,7 @@ function Navbar() {
 								size="small"
 								onClick={login}
 							>
-								signup as user
-							</Button>
-							<Button
-								color="white"
-								variant="outline"
-								size="small"
-								onClick={() => {
-									login();
-									loginAsInsti();
-								}}
-							>
-								login as insti
-							</Button>
-							<Button
-								color="white"
-								variant="outline"
-								size="small"
-								onClick={() => {
-									login();
-									loginAsInsti();
-								}}
-							>
-								signup as insti
+								Login
 							</Button>
 						</>
 					)}

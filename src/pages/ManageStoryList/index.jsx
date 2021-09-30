@@ -96,7 +96,8 @@ const ManageStoryList = () => {
   }
 
   const handlePublish = (id) => {
-    // PUT request here for isDraft field 
+    // PUT request here for isDraft field (json-server)
+    // For backend, '/story/' + id + '?publish=1'
 
     alert(`Successfully published ${id}`); // remove
   }

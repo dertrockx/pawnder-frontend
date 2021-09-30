@@ -1,34 +1,39 @@
-import { auth } from "constants/ActionTypes"
+import axios from "utils/axios";
+import { auth } from "constants/ActionTypes";
+import { model } from "constants/EntityType";
+import history from "utils/history";
 
-export function login(loginType) {
-    return (dispatch) => {
-        dispatch({
-            type: auth.LOGIN_PENDING,
-            payload: {
-                loginType,
-            }
-        });
+export const login = (email, password) => {
+	return async (dispatch) => {
+		dispatch({
+			type: auth.LOGIN_PENDING,
+		});
+		try {
+			const res = await axios.post("/api/0.1/auth/login", {
+				email,
+				password,
+				type: model.INSTITUTION,
+			});
+			const data = res.data;
 
-        const hasError = false; //backend
-        setTimeout(() => {
-            if(hasError) {
-                dispatch({
-                    type: auth.LOGIN_FAILED,
-                    payload: {
-                        errorMessage: 'Something went wrong. Please try again later.',
-                    }
-                });
-            } else {
-                dispatch({
-                    type: auth.LOGIN_COMPLETED,
-                });
-            }
-        }, 3000);
-    };
-}
+			dispatch({
+				type: auth.LOGIN_COMPLETED,
+				payload: data,
+			});
+			history.push("/feed");
+		} catch (err) {
+			console.log(err);
+			dispatch({
+				type: auth.LOGIN_FAILED,
+				payload: "Request error.",
+			});
+		}
+	};
+};
 
-export function logout() {
-    return {
-        type: auth.LOGOUT, 
-    };
-}
+export const logout = () => {
+	return (dispatch) => {
+		dispatch({ type: auth.LOGOUT });
+		history.push("/");
+	};
+};

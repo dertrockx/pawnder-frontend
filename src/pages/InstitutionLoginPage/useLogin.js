@@ -1,36 +1,37 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect } from "react";
 
 const useLogin = (callback, validate) => {
-    const [values, setValues] = useState({
-        email: '',
-        password: '',
-    });
-    const [errors, setErrors] = useState({});
-    const [isSubmitting, setIsSubmitting] = useState(false);
+	const [values, setValues] = useState({
+		email: "",
+		password: "",
+	});
+	const [errors, setErrors] = useState({});
+	const [isSubmitting, setIsSubmitting] = useState(false);
 
-    const handleChange = e => {
-        const { name, value } = e.target;
-        setValues({
-        ...values,
-        [name]: value
-        });
-    };
+	const handleChange = (e) => {
+		const { name, value } = e.target;
+		setValues({
+			...values,
+			[name]: value,
+		});
+	};
 
-    const handleSubmit = e => {
-        e.preventDefault();
+	const handleSubmit = (e) => {
+		e.preventDefault();
 
-        setErrors(validate(values));
-        setIsSubmitting(true);
-    };
+		setErrors(validate(values));
+		setIsSubmitting(true);
+	};
 
-    useEffect(() => {
-        if (Object.keys(errors).length === 0 && isSubmitting) {
-            callback()
-            console.log(values);
-        }
-    }, [errors]);
+	useEffect(() => {
+		if (Object.keys(errors).length === 0 && isSubmitting) {
+			callback();
+			console.log(values);
+		}
+		// eslint-disable-next-line
+	}, [errors]);
 
-    return { handleChange, handleSubmit, values, errors };
+	return { handleChange, handleSubmit, values, errors };
 };
 
 export default useLogin;
