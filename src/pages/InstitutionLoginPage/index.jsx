@@ -17,7 +17,6 @@ const InstitutionSignUpPage = () => {
 	const matches = useMediaQuery("(min-width: 800px)");
 
 	const dispatch = useDispatch();
-	const { loginPending } = useSelector((s) => s.auth);
 
 	function submitCb() {
 		const { email, password } = values;
@@ -30,7 +29,6 @@ const InstitutionSignUpPage = () => {
 
 	return (
 		<>
-			<h1 className="heading-1">{loginPending && `requesting...`}</h1>
 			{matches ? (
 				<div className={styles.formContainerBig}>
 					<FormLogin
