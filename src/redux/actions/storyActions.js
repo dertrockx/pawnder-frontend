@@ -13,21 +13,23 @@ export const fetchStories = ({ loginType, institutionId }) => {
 
     try {
       if (loginType === 'institution') {
-        const res = await axios.get('http://localhost:8000/stories?institutionId=' + institutionId)
-        const storiesList = res.data;
+        // const res = await axios.get('http://localhost:8000/stories?institutionId=' + institutionId) // json-server
+        const res = await axios.get('http://localhost:8081/api/0.1/story?institutionId=' + institutionId) // back-end
+        const { stories } = res.data;
         dispatch({
           type: story.FETCH_STORIES_COMPLETED,
           payload: {
-            storiesList,
+            stories,
           },
         });
       } else {
-        const res = await axios.get('http://localhost:8000/stories?isDraft=false');
-        const storiesList = res.data;
+        // const res = await axios.get('http://localhost:8000/stories?isDraft=false'); // json-server
+        const res = await axios.get('http://localhost:8081/api/0.1/story?published=1'); // back-end
+        const { stories } = res.data;
         dispatch({
           type: story.FETCH_STORIES_COMPLETED,
           payload: {
-            storiesList,
+            stories,
           },
         });
       }

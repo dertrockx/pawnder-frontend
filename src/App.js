@@ -71,11 +71,11 @@ function App() {
 								component={ManagePetList}
 							/>
 							<NavRoute
-								path={`${INSTITUTION_ROOT}/manage-stories/`}
+								path={`${INSTITUTION_ROOT}/manage-stories`}
 								component={ManageStoryList}
 							/>
 							<NavRoute
-								path={`${INSTITUTION_ROOT}/settings/`}
+								path={`${INSTITUTION_ROOT}/settings`}
 								component={InstitutionSettings}
 							/>
 							<NavRoute path="/login" exact component={ChooseLogin} />

@@ -23,7 +23,7 @@ const ManageStoryList = () => {
   // const loginType = useSelector(s => s.auth.loginType); // this should also get instiId and pass instiId to fetchStories
   const fetchingStories = useSelector(s => s.story.fetchingStories);
   const fetchError = useSelector(s => s.story.fetchError);
-  const storiesList = useSelector(s => s.story.storiesList);
+  const stories = useSelector(s => s.story.stories);
   const dispatch = useDispatch();
   const toast = useToast();
 
@@ -33,7 +33,7 @@ const ManageStoryList = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [filterStory, setFilterStory] = useState('');  
 
-  let storiesListCopy = storiesList; // So I won't overwrite the storiesListArray (also used for the filter and for when there are no stories)
+  let storiesCopy = stories; // So I won't overwrite the storiesArray (also used for the filter and for when there are no stories)
 
   // Might put loginType because someone might log out while while viewing stories.
   // Might also use for pagination
@@ -43,17 +43,17 @@ const ManageStoryList = () => {
 
   // Uses id to sort
   if (sortDate === 'ascending') {
-    storiesListCopy.sort((a, b) => {
+    storiesCopy.sort((a, b) => {
       return ((a.id < b.id) ? -1 : ((a.id > b.id) ? 1 : 0))
     });
   } else {
-    storiesListCopy.sort((a, b) => {
+    storiesCopy.sort((a, b) => {
       return ((a.id > b.id) ? -1 : ((a.id < b.id) ? 1 : 0))
     });
   }
 
   // Source for search bar: https://youtu.be/mZvKPtH9Fzo
-  storiesListCopy = storiesList.filter((story) => {
+  storiesCopy = stories.filter((story) => {
     if (searchTerm === '') {
       return story;
     } else if (story.title.toLowerCase().includes(searchTerm.toLowerCase()) || (story.tags.toLowerCase().includes(searchTerm.toLowerCase()))) {
@@ -61,19 +61,16 @@ const ManageStoryList = () => {
     }
   }).filter((story) => {
     if (filterStory === 'draft') {
-      return (story.isDraft === true);
+      return (story.isDraft === 1);
     } else if (filterStory === 'published') {
-      return (story.isDraft === false);
+      return (story.isDraft === 0);
     } else {
       return story;
     }
   });
 
   const handleDelete = (id) => {
-    // DELETE request here
-
-    // For backend, change it to '/story/' + id
-    axios.delete('http://localhost:8000/stories/' + id)
+    axios.delete('http://localhost:8081/api/0.1/story/' + id)
     .then(() => {
       toast({
         title: 'Successfully deleted story.',
@@ -86,7 +83,8 @@ const ManageStoryList = () => {
     })
     .catch(() => {
       toast({
-        title: 'Something went wrong. Please try again later.',
+        title: 'Error deleting story.',
+        description: 'Something went wrong. Please try again later.',
         status: 'error',
         position: 'top',
         duration: 5000,
@@ -98,7 +96,27 @@ const ManageStoryList = () => {
   const handlePublish = (id) => {
     // PUT request here for isDraft field (json-server)
     // For backend, '/story/' + id + '?publish=1'
-
+    axios.put('http://localhost:8081/api/0.1/story/' + id + '?publish=1')
+    .then(() => {
+      toast({
+        title: 'Successfully published story.',
+        status: 'success',
+        position: 'top',
+        duration: 5000,
+        isClosable: true,
+      });
+      dispatch(fetchStories({ loginType, institutionId }));
+    })
+    .catch(() => {
+      toast({
+        title: 'Error publishing story.',
+        description: 'Something went wrong. Please try again later.',
+        status: 'error',
+        position: 'top',
+        duration: 5000,
+        isClosable: true,
+      });
+    })
     alert(`Successfully published ${id}`); // remove
   }
 
@@ -118,7 +136,7 @@ const ManageStoryList = () => {
         </div>
       : <Router>
           <Switch>
-            <Route exact path='/manage-stories'>
+            <Route exact path='/institution/manage-stories'>
               {fetchingStories
               ? <div className={styles.container}>
                 <HStack height="256px" width="1200px" boxShadow="lg" bg="white" marginTop="120px">
@@ -141,10 +159,10 @@ const ManageStoryList = () => {
                       <h1 className="heading-1" >Something went wrong. Please try again later.</h1>
                     </div>  
                   : <>
-                      { storiesList.length === 0
+                      { stories.length === 0
                       ? <div className={styles.center}>
                           <h1 className="heading-1">You haven't written any stories.<br />Make one below.</h1>
-                            <Link to="/manage-stories/create">
+                            <Link to="/institution/manage-stories/create">
                               <ChakraButton
                                 leftIcon={<IoAdd />}
                                 fontFamily="Raleway"
@@ -235,7 +253,7 @@ const ManageStoryList = () => {
                               </InputGroup>
                             </div>
                           </div>
-                          {storiesListCopy.map(story => (
+                          {storiesCopy.map(story => (
                             <StoryCardManage
                               key={story.id}
                               story={story}
@@ -267,8 +285,8 @@ const ManageStoryList = () => {
                 </>
               }
             </Route>
-            <Route exact path="/manage-stories/create" component={StoryDetails} /> {/* This should always be above the route for with :id. */}
-            <Route exact path="/manage-stories/:id" render={() => <StoryDetails  data={ storiesListCopy } />} />
+            <Route exact path="/institution/manage-stories/create" component={StoryDetails} /> {/* This should always be above the route for with :id. */}
+            <Route exact path="/institution/manage-stories/:id" render={() => <StoryDetails  data={ storiesCopy } />} /> {/* Might not pass data anymore since magre-refetch naman doon sa details page */}
           </Switch>
         </Router>
       }

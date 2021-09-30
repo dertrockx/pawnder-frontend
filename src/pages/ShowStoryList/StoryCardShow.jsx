@@ -11,7 +11,7 @@ import moment from 'moment';
 const StoryCardShow = ({ story }) => {
   return (
     <div className={styles.baseStyles}>
-      <img src={story.headlineURL} alt="" className={styles.image} />
+      <img src={story.headlineUrl} alt="" className={styles.image} />
       <div className={styles.rightContainer}>
         <div className={styles.titleContainer}>
           <h2 className="heading-2">{story.title}</h2>

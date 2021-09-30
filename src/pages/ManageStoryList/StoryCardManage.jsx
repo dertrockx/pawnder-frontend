@@ -89,7 +89,7 @@ const StoryCardManage = ({
 
   return (
     <div className={styles.baseStyles}>
-      <img src={story.headlineURL} alt="" className={styles.image} />
+      <img src={story.headlineUrl} alt="" className={styles.image} />
       <div className={styles.rightContainer}>
       <DeleteAlertDialog id={story.id} />
         <div className={styles.titleContainer}>
@@ -101,7 +101,7 @@ const StoryCardManage = ({
         <div className={styles.bottomAndButtonsContainer}>
           <div className={styles.bottomContainer}>
             <p className={`caption ${styles.icon}`} ><IoCalendarOutline style={{color: `var(--color-brand-default)`}} /> Created on {moment(`${story.createdAt}`, 'YYYY-MM-DDTHH:mm:ss.SSS[Z]').format("MMMM D YYYY")}</p>
-            { story.isDraft === true
+            { story.isDraft === 1
               ? <p className={`caption ${styles.icon}`} ><IoCalendarOutline style={{color: `var(--color-brand-darker)`}} /> To Be Published</p>
               : <p className={`caption ${styles.icon}`} ><IoCalendarOutline style={{color: `var(--color-brand-darker)`}} /> Published on {moment(`${story.publishedAt}`, 'YYYY-MM-DDTHH:mm:ss.SSS[Z]').format("MMMM D YYYY")}</p>
             }
@@ -109,11 +109,11 @@ const StoryCardManage = ({
               <p className="caption">Tags: <i>{story.tags}</i></p>
             </div>
           </div>
-          <div className={styles.buttons}>
-            <Link to={`/manage-stories/${story.id}`}>
+          <div className={styles.buttonsContainer}>
+            <Link to={`/institution/manage-stories/${story.id}`}>
               <div className={styles.outline}>Edit</div>
             </Link>
-            {story.isDraft === true && <PublishAlertDialog id={story.id} />}
+            {story.isDraft === 1 && <PublishAlertDialog id={story.id} />}
           </div>
         </div>
       </div>

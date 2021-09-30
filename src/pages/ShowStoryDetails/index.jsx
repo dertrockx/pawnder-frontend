@@ -30,7 +30,7 @@ const ShowStoryDetails = ({ data }) => {
                                 </div>
                                 <img 
                                     className = {styles.storyPhoto}
-                                    src = {story.headlineURL}
+                                    src = {story.headlineUrl}
                                     alt = ''
                                 /> 
                                 <div className = {styles.rectangleForTags}>
