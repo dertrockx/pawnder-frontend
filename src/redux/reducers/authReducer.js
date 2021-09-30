@@ -1,14 +1,14 @@
 import { auth } from "constants/ActionTypes";
-import cookie from "utils/cookie";
 
 const initialState = {
-	loginPending: false,
+	loginPending: true,
 	loginError: null, // Wrong credentials, basically error message
 
 	isAuthenticated: false,
 	loginType: null, // 'USER' or 'INSTITUTION' lang,
 	model: null,
 	token: null,
+	token_expiry: null,
 };
 
 export default function reducer(state = initialState, action = {}) {
@@ -23,10 +23,9 @@ export default function reducer(state = initialState, action = {}) {
 			const {
 				type,
 				model,
-				token: { auth, refresh },
+				token_expiry,
+				token: { auth },
 			} = action.payload;
-
-			cookie.set("refresh", refresh);
 
 			return {
 				...state,
@@ -35,6 +34,7 @@ export default function reducer(state = initialState, action = {}) {
 				isAuthenticated: true,
 				loginType: type,
 				model,
+				token_expiry,
 				token: auth,
 			};
 		}
@@ -45,7 +45,6 @@ export default function reducer(state = initialState, action = {}) {
 				loginError: action.payload,
 			};
 		case auth.LOGOUT:
-			cookie.remove("refresh");
 			return {
 				loginPending: false,
 				loginError: null,
