@@ -3,7 +3,7 @@ import { story } from 'constants/ActionTypes';
 const initialState = {
   fetchError: null, // Error message
   fetchingStories: false,
-  storiesList: [],
+  stories: [],
 };
 
 export default function reducer(state = initialState, action={}) {
@@ -16,11 +16,12 @@ export default function reducer(state = initialState, action={}) {
     }
 
     case story.FETCH_STORIES_COMPLETED: {
-      const { storiesList } = action.payload;
+      const { stories } = action.payload;
       return {
         ...state,
         fetchingStories: false,
-        storiesList,
+        fetchError: false,
+        stories,
       };
     }
 

@@ -24,7 +24,7 @@ function ManageStoryDetails({ data }) {
     const [storyInfo, setStoryInfo] = useState({
         title: '',
         tags: [],
-        headlineURL: '',
+        headlineUrl: '',
         body: ''
     })
     const [picture, setPicture] = useState(uploadPhoto);
@@ -32,15 +32,15 @@ function ManageStoryDetails({ data }) {
     useEffect(() => {
         if (data) {
             data.filter(story => story.id === parseInt(id)).map(story => {
-                console.log(story.headlineURL);
+                console.log(story.headlineUrl);
                 setStoryInfo({
                     ...storyInfo, 
                     title: story.title, 
                     tags: story.tags, 
-                    headlineURL: story.headlineURL, 
+                    headlineUrl: story.headlineUrl, 
                     body: story.body
                 })
-                setPicture(story.headlineURL);
+                setPicture(story.headlineUrl);
             });
         }
     }, []);
@@ -53,11 +53,11 @@ function ManageStoryDetails({ data }) {
 	}
 
     const movePages = (e) => {
-        history.push("/manage-stories");
+        history.push("/institution/manage-stories");
     } 
 
     const handlePublish = (e) => {
-        if (storyInfo.title === '' || storyInfo.tags === '' || storyInfo.headlineURL === '' || storyInfo.body === '') {
+        if (storyInfo.title === '' || storyInfo.tags === '' || storyInfo.headlineUrl === '' || storyInfo.body === '') {
             e.preventDefault();
             alert("All fields are required")
         } else {
@@ -83,7 +83,7 @@ function ManageStoryDetails({ data }) {
             }
             setStoryInfo({
                 ...storyInfo,
-                headlineURL: selected
+                headlineUrl: selected
             });
             reader.readAsDataURL(selected);
         } else {
@@ -136,7 +136,7 @@ function ManageStoryDetails({ data }) {
                         <div className = {styles.uploadPicture}>
                             <img src={picture} alt = '' className = {styles.img} />
                             <label htmlFor = "files" className = {styles.uploadLabel}>Upload Photo</label>
-                            <input name = "headlineURL" id = "files" type="file" accept=".jpg, .jpeg, .png" className = {styles.visuallyHidden} onChange={onChangePicture} />
+                            <input name = "headlineUrl" id = "files" type="file" accept=".jpg, .jpeg, .png" className = {styles.visuallyHidden} onChange={onChangePicture} />
                             {hasImg ? 
                                 (<Button
                                     variant = "outline"

@@ -48,20 +48,19 @@
   -webkit-line-clamp: 4;
   line-height: 32px;
   word-spacing: 4px;
-  text-align: justify
+  text-align: justify;
 }
 
 .bottomAndButtonsContainer {
   display: flex;
-  justify-content: space-between;
   align-items: flex-end;
   margin-top: auto;
+  width: 828px; /* 860px - 32px (left and right padding); Needed for buttonsContainer styling (margin-left: auto) */
 }
 
 .bottomContainer {
   display: flex;
   flex-direction: column;
-  margin-top: auto;
   gap: 8px;
   width: 400px;
 }
@@ -78,9 +77,10 @@
   gap: 8px;
 }
 
-.buttons {
+.buttonsContainer {
   display: flex;
   gap: 16px;
+  margin-left: auto;
 }
 
 /* Edit button */

@@ -62,6 +62,7 @@ function App() {
 		// eslint-disable-next-line
 	}, []);
 
+<<<<<<< HEAD
 	// do silent-refresh
 	useEffect(() => {
 		if (!isAuthenticated || !token_expiry) return;
@@ -72,6 +73,41 @@ function App() {
 		// eslint-disable-next-line
 	}, [isAuthenticated, token_expiry]);
 	if (!loaded && !token) return <LoadingPage />;
+=======
+							<Route
+								path={`${INSTITUTION_ROOT}/login`}
+								exact
+								component={InstitutionLogin}
+							/>
+							<Route
+								path={`${INSTITUTION_ROOT}/signup`}
+								exact
+								component={InstitutionSignUp}
+							/>
+							<NavRoute
+								path={`${INSTITUTION_ROOT}/dashboard`}
+								exact
+								component={Dashboard}
+							/>
+							<NavRoute
+								path={`${INSTITUTION_ROOT}/manage-pets/:petId`}
+								component={ManagePetDetails}
+							/>
+							<NavRoute
+								path={`${INSTITUTION_ROOT}/manage-pets`}
+								component={ManagePetList}
+							/>
+							<NavRoute
+								path={`${INSTITUTION_ROOT}/manage-stories`}
+								component={ManageStoryList}
+							/>
+							<NavRoute
+								path={`${INSTITUTION_ROOT}/settings`}
+								component={InstitutionSettings}
+							/>
+							<NavRoute path="/login" exact component={ChooseLogin} />
+							<NavRoute path="/signup" exact component={ChooseSignup} />
+>>>>>>> Connected view stories list and manage stories list to backend
 
 	return (
 		<Suspense fallback={<LoadingPage />}>

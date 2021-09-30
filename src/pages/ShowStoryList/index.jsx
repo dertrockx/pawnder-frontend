@@ -20,12 +20,13 @@ const ShowStoryList = () => {
   // const loginType = useSelector(s => s.auth.loginType);
   const fetchingStories = useSelector(s => s.story.fetchingStories);
   const fetchError = useSelector(s => s.story.fetchError);
-  const storiesList = useSelector(s => s.story.storiesList);
+  const stories = useSelector(s => s.story.stories);
   const dispatch = useDispatch();
   const [sortDate, setSortDate] = useState('ascending');
   const [searchTerm, setSearchTerm] = useState('');
 
-  let storiesListCopy = storiesList; // So I won't overwrite the storiesListArray, esp. when sorting.
+  console.log("in show stories index:", stories);
+  let storiesCopy = stories; // So I won't overwrite the storiesArray, esp. when sorting.
 
   // might use useEffect for pagination, put loginType in useEffect bc someone might log in/out while viewing stories
   useEffect(() => {
@@ -34,17 +35,17 @@ const ShowStoryList = () => {
 
   // Source: https://stackoverflow.com/a/12192544
   if (sortDate === 'ascending') {
-    storiesListCopy.sort((a, b) => {
+    storiesCopy.sort((a, b) => {
       return ((a.publishedAt < b.publishedAt) ? -1 : ((a.publishedAt > b.publishedAt) ? 1 : 0))
     });
   } else {
-    storiesListCopy.sort((a, b) => {
+    storiesCopy.sort((a, b) => {
       return ((a.publishedAt > b.publishedAt) ? -1 : ((a.publishedAt < b.publishedAt) ? 1 : 0))
     });
   }
 
   // Source: https://youtu.be/mZvKPtH9Fzo
-  storiesListCopy = storiesList.filter((story) => {
+  storiesCopy = stories.filter((story) => {
     if (searchTerm === '') {
       return story;
     } else if (story.title.toLowerCase().includes(searchTerm.toLowerCase()) || (story.tags.toLowerCase().includes(searchTerm.toLowerCase())) || (story.institutionName.toLowerCase().includes(searchTerm.toLowerCase()))) {
@@ -66,7 +67,8 @@ const ShowStoryList = () => {
           ?
           </p>
         </div>
-      : <Router>
+      : <>
+        <Router>
           <Switch>
             <Route exact path='/stories'>
               {fetchingStories
@@ -91,7 +93,7 @@ const ShowStoryList = () => {
                       <h1 className="heading-1" >Something went wrong. Please try again later.</h1>
                     </div> 
                   : <>
-                      { storiesList.length === 0
+                      { stories.length === 0
                       ? <div className={styles.center}>
                           <h1 className="heading-1">Nothing to see here...yet.</h1>
                         </div>
@@ -132,7 +134,7 @@ const ShowStoryList = () => {
                               </InputGroup>
                             </div>
                           </div>
-                          {storiesListCopy.map(story => (
+                          {storiesCopy.map(story => (
                             <StoryCardShow
                               key={story.id}
                               story={story}
@@ -145,9 +147,10 @@ const ShowStoryList = () => {
                 </>
               }
             </Route>
-            <Route exact path='/stories/:id' render={() => <StoryDetails data={ storiesListCopy } />}/>
+            <Route exact path='/stories/:id' render={() => <StoryDetails data={ storiesCopy } />}/> {/* Might not pass data anymore since magre-refetch naman doon sa details page */}
           </Switch>
         </Router>
+        </>
       }
     </>
   );
