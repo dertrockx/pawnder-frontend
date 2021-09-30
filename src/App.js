@@ -2,8 +2,9 @@ import React, { lazy, Suspense } from "react";
 import { Router, Switch, Redirect } from "react-router-dom";
 import { Provider as ReduxProvider } from "react-redux";
 import configureStore from "redux/store";
-
 import { Route } from "react-router";
+
+// import { Route } from "react-router";
 // reset default styles for all html elements - https://en.wikipedia.org/wiki/Reset_style_sheet
 // import SamplePage from "pages/SamplePage";
 import { UserLoginPage, UserSignupPage } from "pages";

@@ -7,10 +7,9 @@ import { login } from 'redux/actions/authActions'
 import BasicInput from "components/BasicInput";
 import Button from "components/Button";
 import BasicLink from "components/BasicLink";
-import BasicPasswordInput from "components/BasicPasswordInput";
+import BasicPasswordInput from "components/BasicPasswordInput/";
 
 import styles from "./UserLogin.module.css"
-import { IoEyeOff, IoEyeOutline } from "react-icons/io5"
 
 function UserLoginPage() {
 	const loginPending = useSelector((s) => s.auth.loginPending);
