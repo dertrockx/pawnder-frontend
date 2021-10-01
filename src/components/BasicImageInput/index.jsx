@@ -3,8 +3,8 @@ import styles from "./BasicImageInput.module.css";
 
 function BasicImageInput(props) {
   const {
+    src,
     label,
-    image,
     onChange,
     imagePreviewError
   } = props;
@@ -12,14 +12,14 @@ function BasicImageInput(props) {
   return (
     <div style={{ display: "flex", margin: 10, padding: 20, height: 150 }}>
       <div>
-        <img src={image} alt="" id="img" className={styles.img}/>
+        <img src={src} alt="" id="img" className={styles.img}/>
       </div>
       <div style={{ "margin-left": 60 }}>
         <input
           type="file" 
           accept="image/jpeg, image/jpg, image/png" 
           id="input"
-          name="photoUrl"
+          name="photoURL"
           onChange={onChange} 
           className={styles.input} 
           hidden>

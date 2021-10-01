@@ -19,14 +19,12 @@
   width: 120px;
   height: 120px;
   border-radius: 50%;
-  /* border: 3px solid var(--color-brand-default); */
   object-fit: cover;
 }
 
 .label {
   width: 100%;
   margin-top: 1rem;
-  /* display: flex; */
   justify-content: center;
 }
 
@@ -43,7 +41,8 @@
 	padding: 10px 20px;  
   text-align: center;
   cursor: pointer;
-  margin-top: 17px;
+  margin-top: 14px;
+  margin-bottom: 6px;
 }
 
 .upload:hover {
