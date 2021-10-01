@@ -1,16 +1,15 @@
 import React, { lazy, Suspense, useEffect, useState } from "react";
 import { Router, Switch, Redirect } from "react-router-dom";
-import useInterval from "hooks/useInterval";
 
 import { Route } from "react-router";
 
-import { ChakraProvider } from "@chakra-ui/react";
-import theme from "./theme";
 import history from "utils/history";
 import NavRoute from "components/NavRoute";
 import LoadingPage from "pages/LoadingPage";
 import { useDispatch, useSelector } from "react-redux";
+
 import { silentRefresh } from "redux/actions/authActions";
+import { model } from "constants/EntityType";
 // reset default styles for all html elements - https://en.wikipedia.org/wiki/Reset_style_sheet
 import "./normalize.css";
 import "./typography.css";
@@ -35,13 +34,12 @@ const ChooseSignup = lazy(() => import("pages/ChooseSignup"));
 const INSTITUTION_ROOT = "/institution";
 
 function App() {
-	const { isAuthenticated, token_expiry, loginPending } = useSelector(
-		(s) => s.auth
-	);
-
+	const { isAuthenticated, token_expiry, token } = useSelector((s) => s.auth);
+	const [loaded, setLoaded] = useState(false);
 	const dispatch = useDispatch();
 	useEffect(() => {
 		dispatch(silentRefresh());
+		setLoaded(true);
 		// eslint-disable-next-line
 	}, []);
 
@@ -54,14 +52,26 @@ function App() {
 		return () => clearInterval(id);
 		// eslint-disable-next-line
 	}, [isAuthenticated, token_expiry]);
+	if (!loaded && !token) return <LoadingPage />;
 
 	return (
 		<Suspense fallback={<LoadingPage />}>
 			<Router history={history}>
 				<Switch>
-					<NavRoute path="/feed" exact component={Feed} />
-					<NavRoute path="/nearby" exact component={NearbyInstitution} />
-					<NavRoute path="/stories/:id" component={ShowStoryDetails} />
+					{/* NavRoute props are for authenticated sessions */}
+
+					<NavRoute path="/feed" exact component={Feed} type={model.USER} />
+					<NavRoute
+						path="/nearby"
+						exact
+						component={NearbyInstitution}
+						type={model.USER}
+					/>
+					<NavRoute
+						path="/stories/:id"
+						component={ShowStoryDetails}
+						type={null}
+					/>
 
 					<Route
 						path={`${INSTITUTION_ROOT}/login`}
@@ -77,21 +87,25 @@ function App() {
 						path={`${INSTITUTION_ROOT}/dashboard`}
 						exact
 						component={Dashboard}
+						type={model.INSTITUTION}
 					/>
 					<NavRoute
 						path={`${INSTITUTION_ROOT}/manage-pets/:petId`}
 						component={ManagePetDetails}
+						type={model.INSTITUTION}
 					/>
 					<NavRoute
 						path={`${INSTITUTION_ROOT}/manage-pets`}
 						component={ManagePetList}
+						type={model.INSTITUTION}
 					/>
 					<NavRoute
 						path={`${INSTITUTION_ROOT}/manage-stories/:id`}
 						component={ManageStoryDetails}
+						type={model.INSTITUTION}
 					/>
-					<NavRoute path="/login" exact component={ChooseLogin} />
-					<NavRoute path="/signup" exact component={ChooseSignup} />
+					<NavRoute path="/login" exact component={ChooseLogin} type={null} />
+					<NavRoute path="/signup" exact component={ChooseSignup} type={null} />
 
 					<Redirect path="/" to="/signup" exact />
 				</Switch>

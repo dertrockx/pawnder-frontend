@@ -5,8 +5,10 @@ import App from "./App";
 import reportWebVitals from "./reportWebVitals";
 import { Provider as ReduxProvider } from "react-redux";
 import configureStore from "redux/store";
+
 import { ChakraProvider } from "@chakra-ui/react";
 import theme from "./theme";
+
 const store = configureStore();
 
 ReactDOM.render(
