@@ -69,7 +69,7 @@ function UserLoginPage() {
 				<img src="/images/logo.png" alt="logo" className={styles.logo}/>
 				<div className={styles.header}>
 					<div className="heading-2">Login User</div>
-					<div className="paragraph">Hello, Friend! Lorem ipsum dolor sit amet, consectetur adipiscing</div>
+					<div className="paragraph">Hello, Friend! Are you looking for comfort? Adopt or foster now!</div>
 				</div><br/>
 				<form 
 					name="login-form"
