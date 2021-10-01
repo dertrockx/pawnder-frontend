@@ -1,19 +1,19 @@
-import React, { useEffect } from "react";
+import React, { useEffect } from 'react';
 import {
 	Switch,
 	Route,
 	useRouteMatch,
 	Redirect,
-	useParams,
 	Link,
-} from "react-router-dom";
-import SecurityPage from "./Security";
-import ProfilePage from "./Profile";
-import styles from "./InstitutionSettings.module.css";
-
+} from 'react-router-dom';
 import {IoSettingsSharp} from 'react-icons/io5';
 
-// reference: https://github.com/remix-run/react-router/issues/5496#issuecomment-376499389
+import SecurityPage from './Security';
+import ProfilePage from './Profile';
+import styles from './InstitutionSettings.module.css';
+
+
+// See comment in manage pets page
 const BetterSidebarLink = ({ children, ...linkProps }) => (
 	<Route
 		path={linkProps.to}
@@ -22,7 +22,7 @@ const BetterSidebarLink = ({ children, ...linkProps }) => (
 	/>
 );
 
-function InstitutionSettings() {
+const InstitutionSettings= () => {
 	let { path, url } = useRouteMatch();
 
 	return (

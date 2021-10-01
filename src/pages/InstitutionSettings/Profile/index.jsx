@@ -1,25 +1,44 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { IoLocationSharp } from 'react-icons/io5';
+import { Input, InputGroup, InputLeftAddon, Textarea, useToast, Tooltip} from '@chakra-ui/react';
+import axios from'axios'
+
 import Button from 'components/Button';
 import HR from 'components/HR';
-import { IoLocationSharp } from 'react-icons/io5';
-import { Input, InputGroup, InputLeftAddon, Textarea, useToast} from '@chakra-ui/react';
+import noPhoto from 'assets/noPhoto.png';
 
 import styles from './Profile.module.css';
 
-import noPhoto from 'assets/noPhoto.png'; // Delete when states have moved up
 
 const Profile = () => {
+  // fetch user id here from redux login
+  const id = 4;
+
   const [values, setValues] = useState({
-		image: '',
+		photoURL: '',
 		name: '',
     email: '',
     contactNumber: '',
 		description: '',
-		websiteURL: '',
-		facebookURL: '',
-		twitterURL: '',
-		messengerURL: '',
-		instagramURL: '',
+		// websiteURL: '',
+		// facebookURL: '',
+		// twitterURL: '',
+		// messengerURL: '',
+		// instagramURL: '',
+    locationLat: '',
+    locationLong: '',
+	});
+  const [currentValues, setcurrentValues] = useState({
+		photoURL: '',
+		name: '',
+    email: '',
+    contactNumber: '',
+		description: '',
+		// websiteURL: '',
+		// facebookURL: '',
+		// twitterURL: '',
+		// messengerURL: '',
+		// instagramURL: '',
     locationLat: '',
     locationLong: '',
 	});
@@ -29,6 +48,42 @@ const Profile = () => {
   const [locationError, setLocationError] = useState(false);
 
   const toast = useToast();
+
+  useEffect(() => {
+    axios.get('http://localhost:8081/api/0.1/institution/' + id)
+    .then(res => {
+      console.log(res);
+      const { institution } = res.data;
+      return institution;
+    })
+    .then((institution) => {
+      console.log(institution);
+
+      setValues({
+        photoURL: institution.photoURL,
+        name: institution.name,
+        email: institution.email,
+        contactNumber: institution.contactNumber,
+        description: institution.description,
+        locationLat: institution.locationLat,
+        locationLong: institution.long
+      });
+
+      setcurrentValues({
+        photoURL: institution.photoURL,
+        name: institution.name,
+        email: institution.email,
+        contactNumber: institution.contactNumber,
+        description: institution.description,
+        locationLat: institution.locationLat,
+        locationLong: institution.long
+      });
+
+    })
+    .catch(err => {
+      console.log(err)
+    })
+  }, []);
 
   const handleChange = (e) => {
     setValues({
@@ -174,7 +229,9 @@ const Profile = () => {
           <h3 className="heading-3">Description</h3>
           <p className="caption">Edit your description to let users get to know you better</p>
         </div>
-        <Textarea name="description"
+        <Textarea
+          name="description"
+          value={values.description}
           onChange={handleChange}
           placeholder="Description"
           fontFamily="Raleway"
@@ -195,6 +252,7 @@ const Profile = () => {
             <p className="paragraph">Name</p>
             <Input
               name="name"
+              value={values.name}
               onChange={handleChange}
               placeholder="Institution Name"
               fontFamily="Raleway"
@@ -206,17 +264,23 @@ const Profile = () => {
           </div>
           <div className={styles.twoFields}>
             <p className="paragraph">Email Address</p>
-            <Input
-              type="email"
-              name="email"
-              onChange={handleChange}
-              placeholder="Email Address"
-              fontFamily="Raleway"
-              borderWidth="2px"
-              borderColor={"var(--color-light-grey)"}
-              _hover={{borderColor: "var(--color-grey)"}}
-              _focus={{borderColor: "brand.100", borderWidth: "2px"}}
-            />
+            <Tooltip hasArrow label="Sorry. This feature is not yet available." bg={`var(--color-very-light-grey)`} color={`--color-black`} borderRadius="4px" fontFamily="Raleway">
+              <InputGroup>
+                <Input
+                  type="email"
+                  name="email"
+                  value={values.email}
+                  onChange={handleChange}
+                  placeholder="Email Address"
+                  fontFamily="Raleway"
+                  borderWidth="2px"
+                  borderColor={"var(--color-light-grey)"}
+                  _hover={{borderColor: "var(--color-grey)"}}
+                  _focus={{borderColor: "brand.100", borderWidth: "2px"}}
+                  isDisabled={true}
+                />
+              </InputGroup>
+            </Tooltip>
           </div>
           <div className={styles.twoFields}>
             <p className="paragraph">Contact Number</p>
@@ -224,8 +288,8 @@ const Profile = () => {
               <InputLeftAddon children="+63" fontFamily="Raleway" />
               <Input
                 type="tel"
-                placeholder="Contact Number"
                 name="contactNumber"
+                value={values.contactNumber}
                 onChange={handleChange}
                 onKeyPress={(e) => {
                   if (e.target.value.length > 9) {
@@ -233,6 +297,7 @@ const Profile = () => {
                     e.stopPropagation();
                   }
                 }}
+                placeholder="Contact Number"
                 fontFamily="Raleway"
                 borderWidth="2px"
                 borderColor={"var(--color-light-grey)"}
@@ -243,7 +308,10 @@ const Profile = () => {
           </div>
           <div className={styles.twoFields}>
             <p className="paragraph">Location</p>
-            {(values.locationLat !== '' && values.locationLong !== '') ? <Button size="small" color="brand-default" onClick={handleLocation}> <span>Location updated</span><IoLocationSharp /> </Button> : <Button size="small" color="brand-default" onClick={handleLocation} variant="outline"><IoLocationSharp /> <span>Update location</span></Button> }
+            {(values.locationLat !== currentValues.locationLat && values.locationLong !== currentValues.locationLat)
+            ? <Button size="small" color="brand-default" onClick={handleLocation}> <span>Location updated</span><IoLocationSharp /> </Button>
+            : <Button size="small" color="brand-default" onClick={handleLocation} variant="outline"><IoLocationSharp /> <span>Update location</span></Button> 
+            }
           </div>
         </div>
       </div>
