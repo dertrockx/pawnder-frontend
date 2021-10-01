@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useHistory } from 'react-router';
+import axios from 'axios';
 import { IoLocationSharp, IoArrowBack } from 'react-icons/io5';
 import {
   NumberInput,
@@ -23,15 +24,21 @@ import bg from "assets/userOnboardingBackground.png";
 import styles from "./UserOnboarding.module.css";
 
 const UserOnboarding = () => {
-  const current = new Date().toISOString().split("T")[0];
+  // fetch user id here from redux login
+  const id = 4;
+
   const history = useHistory();
   const toast = useToast();
+  
+  const current = new Date().toISOString().split("T")[0];
+
   const [imagePreview, setImagePreview] = useState(`${noPhoto}`);
   const [imagePreviewError, setImagePreviewError] = useState(false);
   const [locationError, setLocationError] = useState(false);
   const [step, setStep] = useState(1);
-  const [isDisabled, setIsDisabled] = useState(true); // set to false when testing and comment out useEffect
+  const [isDisabled, setIsDisabled] = useState(false); // set to false when testing and comment out useEffect
   const [distance, setDistance] = useState(''); // for Chakra-UI NumberInput
+  const [preferredAnimalsArr, setPreferredAnimalsArr] = useState([]); // user model only allows string
   const [values, setValues] = useState({
     photo: '',
     firstName: '',
@@ -43,38 +50,38 @@ const UserOnboarding = () => {
     locationLat: '',
     locationLong: '',
     action: '',
-    preferredAnimals: [],
+    preferredAnimal: '', // to match backend
     preferredDistance: '',
   });
 
   // For disabling buttons
-  useEffect(() => {
-    // If step 1, check photo, first and last names, bday, sex, number, and loc coordinates
-    // If step 2, check action
-    // If step 3, check preferred animals and distance
+  // useEffect(() => {
+  //   // If step 1, check photo, first and last names, bday, sex, number, and loc coordinates
+  //   // If step 2, check action
+  //   // If step 3, check preferred animals and distance
 
-    if (step === 1) {
-      if (values.photo !== '' && values.firstName !== '' && values.lastName !== '' && values.birthDate !== '' && values.sex !== '' && values.contactNumber !== '' && values.locationLat !== '' && values.locationLong !== '') {
-        setIsDisabled(false);
-      } else {
-        setIsDisabled(true);
-      }
-      setImagePreviewError(false);
-      setLocationError(false);
-    } else if (step === 2) {
-      if (values.action !== '') {
-        setIsDisabled(false);
-      } else {
-        setIsDisabled(true);
-      }
-    } else if (step === 3) {
-      if (values.preferredAnimals.length !== 0 && values.preferredDistance !== '') {
-        setIsDisabled(false);
-      } else {
-        setIsDisabled(true);
-      }
-    }
-  }, [values, step]);
+  //   if (step === 1) {
+  //     if (values.photo !== '' && values.firstName !== '' && values.lastName !== '' && values.birthDate !== '' && values.sex !== '' && values.contactNumber !== '' && values.contactNumber.match(/^\d{10}$/) && values.locationLat !== '' && values.locationLong !== '') {
+  //       setIsDisabled(false);
+  //     } else {
+  //       setIsDisabled(true);
+  //     }
+  //     setImagePreviewError(false);
+  //     setLocationError(false);
+  //   } else if (step === 2) {
+  //     if (values.action !== '') {
+  //       setIsDisabled(false);
+  //     } else {
+  //       setIsDisabled(true);
+  //     }
+  //   } else if (step === 3) {
+  //     if (preferredAnimalsArr.length !== 0 && values.preferredDistance !== '') {
+  //       setIsDisabled(false);
+  //     } else {
+  //       setIsDisabled(true);
+  //     }
+  //   }
+  // }, [values, step]);
 
   // For checkboxes
   const animals = [
@@ -92,11 +99,18 @@ const UserOnboarding = () => {
       <> 
         {options.map((choice, index) => (
         <div className={styles.checkboxItem} key={index}>
-          <Checkbox
+          {/* <Checkbox
             id={choice.value}
             label={choice.text}
             onChange={handleCheck}
-            checked={values.preferredAnimals.includes(`${choice.value}`)}
+            checked={preferredAnimalsArr.includes(`${choice.value}`)}
+          /> */}
+          <Radio 
+            name="preferredAnimal"
+            value={choice.value}
+            label={choice.text}
+            onChange={handleChange}
+            checked={values.preferredAnimal === `${choice.value}`}
           />
         </div>
       ))}
@@ -104,6 +118,7 @@ const UserOnboarding = () => {
     );
   }
 
+<<<<<<< HEAD
   const handleSubmit = (e) => {
     e.preventDefault(); 
 
@@ -128,6 +143,28 @@ const UserOnboarding = () => {
 
 		// Redirect to feed after onboarding, put inside .then when successful
 		// history.push('/feed');
+=======
+  // For input of types text or radio
+  const handleChange = (e) => {
+    setValues({
+      ...values,
+      [e.target.name]: e.target.value,
+    });
+}
+
+// For input of type checkbox
+// const handleCheck = (e) => {
+//   let newArray = [...preferredAnimalsArr, e.target.id];
+//   if (preferredAnimalsArr.includes(e.target.id)) {
+//     newArray = newArray.filter(animal => animal !== e.target.id);
+//   }
+//   setPreferredAnimalsArr(newArray);
+//   setValues({
+//     ...values, 
+//     preferredAnimal: newArray.join(', '), // using newArr becayse preferredAnimalsArr holds the prev state of newArr
+//   });
+// };
+>>>>>>> Connect onboarding to backend (no image yet)
 
 const handleImageChange = (e) => {
   const selected = e.target.files[0];
@@ -197,7 +234,11 @@ const handleImageChange = (e) => {
   }
 
   const handleLocation = (e) => {
-    /* See note in image handler. */
+    /**
+     * All buttons inside a form trigger the submit event.
+     * By using the preventDefault() method, the submit event will be canceled,
+     * thus, allowing multiple buttons inside a form.
+     */
     e.preventDefault();
     if (!navigator.geolocation) {
       setLocationError(true);
@@ -212,6 +253,59 @@ const handleImageChange = (e) => {
       navigator.geolocation.getCurrentPosition(onSuccess, onError);
     }
   }
+
+  const handleSubmit = (e) => {
+    e.preventDefault(); 
+    // This is where to put the axios thingy with multipart/form-data put request
+
+    // const formData = new FormData();
+    // for (const key in values) {
+    //   formData.append(`${key}`, values[key])
+    //   console.log(`${key}: ${values[key]}`)
+    // }
+    // formData.append('firstName', values.firstName);
+    // formData.append('middleName', values.middleName);
+    // formData.append('lastName', values.lastName);
+    // formData.append('lastName', values.lastName);
+    // formData.append('birthDate', values.birthDate);
+    // formData.append('sex', values.sex);
+    // formData.append('contactNumber', values.contactNumber);
+    // formData.append('locationLat', values.locationLat);
+    // formData.append('locationLong', values.locationLong);
+    // formData.append('action', values.action);
+    // formData.append('preferredAnimal', values.preferredAnimal);
+    // formData.append('preferredDistance', values.preferredDistance);
+
+    axios.put('http://localhost:8081/api/0.1/user/' + id, values, {
+      headers: {
+        "Content-Type": "application/json"
+      }
+    })
+    .then(res => {
+      console.log(res);
+
+      // Redirect to feed after onboarding, put inside .then when successful
+      // history.push('/feed');
+    })
+    .catch(err => {
+      console.log(err);
+    })
+
+    // axios.get('http://localhost:8081/api/0.1/user/' + id, {
+    //   headers: {
+    //     "Content-Type": "multipart/form-data"
+    //   }
+    // })
+    // .then(res => {
+    //   console.log(res);
+    // })
+    // .catch(err => {
+    //   console.log(err);
+    // })
+
+    // console.log("values", values);
+  }
+
 
   return (
     <div className={styles.page}>
@@ -348,8 +442,8 @@ const handleImageChange = (e) => {
           </div>)}
           {step === 3 && (
           <div className={styles.formGroup}>
-            <h2 className="heading-2">Which animal/s would you like to see?</h2>
-            <p className="paragraph">You can select multiple</p>
+            <h2 className="heading-2">Which animal would you like to see?</h2>
+            <p className="paragraph">You can only select one</p>
             <div className={styles.checkboxesContainer}> 
               <AnimalOptions options={animals}/>
             </div>

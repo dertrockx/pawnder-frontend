@@ -24,11 +24,10 @@ const ManageStoryList = () => {
   const fetchingStories = useSelector(s => s.story.fetchingStories);
   const fetchError = useSelector(s => s.story.fetchError);
   const stories = useSelector(s => s.story.stories);
+  
   const dispatch = useDispatch();
   const toast = useToast();
 
-  const [isDeletePending, setIsDeletePending] = useState(false);
-  const [isPublishPending, setisPublishPending] = useState(false);
   const [sortDate, setSortDate] = useState('ascending');
   const [searchTerm, setSearchTerm] = useState('');
   const [filterStory, setFilterStory] = useState('');  

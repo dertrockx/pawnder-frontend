@@ -7,27 +7,17 @@ import { Route } from "react-router";
 import { UserLoginPage, UserSignupPage } from "pages";
 import InstitutionOnboardingPage from "pages/InstitutionOnboarding";
 import NavRoute from "components/NavRoute";
-<<<<<<< HEAD
-=======
-import InstitutionSignUp from "pages/InstitutionSignUpPage";
-import InstitutionLogin from "pages/InstitutionLoginPage";
->>>>>>> Fix redux for fetching stories and routing in manage stories
 import UserOnboarding from "pages/UserOnboarding";
 import InstitutionSettings from "pages/InstitutionSettings";
 import ShowStoryList from "pages/ShowStoryList";
 import ManageStoryList from "pages/ManageStoryList";
 
-<<<<<<< HEAD
 import history from "utils/history";
 import LoadingPage from "pages/LoadingPage";
 import { useDispatch, useSelector } from "react-redux";
 
 import { silentRefresh } from "redux/actions/authActions";
 import { model } from "constants/EntityType";
-=======
-import { ChakraProvider } from "@chakra-ui/react";
-import theme from "./theme";
->>>>>>> Fix redux for fetching stories and routing in manage stories
 // reset default styles for all html elements - https://en.wikipedia.org/wiki/Reset_style_sheet
 import "./normalize.css";
 import "./typography.css";
@@ -62,7 +52,6 @@ function App() {
 		// eslint-disable-next-line
 	}, []);
 
-<<<<<<< HEAD
 	// do silent-refresh
 	useEffect(() => {
 		if (!isAuthenticated || !token_expiry) return;
@@ -73,41 +62,6 @@ function App() {
 		// eslint-disable-next-line
 	}, [isAuthenticated, token_expiry]);
 	if (!loaded && !token) return <LoadingPage />;
-=======
-							<Route
-								path={`${INSTITUTION_ROOT}/login`}
-								exact
-								component={InstitutionLogin}
-							/>
-							<Route
-								path={`${INSTITUTION_ROOT}/signup`}
-								exact
-								component={InstitutionSignUp}
-							/>
-							<NavRoute
-								path={`${INSTITUTION_ROOT}/dashboard`}
-								exact
-								component={Dashboard}
-							/>
-							<NavRoute
-								path={`${INSTITUTION_ROOT}/manage-pets/:petId`}
-								component={ManagePetDetails}
-							/>
-							<NavRoute
-								path={`${INSTITUTION_ROOT}/manage-pets`}
-								component={ManagePetList}
-							/>
-							<NavRoute
-								path={`${INSTITUTION_ROOT}/manage-stories`}
-								component={ManageStoryList}
-							/>
-							<NavRoute
-								path={`${INSTITUTION_ROOT}/settings`}
-								component={InstitutionSettings}
-							/>
-							<NavRoute path="/login" exact component={ChooseLogin} />
-							<NavRoute path="/signup" exact component={ChooseSignup} />
->>>>>>> Connected view stories list and manage stories list to backend
 
 	return (
 		<Suspense fallback={<LoadingPage />}>
