@@ -2,12 +2,14 @@ import React, { useEffect, useState } from "react";
 import styles from "./List.module.css";
 import bg from "assets/vector-bg-1.svg";
 import { IoAdd } from "react-icons/io5";
-import axios from "utils/axios";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import { useDisclosure } from "@chakra-ui/hooks";
+import { Spinner } from "@chakra-ui/react";
 import LoadingPage from "pages/LoadingPage";
 import CreatePetModal from "./CreatePetModel";
+import { getPets, createPet } from "redux/actions/petActions";
 import Card from "./PetCard";
+import history from "utils/history";
 
 function getPetImage(pet) {
 	const defaultUrl = "https://picsum.photos/id/237/350/370";
@@ -24,17 +26,14 @@ function getPetImage(pet) {
 }
 
 function ManagePetsList() {
-	const {
-		token = {},
-		model = {},
-		isAuthenticated,
-	} = useSelector((s) => s.auth);
-	const [pets, setPets] = useState([]);
-	const [loading, setLoading] = useState(true);
-	const [pending, setPending] = useState(false);
+	const { model = {}, isAuthenticated } = useSelector((s) => s.auth);
+	const { pets, fetching, creating } = useSelector((s) => s.pet);
+	// const [pets, setPets] = useState(null);
+	// const [loading, setLoading] = useState(true);
 	const { isOpen, onOpen, onClose } = useDisclosure();
 	const [file, setFile] = useState(null);
 	const [others, setOthers] = useState({});
+	const dispatch = useDispatch();
 
 	const [info, setInfo] = useState({
 		name: "",
@@ -85,30 +84,22 @@ function ManagePetsList() {
 		onOpen();
 	}
 
-	function handleCardClick() {}
+	function handleCardClick(petId) {
+		history.push(`/institution/manage-pets/${petId}`);
+		console.log("Push to history");
+	}
 
 	useEffect(() => {
 		// if (loading) return;
+
 		if (isAuthenticated) {
-			axios
-				.get(`/api/0.1/pet?institutionId=${model.id || ""}`, {
-					headers: {
-						Authorization: `Bearer ${token}`,
-					},
-				})
-				.then((res) => {
-					const { pets } = res.data;
-					setPets(pets);
-				})
-				.catch((err) => console.log(err));
-			setLoading(false);
+			dispatch(getPets());
 		}
 
 		// eslint-disable-next-line
 	}, [isAuthenticated]);
 
 	function onSave() {
-		setPending(true);
 		const formData = new FormData();
 		Object.keys(info).forEach((key) => {
 			formData.append(key, info[key]);
@@ -121,31 +112,13 @@ function ManagePetsList() {
 		// formData.append("others", others);
 
 		console.log(...formData);
-		axios
-			.request({
-				method: "POST",
-				url: "api/0.1/pet",
-				data: formData,
-				headers: {
-					"Content-Type": "multipart/form-data",
-					Authorization: `Bearer ${token}`,
-				},
-			})
-			.then((res) => {
-				const { pet, images } = res.data;
-				setPets([{ ...pet, photos: images }, ...pets]);
-			})
-			.catch((err) => {
-				console.log(err);
-			})
-			.finally(() => {
-				setPending(false);
-				onClose();
-				clearState();
-			});
+		dispatch(createPet(formData)).then(() => {
+			clearState();
+			onClose();
+		});
 	}
 
-	if (loading) {
+	if (fetching) {
 		return <LoadingPage />;
 	}
 
@@ -162,21 +135,26 @@ function ManagePetsList() {
 						<IoAdd size={80} />
 						<h3 className="heading-3">Add new pet</h3>
 					</Card>
-					{pets &&
-						pets.length > 0 &&
-						pets.map((pet) => (
-							<Card key={pet.id} onClick={handleCardClick}>
-								<img src={getPetImage(pet)} alt="" />
-								<div className={styles.imgOverlay}></div>
-								<div className={styles.content}>
-									<h2 className="heading-2">{pet.name}</h2>
-									<p className="caption">{pet.breed}</p>
-									<p className="caption">
-										Edited last {new Date(pet.updatedAt).toDateString()}
-									</p>
-								</div>
-							</Card>
-						))}
+					{pets && Object.keys(pets).length > 0 ? (
+						Object.keys(pets).map((id) => {
+							const pet = pets[id];
+							return (
+								<Card key={id} onClick={() => handleCardClick(id)}>
+									<img src={getPetImage(pet)} alt="" />
+									<div className={styles.imgOverlay}></div>
+									<div className={styles.content}>
+										<h2 className="heading-2">{pet.name}</h2>
+										<p className="caption">{pet.breed}</p>
+										<p className="caption">
+											Edited last {new Date(pet.updatedAt).toDateString()}
+										</p>
+									</div>
+								</Card>
+							);
+						})
+					) : (
+						<Spinner />
+					)}
 				</div>
 			</div>
 			{/* <UserInformationModal
@@ -190,7 +168,7 @@ function ManagePetsList() {
 				info={info}
 				handleChange={handleChange}
 				onSave={onSave}
-				loading={pending}
+				loading={creating}
 				file={file}
 				uploadHandler={uploadHandler}
 				others={others}

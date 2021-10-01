@@ -64,7 +64,7 @@ function CreatePetModal({
 						justifyContent="stretch"
 					>
 						<Grid gridTemplateColumns="1fr 1fr" columnGap={5} rowGap={5}>
-							<FormControl id="name">
+							<FormControl isRequired id="name">
 								<FormLabel>Pet Name</FormLabel>
 								<Input
 									type="text"
@@ -75,7 +75,7 @@ function CreatePetModal({
 									disabled={loading}
 								/>
 							</FormControl>
-							<FormControl id="breed">
+							<FormControl isRequired id="breed">
 								<FormLabel>Breed</FormLabel>
 								<Input
 									type="text"
@@ -87,7 +87,7 @@ function CreatePetModal({
 								/>
 							</FormControl>
 
-							<FormControl id="animalType">
+							<FormControl isRequired id="animalType">
 								<FormLabel>Animal Type</FormLabel>
 								<Select
 									placeholder="Select option"
@@ -109,7 +109,7 @@ function CreatePetModal({
 									<option value="rodents">Rodent</option>
 								</Select>
 							</FormControl>
-							<FormControl id="sex">
+							<FormControl isRequired id="sex">
 								<FormLabel>Height</FormLabel>
 								<Select
 									placeholder="Select option"
@@ -124,7 +124,7 @@ function CreatePetModal({
 								</Select>
 							</FormControl>
 
-							<FormControl id="weight">
+							<FormControl isRequired id="weight">
 								<FormLabel>Weight (kg)</FormLabel>
 								<NumberInput focusBorderColor="brand.100">
 									<NumberInputField
@@ -146,7 +146,7 @@ function CreatePetModal({
 									/>
 								</NumberInput>
 							</FormControl>
-							<FormControl id="age">
+							<FormControl isRequired id="age">
 								<FormLabel>Age (in months)</FormLabel>
 								<NumberInput focusBorderColor="brand.100">
 									<NumberInputField
@@ -158,7 +158,7 @@ function CreatePetModal({
 								</NumberInput>
 							</FormControl>
 						</Grid>
-						<FormControl id="medicalHistory">
+						<FormControl isRequired id="medicalHistory">
 							<FormLabel>Medical History</FormLabel>
 							<Textarea
 								type="text"
@@ -171,7 +171,7 @@ function CreatePetModal({
 								disabled={loading}
 							/>
 						</FormControl>
-						<FormControl id="other">
+						<FormControl isRequired id="other">
 							<FormLabel>Other Information</FormLabel>
 							<Textarea
 								type="text"
@@ -184,7 +184,7 @@ function CreatePetModal({
 								disabled={loading}
 							/>
 						</FormControl>
-						<FormControl id="action">
+						<FormControl isRequired id="action">
 							<FormLabel>Open for</FormLabel>
 							<Select
 								placeholder="Select option"
@@ -198,7 +198,7 @@ function CreatePetModal({
 								<option value="foster">Foster Care</option>
 							</Select>
 						</FormControl>
-						<FormControl id="picture">
+						<FormControl isRequired id="picture">
 							<FormLabel>Main picture</FormLabel>
 							<input
 								type="file"
@@ -208,8 +208,8 @@ function CreatePetModal({
 							/>
 						</FormControl>
 						<Grid gridTemplateColumns="1fr 1fr" gap={5}>
-							<FormControl id="others">
-								<FormLabel>Other picture 1</FormLabel>
+							<FormControl isRequired id="others">
+								<FormLabel >Other picture 1</FormLabel>
 								<input
 									type="file"
 									name="other1"

@@ -1,14 +1,13 @@
-import React, { useState } from "react";
-import { Input, Select, Textarea } from "@chakra-ui/react";
+import React, { useEffect, useState } from "react";
+import { useSelector, useDispatch } from "react-redux";
+import { Input, Select, Textarea, Spinner } from "@chakra-ui/react";
 import Button from "components/Button";
 import HR from "components/HR";
 import styles from "./Profile.module.css";
-
+import { updatePet } from "redux/actions/petActions";
 function Profile() {
-	function handleSave() {
-		alert("Saving");
-	}
-
+	const { fetching, petId, pets, updating } = useSelector((s) => s.pet);
+	const dispatch = useDispatch();
 	const [info, setInfo] = useState({
 		name: "",
 		breed: "",
@@ -16,16 +15,46 @@ function Profile() {
 		sex: "",
 		weight: "",
 		height: "",
-		ageY: "",
-		ageM: "",
+		age: "",
 		medicalHistory: "",
 		otherInfo: "",
 		action: "",
 	});
 
+	useEffect(() => {
+		if (pets && petId) {
+			console.log("setting info");
+			const pet = pets[petId];
+			setInfo({
+				...pet,
+			});
+		}
+
+		// eslint-disable-next-line
+	}, [pets, petId]);
+
 	function handleChange(e) {
 		setInfo({ ...info, [e.target.name]: e.target.value });
 	}
+
+	function handleSave() {
+		dispatch(updatePet(petId, info));
+	}
+
+	if (fetching || !petId) return <Spinner />;
+
+	const {
+		name,
+		breed,
+		animalType,
+		sex,
+		height,
+		weight,
+		age,
+		medicalHistory,
+		otherInfo,
+		action,
+	} = info;
 
 	return (
 		<div>
@@ -103,6 +132,8 @@ function Profile() {
 									focusBorderColor="brand.100"
 									name="name"
 									onChange={handleChange}
+									value={name}
+									disabled={updating}
 								/>
 							</div>
 							<div className={styles.field}>
@@ -113,6 +144,8 @@ function Profile() {
 									focusBorderColor="brand.100"
 									name="breed"
 									onChange={handleChange}
+									value={breed}
+									disabled={updating}
 								/>
 							</div>
 							<div className={styles.field}>
@@ -122,6 +155,8 @@ function Profile() {
 									focusBorderColor="brand.100"
 									name="animalType"
 									onChange={handleChange}
+									value={animalType}
+									disabled={updating}
 								>
 									<option value="dogs">Dog</option>
 									<option value="cats">Cat</option>
@@ -142,6 +177,8 @@ function Profile() {
 									focusBorderColor="brand.100"
 									name="sex"
 									onChange={handleChange}
+									value={sex}
+									disabled={updating}
 								>
 									<option value="m">Male</option>
 									<option value="f">Female</option>
@@ -155,6 +192,8 @@ function Profile() {
 									focusBorderColor="brand.100"
 									name="weight"
 									onChange={handleChange}
+									value={weight}
+									disabled={updating}
 								/>
 							</div>
 							<div className={styles.field}>
@@ -165,26 +204,19 @@ function Profile() {
 									focusBorderColor="brand.100"
 									name="height"
 									onChange={handleChange}
+									value={height}
+									disabled={updating}
 								/>
 							</div>
 							<div className={styles.field}>
-								<p className="paragraph">Age (years)</p>
+								<p className="paragraph">Age (in months)</p>
 								<Input
 									type="text"
-									placeholder="I am a placeholder"
 									focusBorderColor="brand.100"
-									name="ageY"
+									name="age"
 									onChange={handleChange}
-								/>
-							</div>
-							<div className={styles.field}>
-								<p className="paragraph">Age (months)</p>
-								<Input
-									type="text"
-									placeholder="I am a placeholder"
-									focusBorderColor="brand.100"
-									name="ageM"
-									onChange={handleChange}
+									value={age}
+									disabled={updating}
 								/>
 							</div>
 						</div>
@@ -198,6 +230,8 @@ function Profile() {
 									rows={3}
 									name="medicalHistory"
 									onChange={handleChange}
+									value={medicalHistory}
+									disabled={updating}
 								/>
 							</div>
 							<div className={styles.field}>
@@ -209,6 +243,8 @@ function Profile() {
 									rows={3}
 									name="otherInfo"
 									onChange={handleChange}
+									value={otherInfo}
+									disabled={updating}
 								/>
 							</div>
 							<div className={styles.field}>
@@ -218,6 +254,8 @@ function Profile() {
 									focusBorderColor="brand.100"
 									name="action"
 									onChange={handleChange}
+									value={action}
+									disabled={updating}
 								>
 									<option value="adopt">Adoption</option>
 									<option value="foster">Foster</option>
@@ -227,7 +265,12 @@ function Profile() {
 					</div>
 				</div>
 			</div>
-			<Button block color="brand-default" onClick={handleSave}>
+			<Button
+				block
+				color="brand-default"
+				disabled={updating}
+				onClick={handleSave}
+			>
 				Save
 			</Button>
 		</div>
