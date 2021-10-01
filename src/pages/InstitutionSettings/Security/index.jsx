@@ -3,6 +3,8 @@ import Button from 'components/Button';
 import HR from 'components/HR';
 import PasswordInput from 'components/PasswordInput'; 
 
+import { Tooltip } from '@chakra-ui/react';
+
 import styles from './Security.module.css';
 
 const Security = () => {
@@ -54,8 +56,8 @@ const Security = () => {
       </div>
       <HR />
       <div style={{margin: "60px 0px"}} className={styles.bottomButtons} >
-        <Button size="small" type="submit" color="brand-default" variant="outline" onClick={handleCancel} block>Cancel</Button>
-        <Button size="small" type="submit" color="brand-default" onClick={handleSubmit} block>Save</Button>
+        <Button size="small" type="submit" color="brand-default" variant="outline" onClick={handleCancel} block disabled={true}>Cancel</Button>
+        <Button size="small" type="submit" color="brand-default" onClick={handleSubmit} block disabled={true}>Save</Button>
       </div>
     </div>
   );
