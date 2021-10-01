@@ -1,5 +1,4 @@
   import React, { useState, useEffect } from "react";
-import { useHistory } from "react-router-dom";
 import { useSelector } from "react-redux";
 
 import BasicDescription from "components/BasicDescription";
@@ -14,10 +13,7 @@ import { IoLocationSharp } from 'react-icons/io5';
 
 function UserSettingsInformation() {
   const noPhoto = '/images/Avatar.png';
-	const history = useHistory();
   const toast = useToast();
-  const [ clickSubmit, setClickSubmit ] = useState(true);
-  const [ isChangePasswordClicked, setIsChangePasswordClicked ] = useState(false);
   const [ values, setValues ] = useState({
     photoUrl: null,
     firstName: null,
@@ -38,15 +34,21 @@ function UserSettingsInformation() {
     locationLat: "",
     locationLong: ""
   });
+  const [ BDAY, setBDAY ] = useState(null);
 	const isAuthenticated = useSelector((s) => s.auth.isAuthenticated);
+	const loginType = useSelector((s) => s.auth.loginType);
 	const [ imagePreviewError, setImagePreviewError ] = useState(false);
   const [ imagePreview, setImagePreview ] = useState(`${noPhoto}`);
 	const [ locationError, setLocationError ] = useState(false);
   const [ isSaveDisabled , setIsSaveDisabled ] = useState(false);
+  const [ isSaveClicked, setIsSaveClicked ] = useState(false);
+  const [ isRequired, setIsRequired ] = useState(false);
+  const [ contactNumberError, setContactNumberError ] = useState(false);
+  var bday;
 
   //checks if user is authenticated
   useEffect(() => {
-    // if(!isAuthenticated) history.replace("/user/login")
+    // if(!isAuthenticated && loginType !== "USER") history.replace("/user/login")
     fetch(
       `http://localhost:8081/api/0.1/user/` + `12`,
       {
@@ -55,35 +57,52 @@ function UserSettingsInformation() {
           "Content-Type": "application/json"
         }
       }
-    )
-    .then(response => {
-      if (response.status === 200){
-        return response.json();
-      }
-    })
-    .then(body => {
-      // console.log(body.user)
-      setValues(body.user)
-      setCurrentValues(body.user)
+      )
+      .then(response => {
+        if (response.status === 200){
+          return response.json();
+        }
+      })
+      .then(body => {
+        console.log(`from db: ${body.user.birthDate}`)
+        var myDate = document.querySelector('input[type="date"]');
+        var today = new Date(body.user.birthDate);
+        myDate.value = today.toISOString().substr(0, 10);
+        setBDAY(myDate.value)
+
+        bday = BDAY;
+
+        setValues({
+          photoUrl: body.user.photoUrl,
+          firstName: body.user.firstName,
+          middleName: body.user.middleName,
+          lastName: body.user.lastName,
+          birthDate: BDAY,
+          contactNumber: body.user.contactNumber,
+          locationLat: body.user.locationLat,
+          locationLong: body.user.locationLat
+        })
+
+        setCurrentValues({
+          photoUrl: body.user.photoUrl,
+          firstName: body.user.firstName,
+          middleName: body.user.middleName,
+          lastName: body.user.lastName,
+          birthDate: BDAY,
+          contactNumber: body.user.contactNumber,
+          locationLat: body.user.locationLat,
+          locationLong: body.user.locationLat
+        })
     })
 
-    setValues({
-      locationLat: "",
-      locationLong: ""
-    })
-
-    console.log(values)
-
-  }, [])
+  }, [isSaveClicked])
 
   function checkObjects(keys1){
     for (let key of keys1) {
       if (values[key] !== currentValues[key]) {
-        // console.log("False");
         return false;
       }
     }
-    // console.log("True");
     return true;
   }
 
@@ -94,14 +113,23 @@ function UserSettingsInformation() {
   })
 
   const handleChange = (e) => {
-		setValues({
-			...values,
+
+    if(e.target.name === "contactNumber" && contactNumberError) setContactNumberError(false)
+    setValues({
+      ...values,
 			[e.target.name]: e.target.value,
 		});
-    console.log(values.birthDate);
+    if (e.target.name !== "birthDate" && values.birthDate === currentValues.birthDate) {
+      setValues({ ...values, "birthDate": bday })
+    }
+    if(isRequired) setIsRequired(false)
+
 	}
 
   const handleSubmit = (e) => {
+    
+    if (values.firstName === "" || values.lastName === "" || values.contactNumber === "") return setIsRequired(true)
+    if (values.contactNumber.length !== 11 || isNaN(values.contactNumber)) return setContactNumberError(true);
 
     fetch(
       `http://localhost:8081/api/0.1/user/` + `12`,
@@ -118,9 +146,8 @@ function UserSettingsInformation() {
         console.log(response.status);
       }
     })
+    setIsSaveClicked(true);
     // window.location.reload(false);  //auto-reload to render the changes in the state but it needs the refresh token
-    setClickSubmit(true);
-    console.log(values);
   }
 
   function imageHandler(e) {
@@ -150,7 +177,7 @@ function UserSettingsInformation() {
     setImagePreview(`${noPhoto}`);
     setValues({
       ...values,
-      [e.target.name]: ''
+      [e.target.name]: null
     });
   }
 
@@ -192,9 +219,13 @@ function UserSettingsInformation() {
 		}
 	}
 
+  function handleCancel(e) {
+    e.preventDefault();
+    setValues(currentValues);
+  }
+
   return (
     <div className={styles.container}>
-
       <div className={styles.row}>
         <div>
           <BasicDescription title="Display Picture" body="Upload your display picture to share in public." />
@@ -219,6 +250,7 @@ function UserSettingsInformation() {
               <BasicInput
                 type="text"
                 name="firstName"
+                outline={isRequired ? "red": "gray"}
                 onChange={handleChange}
                 value={values.firstName}
               />
@@ -233,6 +265,7 @@ function UserSettingsInformation() {
               <BasicInput
                 type="text"
                 name="lastName"
+                outline={isRequired ? "red": "gray"}
                 onChange={handleChange}
                 value={values.lastName}
               />
@@ -261,6 +294,7 @@ function UserSettingsInformation() {
               <BasicInput
                 type="date"
                 name="birthDate"
+                outline={isRequired ? "red": "gray"}
                 onChange={handleChange}
                 value={values.birthDate}
               />
@@ -273,8 +307,10 @@ function UserSettingsInformation() {
             </div>
             <div className={styles.input}>
               <BasicInput
-                type="text"
+                type="tel"
                 name="contactNumber"
+                maxlength="11"
+                outline={contactNumberError || isRequired ? "red" : "gray"}
                 onChange={handleChange}
                 value={values.contactNumber}
               />
@@ -286,94 +322,12 @@ function UserSettingsInformation() {
               <BasicLabel label="Address" />
             </div>
             <div className={styles.input}>
-              {(values.locationLat !== '' && values.locationLong !== '') ? <Button size="small" color="brand-default" onClick={handleLocation}> <span>Location updated</span><IoLocationSharp /> </Button> : <Button size="small" color="brand-default" onClick={handleLocation} variant="outline"><IoLocationSharp /> <span>Update location</span></Button> }
+              {(values.locationLat !== currentValues.locationLat && values.locationLong !== currentValues.locationLong) ? <Button size="small" color="brand-default" onClick={handleLocation}> <span>Location updated</span><IoLocationSharp /> </Button> : <Button size="small" color="brand-default" onClick={handleLocation} variant="outline"><IoLocationSharp /> <span>Update location</span></Button> }
               {locationError !== '' && <p className="paragraph">{locationError}</p>}
-              {/* <BasicInput
-                type="text"
-                name="email"  
-                onChange={handleChange}
-                value={values.email}
-                placeholder={currentValues.email}
-              /> */}
             </div>
           </div>
         </div>
       </div>
-
-      {/* <BasicHR />
-
-      <div className={styles.row}>
-        <div>
-          <BasicDescription title="Change Password" body="Update your password for security purposes." />
-        </div>
-        <div>
-            {
-              !isChangePasswordClicked && (
-                <div className={styles.row}>
-                  <div className={styles.label}>
-                    <BasicLabel label="Password"/>
-                  </div>
-                  <div className={styles.row}>
-                    <div style={{ width: 190, 'margin-right': 10 }}>
-                      <Button onClick={() => setIsChangePasswordClicked(true)} color="brand-default" size="small" block>Edit</Button>
-                    </div>
-                    <div style={{ width: 190, 'margin-left': 10 }}></div>
-                  </div>
-                </div>
-              )
-            }
-            {
-              isChangePasswordClicked && (
-                <>
-                  <div className={styles.row}>
-                    <div className={styles.label}>
-                      <BasicLabel label="Current Password"/>
-                    </div>
-                    <div className={styles.input}>
-                      <BasicInput
-                        type="password"
-                        name="currentPassword"
-                        onChange={handleChange}
-                        value={values.currentPassword}
-                        placeholder="Current Password"
-                      />
-                    </div>
-                  </div>
-
-                  <div className={styles.row}>
-                    <div className={styles.label}>
-                      <BasicLabel label="New Password"/>
-                    </div>
-                    <div className={styles.input}>
-                      <BasicInput
-                        type="password"
-                        name="newPassword"
-                        onChange={handleChange}
-                        value={values.newPassword}
-                        placeholder="New Password"
-                      />
-                    </div>
-                  </div>
-
-                  <div className={styles.row}>
-                    <div className={styles.label}>
-                      <BasicLabel label="Confirm Password"/>
-                    </div>
-                    <div className={styles.input}>
-                      <BasicInput
-                        type="password"
-                        name="confirmPassword"
-                        onChange={handleChange}
-                        value={values.confirmPassword}
-                        placeholder="Confirm Password"
-                      />
-                    </div>
-                  </div>
-                </>
-              )
-            }
-        </div>
-      </div> */}
 
       <BasicHR />
 
@@ -385,15 +339,16 @@ function UserSettingsInformation() {
           <div className={styles.label}></div>
           <div className={styles.row}>
             <div style={{ width: 190, 'margin-right': 10 }}>
-              <Button color="brand-default" variant="outline" size="small" block>Cancel</Button>
+              <Button onClick={handleCancel} color="brand-default" variant="outline" size="small" block>Cancel</Button>
             </div>
             <div style={{ width: 190, 'margin-left': 10 }}>
               <Button onClick={handleSubmit} color="brand-default" size="small" block disabled={isSaveDisabled}>Save</Button>
             </div>
           </div>
         </div>
-      </div>
 
+      </div>
+      <br /><br />
     </div>
 
   )

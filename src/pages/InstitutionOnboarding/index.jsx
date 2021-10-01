@@ -12,11 +12,12 @@ import styles from "./InstitutionOnboarding.module.css"
 import { useToast } from '@chakra-ui/react';
 
 function InstitutionOnboardingPage() {
+	const noPhoto = '/images/Avatar.png';
 	const history = useHistory();
 	const toast = useToast();
 	const [ step, setStep ] = useState(1);
 	const [ value, setValue ] = useState({
-		image: '/images/Avatar.png',
+		photoURL: "",
 		name: "",
 		description: "",
 		contactNumber: "",
@@ -29,13 +30,14 @@ function InstitutionOnboardingPage() {
 		instagramURL: ""
 	});
 	const [ locationError, setLocationError ] = useState(false);
+	const [ imagePreview, setImagePreview ] = useState(`${noPhoto}`);
 	const [ imagePreviewError, setImagePreviewError ] = useState(false);
 	const [ nextDisabled, setNextDisabled ] = useState(true);
 	const isAuthenticated = useSelector((s) => s.auth.isAuthenticated);
 	const loginType = useSelector((s) => s.auth.loginType);
 
 	useEffect(() => {
-		// if(!isAuthenticated) history.replace("/institution/login") 
+		// if(!isAuthenticated && loginType !== "INSTITUTION") history.replace("/institution/login") 
 		// else if (loginType === 'institution') {
 			if(value.name !== "" && value.description !== "" && value.contactNumber !== "") setNextDisabled(false);
 		// }
@@ -90,6 +92,7 @@ function InstitutionOnboardingPage() {
 						...value,
 						[e.target.name]: reader.result,
 					})
+					setImagePreview(`${reader.result}`)
 				}
 			}
 			reader.readAsDataURL(e.target.files[0]);
@@ -154,7 +157,7 @@ function InstitutionOnboardingPage() {
 						<div className={styles.item}>
 							<div className="heading-2" style={{ "text-align": "center", width: 600 }}>Welcome! Let's create your profile.</div>
 
-							<BasicImageInput label="Add Picture" image={value.image} onChange={imageHandler} imagePreviewError={imagePreviewError}/>
+							<BasicImageInput src={imagePreview} label="Add Picture" onChange={imageHandler} imagePreviewError={imagePreviewError}/>
 							
 							<div style={{ display: "flex" }}>
 								<div style={{ width: 200, "padding-top": 5 }}>
