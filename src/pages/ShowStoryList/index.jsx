@@ -17,15 +17,17 @@ import StoryDetails from 'pages/ShowStoryDetails'; // Change to ShowStoryDetails
 const ShowStoryList = () => {
   // get login type, pass login type as props to story card component
   const loginType = null; // null, user, or institution
+
   // const loginType = useSelector(s => s.auth.loginType);
   const fetchingStories = useSelector(s => s.story.fetchingStories);
   const fetchError = useSelector(s => s.story.fetchError);
   const stories = useSelector(s => s.story.stories);
+
   const dispatch = useDispatch();
+  
   const [sortDate, setSortDate] = useState('ascending');
   const [searchTerm, setSearchTerm] = useState('');
 
-  console.log("in show stories index:", stories);
   let storiesCopy = stories; // So I won't overwrite the storiesArray, esp. when sorting.
 
   // might use useEffect for pagination, put loginType in useEffect bc someone might log in/out while viewing stories
