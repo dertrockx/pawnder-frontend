@@ -64,12 +64,12 @@ function UserSettingsPreferences() {
       distance: (distance) => distance.replace(/^\$/, "")
     })
 
-    console.log(type)
+    // console.log(type)
   }, [])
 
   const handleChange = (e, setData) => {
     const data= e.target.value
-    console.log(data)
+    // console.log(data)
     setData(data)
 	}
 

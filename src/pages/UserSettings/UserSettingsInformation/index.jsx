@@ -7,9 +7,14 @@ import BasicImageInput2 from "components/BasicImageInput2";
 import BasicLabel from "components/BasicLabel";
 import BasicInput from "components/BasicInput";
 import Button from "components/Button";
-import { useToast } from '@chakra-ui/react';
 import styles from "./UserSettingsInformation.module.css";
 import { IoLocationSharp } from 'react-icons/io5';
+import {
+  Radio, 
+  RadioGroup,
+  Stack,
+  useToast,
+} from "@chakra-ui/react";
 
 function UserSettingsInformation() {
   const noPhoto = '/images/Avatar.png';
@@ -19,6 +24,7 @@ function UserSettingsInformation() {
     firstName: null,
     middleName: null,
     lastName: null,
+    sex: null,
     birthDate: null,
     contactNumber: null,
     locationLat: "",
@@ -29,6 +35,7 @@ function UserSettingsInformation() {
     firstName: null,
     middleName: null,
     lastName: null,
+    sex: null,
     birthDate: null,
     contactNumber: null,
     locationLat: "",
@@ -77,6 +84,7 @@ function UserSettingsInformation() {
           firstName: body.user.firstName,
           middleName: body.user.middleName,
           lastName: body.user.lastName,
+          sex: body.user.sex,
           birthDate: BDAY,
           contactNumber: body.user.contactNumber,
           locationLat: body.user.locationLat,
@@ -88,6 +96,7 @@ function UserSettingsInformation() {
           firstName: body.user.firstName,
           middleName: body.user.middleName,
           lastName: body.user.lastName,
+          sex: body.user.sex,
           birthDate: BDAY,
           contactNumber: body.user.contactNumber,
           locationLat: body.user.locationLat,
@@ -113,7 +122,8 @@ function UserSettingsInformation() {
   })
 
   const handleChange = (e) => {
-
+    console.log(`e.target.name: ${e.target.name}`)
+    console.log(`e.target.value: ${e.target.value}`)
     if(e.target.name === "contactNumber" && contactNumberError) setContactNumberError(false)
     setValues({
       ...values,
@@ -131,21 +141,65 @@ function UserSettingsInformation() {
     if (values.firstName === "" || values.lastName === "" || values.contactNumber === "") return setIsRequired(true)
     if (values.contactNumber.length !== 11 || isNaN(values.contactNumber)) return setContactNumberError(true);
 
-    fetch(
-      `http://localhost:8081/api/0.1/user/` + `12`,
-      {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json"
-        },
-        body: JSON.stringify(values)
+
+    if (values.photoUrl !== currentValues.photoUrl || values.photoUrl !== null) {
+
+      const data = new FormData()
+      data.append("photoUrl", values.photoUrl);
+      // data.append("tags", `codeinfuse, medium, gist`);
+      // data.append("upload_preset", "pvhilzh7");    // Replace the preset name with your own
+      // data.append("api_key", "522121975193432");   // Cloudinary key
+      // data.append("timestamp", (Date.now() / 1000) | 0);
+      try {
+  
+        fetch(
+            "https://api.cloudinary.com/v1_1/dbky7zvuf/image/upload",       // change to https://api.cloudinary.com/v1_1/dbky7zvuf/image/upload
+          {
+            method: "POST", 
+            headers: {
+              "Content-Type": "multipart/form-data",
+              'Accept': 'application/json'
+            },
+            body: JSON.stringify(data)
+          })
+          .then(response => {
+            if(response.status === 200) {
+              console.log(response.status);
+            }
+            return response.json()
+          })
+          .then(data => {
+            console.log(data)
+            const fileURL = data.secure_url // You should store this URL for future references in your app
+            console.log(fileURL);
+            setValues({ ...values, "photoUrl": fileURL })
+            console.log(data);
+          })
+  
+      } catch (err) {
+        console.log(err);
+        // setErrMsg("Something went wrong!");
       }
-    )
-    .then(response => {
-      if(response.status === 200) {
-        console.log(response.status);
-      }
-    })
+
+    } else {
+      fetch(
+        `http://localhost:8081/api/0.1/user/` + `12`,
+        {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify(values)
+        }
+      )
+      .then(response => {
+        if(response.status === 200) {
+          console.log(response.status);
+        }
+      })
+    }
+
+
     setIsSaveClicked(true);
     // window.location.reload(false);  //auto-reload to render the changes in the state but it needs the refresh token
   }
@@ -189,6 +243,13 @@ function UserSettingsInformation() {
 			locationLong: position.coords.longitude,
 		});
 		setLocationError(false);
+    toast({
+			title: 'Access to location allowed.',
+			status: 'success',
+			position: 'top',
+			duration: 5000,
+			isClosable: true,
+		});
 	}
 	
 	const onError = () => {
@@ -285,6 +346,25 @@ function UserSettingsInformation() {
               />
             </div>
           </div>
+
+          <div className={styles.row}>
+            <div className={styles.label}>
+              <BasicLabel label="Sex"/>
+            </div>
+            <div className={styles.input}>
+              <RadioGroup 
+                name="sex" 
+                onChange={handleChange} 
+                value={values.sex}
+              >
+                <Stack spacing={8} direction="row">
+                  <Radio isDisabled name="sex" variantColor="brand.100" value="m">Male</Radio>
+                  <Radio isDisabled name="sex" variantColor="brand.100" value="f">Female</Radio>
+                </Stack>
+              </RadioGroup>
+            </div>
+          </div>
+
 
           <div className={styles.row}>
             <div className={styles.label}>
