@@ -3,8 +3,12 @@ import { Router, Switch, Redirect } from "react-router-dom";
 
 import { Route } from "react-router";
 
-import history from "utils/history";
+// reset default styles for all html elements - https://en.wikipedia.org/wiki/Reset_style_sheet
+import { UserLoginPage, UserSignupPage } from "pages";
+import InstitutionOnboardingPage from "pages/InstitutionOnboarding";
 import NavRoute from "components/NavRoute";
+
+import history from "utils/history";
 import LoadingPage from "pages/LoadingPage";
 import { useDispatch, useSelector } from "react-redux";
 
@@ -24,7 +28,7 @@ const ManagePetDetails = lazy(() =>
 	import("pages/ManagePets").then((module) => ({ default: module.Details }))
 );
 const Dashboard = lazy(() => import("pages/Dashboard"));
-
+const UserSettings = lazy(() => import("pages/UserSettings"));
 const InstitutionSignUp = lazy(() => import("pages/InstitutionSignUpPage"));
 const InstitutionLogin = lazy(() => import("pages/InstitutionLoginPage"));
 const ShowStoryDetails = lazy(() => import("pages/ShowStoryDetails"));
@@ -32,6 +36,7 @@ const ManageStoryDetails = lazy(() => import("pages/ManageStoryDetails"));
 const ChooseLogin = lazy(() => import("pages/ChooseLogin"));
 const ChooseSignup = lazy(() => import("pages/ChooseSignup"));
 const INSTITUTION_ROOT = "/institution";
+const USER_ROOT = "/user";
 
 function App() {
 	const { isAuthenticated, token_expiry, token } = useSelector((s) => s.auth);
@@ -104,9 +109,26 @@ function App() {
 						component={ManageStoryDetails}
 						type={model.INSTITUTION}
 					/>
-					<NavRoute path="/login" exact component={ChooseLogin} type={null} />
-					<NavRoute path="/signup" exact component={ChooseSignup} type={null} />
 
+					{/* cutoff */}
+					<Route path={`${USER_ROOT}/login`} exact component={UserLoginPage} />
+					<Route
+						path={`${USER_ROOT}/signup`}
+						exact
+						component={UserSignupPage}
+					/>
+					<Route
+						path={`${INSTITUTION_ROOT}/onboarding`}
+						exact
+						component={InstitutionOnboardingPage}
+					/>
+					<NavRoute
+						path={`${USER_ROOT}/settings`}
+						component={UserSettings}
+						type={model.USER}
+					/>
+					<NavRoute path="/login" exact component={ChooseLogin} />
+					<NavRoute path="/signup" exact component={ChooseSignup} />
 					<Redirect path="/" to="/signup" exact />
 				</Switch>
 			</Router>

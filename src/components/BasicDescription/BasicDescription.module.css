@@ -1,0 +1,7 @@
+.container {
+  width: 300px;
+}
+
+.container div {
+  padding: 5px 10px;
+}

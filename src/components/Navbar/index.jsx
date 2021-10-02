@@ -41,7 +41,7 @@ function Navbar() {
 				<NavLink
 					className={`paragraph ${styles.navbarItem}`}
 					activeClassName="bold-text"
-					to="/settings"
+					to="/user/settings"
 				>
 					Settings
 				</NavLink>
@@ -125,7 +125,9 @@ function Navbar() {
 								color="white"
 								variant="outline"
 								size="small"
-								onClick={login}
+								onClick={() => {
+									history.push("/user/signup")
+								}}
 							>
 								Login
 							</Button>
