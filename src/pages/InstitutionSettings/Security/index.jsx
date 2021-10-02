@@ -55,10 +55,12 @@ const Security = () => {
         </div>
       </div>
       <HR />
-      <div style={{margin: "60px 0px"}} className={styles.bottomButtons} >
-        <Button size="small" type="submit" color="brand-default" variant="outline" onClick={handleCancel} block disabled={true}>Cancel</Button>
-        <Button size="small" type="submit" color="brand-default" onClick={handleSubmit} block disabled={true}>Save</Button>
-      </div>
+      <Tooltip hasArrow label="Wow, you found an easter egg. Nice." bg={`var(--color-very-light-grey)`} color={`--color-black`} borderRadius="4px" fontFamily="Raleway">
+        <div style={{margin: "60px 0px"}} className={styles.bottomButtons}>
+          <Button size="small" type="submit" color="brand-default" variant="outline" onClick={handleCancel} block disabled={true}>Cancel</Button>
+          <Button size="small" type="submit" color="brand-default" onClick={handleSubmit} block disabled={true}>Save</Button>
+        </div>
+      </Tooltip>
     </div>
   );
 }

@@ -31,6 +31,7 @@ function PasswordInput(props) {
             size="sm"
             onClick={handleClick}
             _focus={{border: "none"}}
+            isDisabled={true}
           >
             {show ? "Hide" : "Show"}
           </Button>
