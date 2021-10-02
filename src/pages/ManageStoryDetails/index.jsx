@@ -1,8 +1,9 @@
-import React, {useState, useEffect} from "react";
+import React, {useState, useEffect, useCallback} from "react";
 import styles from "./manageStoryDetails.module.css";
 import uploadPhoto from "assets/uploadPhoto.svg";
-import { Textarea, Input, Button, useDisclosure, useToast, Spinner} from "@chakra-ui/react";
+import { Textarea, Input, Button, useDisclosure, useToast } from "@chakra-ui/react";
 import { useParams } from 'react-router-dom';
+import { useDispatch } from "react-redux";
 import axios from 'axios';
 import LoadingPage from "pages/LoadingPage";
 import {Modal,ModalOverlay, ModalContent, ModalHeader, ModalFooter, ModalBody, ModalCloseButton} from "@chakra-ui/react";
@@ -11,6 +12,7 @@ function ManageStoryDetails({ data }) {
     const { id } = useParams(); 
     const toast = useToast();
     const institutionID = 1;
+    const dispatch = useDispatch();
     const [isNew, setIsNew] = useState(true);
     const [hasImg, setHasImg] = useState(false);
     const { isOpen: isCancelOpen, onOpen: onCancelOpen, onClose: onCancelClose } = useDisclosure();
@@ -19,6 +21,7 @@ function ManageStoryDetails({ data }) {
     const { isOpen: isNoPublishOpen, onOpen: onNoPublishOpen, onClose: onNoPublishClose } = useDisclosure();
     const [success, setSuccess] = useState(true);
     const [loading, setLoading] = useState(false);
+    const stableDispatch = useCallback(dispatch, []);
     const [storyInfo, setStoryInfo] = useState({
         title: '',
         body: '',
@@ -56,7 +59,7 @@ function ManageStoryDetails({ data }) {
         else {
             setIsNew(false);
         }
-    }, []);
+    }, [data, stableDispatch]);
 
 
     const handleChange = (e) => {
