@@ -92,3 +92,19 @@
 	letter-spacing: -0.01em;
 	text-transform: uppercase;
 }
+
+.input-text {
+	font-family: "Raleway", sans-serif;
+	font-style: normal;
+	font-weight: normal;
+	font-size: 15px;
+	line-height: 125%;
+}
+
+.input-label {
+	font-family: "Rubik", sans-serif;
+	font-style: normal;
+	font-weight: normal;
+	font-size: 16px;
+	line-height: 125%;
+} 

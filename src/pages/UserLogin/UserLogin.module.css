@@ -1,0 +1,60 @@
+.page {
+  position: relative;
+  display: flex;
+}
+
+::-webkit-scrollbar {
+  width: 0px; 
+  background: transparent;
+}
+
+.left {
+  width: 50%;
+  height: 50%;
+}
+
+.logo {
+  margin-bottom: 30px;
+}
+
+.img {
+  height: 100%;
+  width: 100%;
+  object-fit: contain;
+}
+
+.right {
+  position: relative;
+  padding: 200px;
+  padding-top: 130px;
+  padding-bottom: 150px;
+  width: 50%;
+  height: 50%;
+}
+
+.header {
+  text-align: center;
+}
+
+.form {
+  position: absolute;
+  margin-left: 25px; 
+	margin-right: 25px; 
+}
+
+.error {
+  color: var(--color-red);
+}
+
+.bottom {
+  z-index: 1;
+}
+
+.eye {
+  z-index: 4;
+  position: relative;
+}
+
+.rightAlign {
+  text-align: right;
+}
