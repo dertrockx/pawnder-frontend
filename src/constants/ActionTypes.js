@@ -23,3 +23,9 @@ export const pet = keyMirror({
 	UPDATE_SUCCESS: null,
 	UPDATE_ERROR: null,
 });
+
+export const photo = keyMirror({
+	UPDATE_PENDING: null,
+	UPDATE_SUCCESS: null,
+	UPDATE_ERROR: null,
+});

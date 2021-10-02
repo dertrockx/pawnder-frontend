@@ -1,4 +1,4 @@
-import { pet } from "constants/ActionTypes";
+import { pet, photo } from "constants/ActionTypes";
 
 // pets ay key-value pair ng pet
 // key: id, value: pet and photos
@@ -67,12 +67,14 @@ export default function reduer(state = initialState, action = {}) {
 				creating: false,
 			};
 		}
+		case photo.UPDATE_PENDING:
 		case pet.UPDATE_PENDING: {
 			return {
 				...state,
 				updating: true,
 			};
 		}
+		case photo.UPDATE_SUCCESS:
 		case pet.UPDATE_SUCCESS: {
 			return {
 				...state,
@@ -84,6 +86,7 @@ export default function reduer(state = initialState, action = {}) {
 				},
 			};
 		}
+		case photo.UPDATE_ERROR:
 		case pet.UPDATE_ERROR: {
 			return {
 				...state,

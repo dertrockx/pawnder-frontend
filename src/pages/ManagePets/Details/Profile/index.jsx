@@ -4,10 +4,19 @@ import { Input, Select, Textarea, Spinner } from "@chakra-ui/react";
 import Button from "components/Button";
 import HR from "components/HR";
 import styles from "./Profile.module.css";
-import { updatePet } from "redux/actions/petActions";
+import {
+	updatePet,
+	updatePhoto,
+	createPhoto,
+	deletePhoto,
+} from "redux/actions/petActions";
+import EditableImage, { ImagePlaceholder } from "components/EditableImage";
+
 function Profile() {
 	const { fetching, petId, pets, updating } = useSelector((s) => s.pet);
 	const dispatch = useDispatch();
+	const [mainPhoto, setMainPhoto] = useState(null);
+	const [otherPhotos, setOtherPhotos] = useState([null, null, null, null]);
 	const [info, setInfo] = useState({
 		name: "",
 		breed: "",
@@ -28,6 +37,23 @@ function Profile() {
 			setInfo({
 				...pet,
 			});
+			const { photos } = pet;
+			// separate main photo from other photo
+			let mainPhoto = null;
+			let otherPhotos = [];
+			photos.forEach((photo) => {
+				if (photo.type !== "main") otherPhotos.push(photo);
+				else mainPhoto = photo;
+			});
+			if (otherPhotos.length <= 4) {
+				// append blank stuff
+				otherPhotos = [
+					...otherPhotos,
+					...Array(4 - otherPhotos.length).fill(null),
+				];
+			}
+			setMainPhoto(mainPhoto);
+			setOtherPhotos(otherPhotos);
 		}
 
 		// eslint-disable-next-line
@@ -39,6 +65,18 @@ function Profile() {
 
 	function handleSave() {
 		dispatch(updatePet(petId, info));
+	}
+
+	function handleUpload(photoId, formData) {
+		dispatch(updatePhoto(photoId, formData));
+	}
+
+	function handleNewUpload(formData) {
+		dispatch(createPhoto(formData));
+	}
+
+	function handleDelete(photoId) {
+		dispatch(deletePhoto(photoId));
 	}
 
 	if (fetching || !petId) return <Spinner />;
@@ -71,19 +109,18 @@ function Profile() {
 					margin: "30px 0",
 				}}
 			>
-				<img
-					src="https://picsum.photos/481/245"
-					style={{ objectFit: "cover", width: 481, height: 245 }}
-					alt=""
-				/>
-				<div style={{ display: "flex", flexDirection: "column", gap: 15 }}>
-					<Button size="small" color="brand-default">
-						Change Picture
-					</Button>
-					<Button size="small" color="brand-default" variant="outline">
-						Remove Picture
-					</Button>
-				</div>
+				{mainPhoto && (
+					<EditableImage
+						photo={mainPhoto}
+						loading={updating}
+						handleUpdate={handleUpload}
+						handleDelete={handleDelete}
+						noDelete
+					/>
+				)}
+				<p className="caption">
+					*Hover on the picture and click the button to edit it*
+				</p>
 			</div>
 			<h3 className="heading-3">Other Pictures</h3>
 			<div className={styles.halfField}>
@@ -92,7 +129,24 @@ function Profile() {
 					pictures.
 				</p>
 				<div className={styles.pictures}>
-					<img
+					{otherPhotos.map((otherPhoto, idx) => (
+						<React.Fragment key={idx}>
+							{otherPhoto ? (
+								<EditableImage
+									photo={otherPhoto}
+									loading={updating}
+									handleUpdate={handleUpload}
+									handleDelete={handleDelete}
+								/>
+							) : (
+								<ImagePlaceholder
+									handleUpload={handleNewUpload}
+									loading={updating}
+								/>
+							)}
+						</React.Fragment>
+					))}
+					{/* <img
 						src="https://picsum.photos/229/201"
 						style={{ objectFit: "cover", width: 229, height: 201 }}
 						alt=""
@@ -111,7 +165,7 @@ function Profile() {
 						src="https://picsum.photos/229/201"
 						style={{ objectFit: "cover", width: 229, height: 201 }}
 						alt=""
-					/>
+					/> */}
 				</div>
 			</div>
 			<HR />
