@@ -3,9 +3,10 @@ import styles from "./manageStoryDetails.module.css";
 import uploadPhoto from "assets/uploadPhoto.svg";
 import { Textarea, Input, Button, useDisclosure, useToast } from "@chakra-ui/react";
 import { useParams } from 'react-router-dom';
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import axios from 'axios';
 import LoadingPage from "pages/LoadingPage";
+import { fetchStories } from 'redux/actions/storyActions';
 import {Modal,ModalOverlay, ModalContent, ModalHeader, ModalFooter, ModalBody, ModalCloseButton} from "@chakra-ui/react";
 
 function ManageStoryDetails({ data }) {
@@ -13,12 +14,10 @@ function ManageStoryDetails({ data }) {
     const toast = useToast();
     const institutionID = 1;
     const dispatch = useDispatch();
-    const [isNew, setIsNew] = useState(true);
     const [hasImg, setHasImg] = useState(false);
     const { isOpen: isCancelOpen, onOpen: onCancelOpen, onClose: onCancelClose } = useDisclosure();
     const { isOpen: isDraftOpen, onOpen: onDraftOpen, onClose: onDraftClose } = useDisclosure();
     const { isOpen: isPublishOpen, onOpen: onPublishOpen, onClose: onPublishClose } = useDisclosure();
-    const { isOpen: isNoPublishOpen, onOpen: onNoPublishOpen, onClose: onNoPublishClose } = useDisclosure();
     const [success, setSuccess] = useState(true);
     const [loading, setLoading] = useState(false);
     const stableDispatch = useCallback(dispatch, []);
@@ -53,14 +52,7 @@ function ManageStoryDetails({ data }) {
                 setHasImg(true);
             }
         }
-        if (id === undefined) {
-            setIsNew(true); 
-        } 
-        else {
-            setIsNew(false);
-        }
     }, [data, stableDispatch]);
-
 
     const handleChange = (e) => {
 		setStoryInfo({
@@ -87,11 +79,8 @@ function ManageStoryDetails({ data }) {
         })
     }
 
-    //cant publish directly (needs to be saved as draft first before publishing)
-    //put request needs id (newly created story does not have an id)
-    //post request has isDraft set to true
     const handlePublish = () => {
-        if (storyInfo.title === '' || storyInfo.body === '' || storyInfo.headlinePhoto === '' || (storyInfo.tags).length === 0) {
+        if (storyInfo.title === '' || storyInfo.body === '' || hasImg === false || (storyInfo.tags).length === 0) {
             toast({
                 title: 'All fields are required',
                 status: 'error',
@@ -101,26 +90,81 @@ function ManageStoryDetails({ data }) {
             });
         }
         else {
-            putRequestPublish();
-            if (success === true) {
-                toast({
-                    title: 'Successfully published story.',
-                    status: 'success',
-                    position: 'top',
-                    duration: 5000,
-                    isClosable: true,
-                });
-                movePages();
-            }
+            //post & put request if story is newly created
+            if (id === undefined) {
+                setLoading(true);
+                let fd = new FormData(); 
+                fd.append('title', storyInfo.title);
+                fd.append('body', storyInfo.body);
+                fd.append('headlinePhoto', storyInfo.headlinePhoto);
+                fd.append('tags', storyInfo.tags);
+                fd.append('institutionId', institutionID);
+                axios.post('http://localhost:8081/api/0.1/story/', fd)
+                .then((response) => { 
+                    const storyId = response.data.story.id;
+                    axios.put('http://localhost:8081/api/0.1/story/' + storyId + '?publish=1')
+                    .then(() => {
+                        setLoading(false);
+                        toast({
+                            title: 'Successfully published story. Redirecting to show list page please wait.',
+                            status: 'success',
+                            position: 'top',
+                            duration: 5000,
+                            isClosable: true,
+                        });
+                        setTimeout(function() {
+                            movePages();
+                        }, 1000);
+                    })
+                    .catch(() => {
+                        setLoading(false);
+                        toast({
+                            title: 'Error publishing story.',
+                            description: 'Something went wrong. Please try again later.',
+                            status: 'error',
+                            position: 'top',
+                            duration: 5000,
+                            isClosable: true,
+                        });
+                    })
+                })
+                .catch(() => {
+                    setLoading(false);
+                    toast({
+                        title: 'Error publishing story.',
+                        description: 'Something went wrong. Please try again later.',
+                        status: 'error',
+                        position: 'top',
+                        duration: 5000,
+                        isClosable: true,
+                    });
+                })
+            } 
+            //put request if story is not newly created
             else {
-                toast({
-                    title: 'Error publishing story.',
-                    description: 'Something went wrong. Please try again later.',
-                    status: 'error',
-                    position: 'top',
-                    duration: 5000,
-                    isClosable: true,
-                });
+                putRequestPublish();
+                if (success === true) {
+                    toast({
+                        title: 'Successfully published story. Redirecting to show list page please wait.',
+                        status: 'success',
+                        position: 'top',
+                        duration: 5000,
+                        isClosable: true,
+                    });
+                    setTimeout(function() {
+                        movePages();
+                    }, 1000);
+                }
+                else {
+                    toast({
+                        title: 'Error publishing story.',
+                        description: 'Something went wrong. Please try again later.',
+                        status: 'error',
+                        position: 'top',
+                        duration: 5000,
+                        isClosable: true,
+                    });
+                }
             }
         }
     }
@@ -130,9 +174,15 @@ function ManageStoryDetails({ data }) {
         handleDraft();
     }
 
+    const publishingNewStory = () => {
+        onPublishClose(); 
+        handlePublish();
+    }
+
     //working 
     const handleDraft = (e) => {
-        if (storyInfo.title === '' || storyInfo.body === '' || storyInfo.headlinePhoto === '' || (storyInfo.tags).length === 0) {
+        console.log(storyInfo.headlinePhoto);
+        if (storyInfo.title === '' || storyInfo.body === '' || hasImg === false || (storyInfo.tags).length === 0) {
             toast({
                 title: 'All fields are required',
                 status: 'error',
@@ -166,6 +216,7 @@ function ManageStoryDetails({ data }) {
                     }, 1000);
                 })
                 .catch(() => {
+                    setLoading(false);
                     toast({
                         title: 'Error saving story as draft.',
                         description: 'Something went wrong. Please try again later.',
@@ -174,7 +225,6 @@ function ManageStoryDetails({ data }) {
                         duration: 5000,
                         isClosable: true,
                     });
-                    setLoading(false);
                 })               
             }
             //put request if story is not newly created
@@ -361,28 +411,13 @@ function ManageStoryDetails({ data }) {
                                     </ModalContent>
                                 </Modal>
                                 <Button
-                                        variant = "solid"
-                                        colorScheme = "green"
-                                        className = {styles.buttonOptions}
-                                        onClick = {isNew ? onNoPublishOpen : onPublishOpen}
-                                    >
+                                    variant = "solid"
+                                    colorScheme = "green"
+                                    className = {styles.buttonOptions}
+                                    onClick = {onPublishOpen}
+                                >
                                         Publish 
-                                    </Button>
-
-                                <Modal onClose={onNoPublishClose} isOpen={isNoPublishOpen} isCentered>
-                                    <ModalOverlay />
-                                    <ModalContent>
-                                    <ModalHeader>Story must be saved first</ModalHeader>
-                                    <ModalCloseButton />
-                                    <ModalBody>
-                                        <p className = "paragraph">You must save the story first before publishing it.</p>
-                                    </ModalBody>
-                                    <ModalFooter>
-                                        <Button colorScheme = "yellow" color = "white" onClick={onNoPublishClose}>Okay</Button>
-                                    </ModalFooter>
-                                    </ModalContent>
-                                </Modal>
-
+                                </Button>
 
                                 <Modal onClose={onPublishClose} isOpen={isPublishOpen} isCentered>
                                     <ModalOverlay />
@@ -396,7 +431,7 @@ function ManageStoryDetails({ data }) {
                                     </ModalBody>
                                     <ModalFooter>
                                         <Button colorScheme = "red" mr = {3} onClick={onPublishClose}>Cancel</Button>
-                                        <Button colorScheme = "green" type = "submit" onClick={handlePublish}>Publish</Button>
+                                        <Button colorScheme = "green" type = "submit" onClick={publishingNewStory}>Publish</Button>
                                     </ModalFooter>
                                     </ModalContent>
                                 </Modal>
