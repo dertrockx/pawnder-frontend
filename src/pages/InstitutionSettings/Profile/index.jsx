@@ -1,6 +1,7 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { IoLocationSharp } from 'react-icons/io5';
 import { Input, InputGroup, InputLeftAddon, Textarea, useToast, Tooltip} from '@chakra-ui/react';
+import { Button as ChakraButton, AlertDialog, AlertDialogOverlay, AlertDialogContent, AlertDialogHeader, AlertDialogBody, AlertDialogFooter } from '@chakra-ui/react';
 import axios from'axios'
 
 import Button from 'components/Button';
@@ -9,41 +10,45 @@ import noPhoto from 'assets/noPhoto.png';
 
 import styles from './Profile.module.css';
 
-
 const Profile = () => {
   // fetch user id here from redux login
   const id = 4;
 
   const [values, setValues] = useState({
-		photoURL: '',
+		avatarPhoto: '',
 		name: '',
     email: '',
     contactNumber: '',
 		description: '',
+    locationLat: '',
+    locationLong: '',
 		// websiteURL: '',
 		// facebookURL: '',
 		// twitterURL: '',
 		// messengerURL: '',
 		// instagramURL: '',
-    locationLat: '',
-    locationLong: '',
 	});
-  const [currentValues, setcurrentValues] = useState({
-		photoURL: '',
+  const [currentValues, setCurrentValues] = useState({
+		avatarPhoto: '',
 		name: '',
     email: '',
     contactNumber: '',
 		description: '',
+    locationLat: '',
+    locationLong: '',
 		// websiteURL: '',
 		// facebookURL: '',
 		// twitterURL: '',
 		// messengerURL: '',
 		// instagramURL: '',
-    locationLat: '',
-    locationLong: '',
 	});
-	const [imagePreview, setImagePreview] = useState(`${noPhoto}`);
-  const [isImageDisabled, setIsImageDisabled] = useState(true); // set to false kapag may picture na talaga from fetched data
+	const [imagePreview, setImagePreview] = useState(noPhoto);
+	// const [imagePreview, setImagePreview] = useState('');
+  const [isImageRemoveDisabled, setIsImageRemoveDisabled] = useState(true); // set to false kapag may picture na talaga from fetched data
+  const [isCancelDisabled, setIsCancelDisabled] = useState(true);
+  const [isSaveDisabled, setIsSaveDisabled] = useState(true);
+
+  // Might remove these states as I don't use their values.
   const [imagePreviewError, setImagePreviewError] = useState(false);
   const [locationError, setLocationError] = useState(false);
 
@@ -57,37 +62,113 @@ const Profile = () => {
       return institution;
     })
     .then((institution) => {
-      console.log(institution);
-
       setValues({
-        photoURL: institution.photoURL,
+        avatarPhoto: institution.photoUrl,
         name: institution.name,
         email: institution.email,
         contactNumber: institution.contactNumber,
         description: institution.description,
         locationLat: institution.locationLat,
-        locationLong: institution.long
+        locationLong: institution.locationLong
       });
 
-      setcurrentValues({
-        photoURL: institution.photoURL,
+      setCurrentValues({
+        avatarPhoto: institution.photoUrl,
         name: institution.name,
         email: institution.email,
         contactNumber: institution.contactNumber,
         description: institution.description,
         locationLat: institution.locationLat,
-        locationLong: institution.long
+        locationLong: institution.locationLong
       });
 
+      setImagePreview(institution.photoUrl);
+      console.log(currentValues.avatarPhoto);
+      // alert(imagePreview);
     })
     .catch(err => {
       console.log(err)
     })
   }, []);
 
+  const CancelAlertDialog = () => {
+    const [isOpen, setIsOpen] = useState(false);
+    const onClose = () => setIsOpen(false);
+    const cancelRef = useRef();
+
+    return(
+      <>
+        <Button size="small" type="submit" color="brand-default" variant="outline" onClick={() => {setIsOpen(true)}} disabled={isCancelDisabled} block>Cancel</Button>
+        <AlertDialog
+          isOpen={isOpen}
+          leastDestructiveRef={cancelRef}
+          onClose={onClose}
+        >
+          <AlertDialogOverlay>
+            <AlertDialogContent>
+              <AlertDialogHeader className="heading-3" textAlign="center">
+                Are you sure you want to cancel your changes?
+              </AlertDialogHeader>
+              <AlertDialogFooter>
+                <ChakraButton ref={cancelRef} onClick={onClose} _hover={{filter:"brightness(0.8)"}} _focus={{border:"none"}}>No, go back</ChakraButton>
+                <ChakraButton ref={cancelRef} onClick={() => handleCancel()} bg="rgb(237, 69, 93)" color="white" ml={3} _hover={{filter:"brightness(0.8)"}} _focus={{border:"none"}}>Yes, cancel my changes</ChakraButton>
+              </AlertDialogFooter>
+            </AlertDialogContent>
+          </AlertDialogOverlay>
+        </AlertDialog>
+      </>
+    );
+  }
+
+  const SaveAlertDialog = () => {
+    const [isOpen, setIsOpen] = useState(false);
+    const onClose = () => setIsOpen(false);
+    const cancelRef = useRef();
+    return(
+      <>
+        <Button size="small" type="submit" color="brand-default" onClick={() => {setIsOpen(true)}} disabled={isSaveDisabled} block>Save</Button>
+        <AlertDialog
+          isOpen={isOpen}
+          leastDestructiveRef={cancelRef}
+          onClose={onClose}
+        >
+          <AlertDialogOverlay>
+            <AlertDialogContent>
+              <AlertDialogHeader className="heading-3" textAlign="center">
+                Are you sure you want to save your changes?
+              </AlertDialogHeader>
+              <AlertDialogFooter>
+                <ChakraButton ref={cancelRef} onClick={onClose} _hover={{filter:"brightness(0.8)"}} _focus={{border:"none"}}>No, go back</ChakraButton>
+                <ChakraButton ref={cancelRef} onClick={() => handleSubmit()} bg="rgb(0, 192, 77)" color="white" ml={3} _hover={{filter:"brightness(0.8)"}} _focus={{border:"none"}}>Yes, save my changes</ChakraButton>
+              </AlertDialogFooter>
+            </AlertDialogContent>
+          </AlertDialogOverlay>
+        </AlertDialog>
+      </>
+    );
+  }
+
+  const checkObjects = (keys1) => {
+    for (let key of keys1) {
+      if (currentValues[key] !== values[key]) return false;
+    }
+    return true;
+  }
+
+  useEffect(() => {
+    const keys1 = Object.keys(values);
+    if (checkObjects(keys1)) {
+      setIsSaveDisabled(true);
+      setIsCancelDisabled(true);
+    } else {
+      setIsSaveDisabled(false);
+      setIsCancelDisabled(false);
+    }
+  }, [currentValues]);
+
   const handleChange = (e) => {
-    setValues({
-      ...values,
+    setCurrentValues({
+      ...currentValues,
       [e.target.name]: e.target.value,
     });
 
@@ -103,13 +184,12 @@ const Profile = () => {
       reader.onloadend = () => {
         setImagePreview(`${reader.result}`)
       }
-      setValues({
-        ...values,
-        photo: selected
+      setCurrentValues({
+        ...currentValues,
+        avatarPhoto: selected
       });
       reader.readAsDataURL(selected);
-      setImagePreviewError(false);
-      setIsImageDisabled(false);
+      setIsImageRemoveDisabled(false);
     } else {
       /** 
        * Selecting a file and cancelling returns undefined to selected.
@@ -117,7 +197,6 @@ const Profile = () => {
        * We don't want that so we check if selected === undefined. If it's true, then we don't give out any errors.
        */       
       if (selected === undefined) {
-        setImagePreviewError(false);
         return;
       }
       setImagePreviewError(true);
@@ -132,13 +211,13 @@ const Profile = () => {
   }
 
   const handleImageRemove = () => {
-    setImagePreview(`${noPhoto}`);
-    setValues({
-      ...values,
-      image: ''
+    setImagePreview(noPhoto);
+    setCurrentValues({
+      ...currentValues,
+      avatarPhoto: ''
     });
     setImagePreviewError(false);
-    setIsImageDisabled(true);
+    setIsImageRemoveDisabled(true);
   }
 
   // Location handler
@@ -150,7 +229,6 @@ const Profile = () => {
     });
     setLocationError(false);
   }
-
   
   const onError = () => {
     setLocationError(true);
@@ -163,13 +241,13 @@ const Profile = () => {
     });
   }
 
-  const handleLocation = (e) => {
+  const handleLocation = () => {
     /**
      * All buttons inside a form trigger the submit event.
      * By using the preventDefault() method, the submit event will be canceled,
      * thus, allowing multiple buttons inside a form.
      */
-    e.preventDefault();
+    // e.preventDefault();
     if (!navigator.geolocation) {
       setLocationError(true);
       toast({
@@ -184,19 +262,59 @@ const Profile = () => {
     }
   }
 
+  // For cancel button
   const handleCancel = () => {
-    alert("Cancelled");
+    // Set all currentValues to values
+    setCurrentValues({
+      avatarPhoto: values.avatarPhoto,
+      name: values.name,
+      email: values.email,
+      contactNumber: values.contactNumber,
+      description: values.description,
+      locationLat: values.locationLat,
+      locationLong: values.locationLong
+    })
 
-    // Set all values to their initial state
+    setImagePreview(values.avatarPhoto);
   }
 
-  const handleSubmit = (e) => {
-    e.preventDefault(); 
+  // For save button (not submit)
+  const handleSave = () => {
+
     // Should check contact number for pattern before submitting lol
     // values.contactNumber.match(/^\d{10}$/)
-    
-    // Redirect to feed after onboarding, put inside .then when successful
-    // history.push('/feed');
+
+  }
+
+  // When insti confims that they would like to save their changes
+  const handleSubmit = () => {
+    // e.preventDefault(); 
+
+
+    const formData = new FormData();
+
+    // for (const key in values) {
+    //   formData.append(`${key}`, values[key])
+    //   console.log(`${key}: ${values[key]}`)
+    // }
+
+    formData.append('avatarPhoto', currentValues.avatarPhoto);
+    formData.append('name', currentValues.name);
+    formData.append('description', currentValues.description);
+    formData.append('contactNumber', currentValues.contactNumber);
+    formData.append('locationLat', currentValues.locationLat);
+    formData.append('locationLong', currentValues.locationLong);
+
+    axios.put('http://localhost:8081/api/0.1/institution/' + id, formData)
+    .then(res => {
+      console.log(res);
+    })
+    .catch(err => {
+      console.log(err);
+    })
+
+
+    // Re fetch insti data
 
     // For testing
     console.log(values);
@@ -217,8 +335,8 @@ const Profile = () => {
             <label className={styles.imageUploadButton} htmlFor="image">
               Choose Picture
             </label>
-            {values.image === ''
-            ? <Button size="small" color="brand-default" variant="outline" onClick={handleImageRemove} disabled={isImageDisabled}>Remove picture</Button>
+            {currentValues.avatarPhoto === ''
+            ? <Button size="small" color="brand-default" variant="outline" onClick={handleImageRemove} disabled={isImageRemoveDisabled}>Remove picture</Button>
             : <Button size="small" color="brand-default" variant="outline" onClick={handleImageRemove}>Remove picture</Button>
             }
           </div>
@@ -231,7 +349,7 @@ const Profile = () => {
         </div>
         <Textarea
           name="description"
-          value={values.description}
+          value={currentValues.description}
           onChange={handleChange}
           placeholder="Description"
           fontFamily="Raleway"
@@ -252,7 +370,7 @@ const Profile = () => {
             <p className="paragraph">Name</p>
             <Input
               name="name"
-              value={values.name}
+              value={currentValues.name}
               onChange={handleChange}
               placeholder="Institution Name"
               fontFamily="Raleway"
@@ -269,7 +387,7 @@ const Profile = () => {
                 <Input
                   type="email"
                   name="email"
-                  value={values.email}
+                  value={currentValues.email}
                   onChange={handleChange}
                   placeholder="Email Address"
                   fontFamily="Raleway"
@@ -289,7 +407,7 @@ const Profile = () => {
               <Input
                 type="tel"
                 name="contactNumber"
-                value={values.contactNumber}
+                value={currentValues.contactNumber}
                 onChange={handleChange}
                 onKeyPress={(e) => {
                   if (e.target.value.length > 9) {
@@ -308,6 +426,7 @@ const Profile = () => {
           </div>
           <div className={styles.twoFields}>
             <p className="paragraph">Location</p>
+            {/* Interchange current values and values */}
             {(values.locationLat !== currentValues.locationLat && values.locationLong !== currentValues.locationLat)
             ? <Button size="small" color="brand-default" onClick={handleLocation}> <span>Location updated</span><IoLocationSharp /> </Button>
             : <Button size="small" color="brand-default" onClick={handleLocation} variant="outline"><IoLocationSharp /> <span>Update location</span></Button> 
@@ -324,71 +443,99 @@ const Profile = () => {
         <div>
           <div className={styles.twoFields}>
             <p className="paragraph">Website</p>
-            <Input name="websiteURL"
-              onChange={handleChange}
-              placeholder="www.yoursite.com"
-              fontFamily="Raleway"
-              borderWidth="2px"
-              borderColor={"var(--color-light-grey)"}
-              _hover={{borderColor: "var(--color-grey)"}}
-              _focus={{borderColor: "brand.100", borderWidth: "2px"}}
-            />
+            <Tooltip hasArrow label="Sorry. This feature is not yet available." bg={`var(--color-very-light-grey)`} color={`--color-black`} borderRadius="4px" fontFamily="Raleway">
+              <InputGroup>
+                <Input name="websiteURL"
+                  onChange={handleChange}
+                  placeholder="www.yoursite.com"
+                  fontFamily="Raleway"
+                  borderWidth="2px"
+                  borderColor={"var(--color-light-grey)"}
+                  _hover={{borderColor: "var(--color-grey)"}}
+                  _focus={{borderColor: "brand.100", borderWidth: "2px"}}
+                  isDisabled={true}
+                />
+              </InputGroup>
+            </Tooltip>
           </div>
           <div className={styles.twoFields}>
             <p className="paragraph">Facebook Link</p>
-            <Input
-              name="facebookURL"
-              onChange={handleChange}
-              placeholder="www.facebook.com/yourpage"
-              fontFamily="Raleway"
-              borderWidth="2px"
-              borderColor={"var(--color-light-grey)"}
-              _hover={{borderColor: "var(--color-grey)"}}
-              _focus={{borderColor: "brand.100", borderWidth: "2px"}}
-            />
+            <Tooltip hasArrow label="Sorry. This feature is not yet available." bg={`var(--color-very-light-grey)`} color={`--color-black`} borderRadius="4px" fontFamily="Raleway">
+              <InputGroup>
+                <Input
+                  name="facebookURL"
+                  onChange={handleChange}
+                  placeholder="www.facebook.com/yourpage"
+                  fontFamily="Raleway"
+                  borderWidth="2px"
+                  borderColor={"var(--color-light-grey)"}
+                  _hover={{borderColor: "var(--color-grey)"}}
+                  _focus={{borderColor: "brand.100", borderWidth: "2px"}}
+                  isDisabled={true}
+                />
+              </InputGroup>
+            </Tooltip>
           </div>
           <div className={styles.twoFields}>
             <p className="paragraph">Messenger Link</p>
-            <Input
-              name="messengerURL"
-              onChange={handleChange}
-              placeholder="www.messenger.com/yourpage"
-              fontFamily="Raleway"
-              borderWidth="2px"
-              borderColor={"var(--color-light-grey)"}
-              _hover={{borderColor: "var(--color-grey)"}}
-              _focus={{borderColor: "brand.100", borderWidth: "2px"}}
-            />
+            <Tooltip hasArrow label="Sorry. This feature is not yet available." bg={`var(--color-very-light-grey)`} color={`--color-black`} borderRadius="4px" fontFamily="Raleway">
+              <InputGroup>
+                <Input
+                  name="messengerURL"
+                  onChange={handleChange}
+                  placeholder="www.messenger.com/yourpage"
+                  fontFamily="Raleway"
+                  borderWidth="2px"
+                  borderColor={"var(--color-light-grey)"}
+                  _hover={{borderColor: "var(--color-grey)"}}
+                  _focus={{borderColor: "brand.100", borderWidth: "2px"}}
+                  isDisabled={true}
+                />
+              </InputGroup>
+            </Tooltip>
           </div>
           <div className={styles.twoFields}>
             <p className="paragraph">Instagram Link</p>
-            <Input
-              name="instagramURL"
-              onChange={handleChange}
-              placeholder="www.instagram.com/yourpage"
-              fontFamily="Raleway" borderWidth="2px"
-              focusBorderColor="brand.100"
-            />
+            <Tooltip hasArrow label="Sorry. This feature is not yet available." bg={`var(--color-very-light-grey)`} color={`--color-black`} borderRadius="4px" fontFamily="Raleway">
+              <InputGroup>
+                <Input
+                  name="instagramURL"
+                  onChange={handleChange}
+                  placeholder="www.instagram.com/yourpage"
+                  fontFamily="Raleway"
+                  borderWidth="2px"
+                  borderColor={"var(--color-light-grey)"}
+                  _hover={{borderColor: "var(--color-grey)"}}
+                  _focus={{borderColor: "brand.100", borderWidth: "2px"}}
+                  isDisabled={true}
+                />
+              </InputGroup>
+            </Tooltip>
           </div>
           <div className={styles.twoFields}>
             <p className="paragraph">Twitter Link</p>
-            <Input
-              name="twitterURL"
-              onChange={handleChange}
-              placeholder="www.twitter.com/yourpage"
-              fontFamily="Raleway"
-              borderWidth="2px"
-              borderColor={"var(--color-light-grey)"}
-              _hover={{borderColor: "var(--color-grey)"}}
-              _focus={{borderColor: "brand.100", borderWidth: "2px"}}
-            />
+            <Tooltip hasArrow label="Sorry. This feature is not yet available." bg={`var(--color-very-light-grey)`} color={`--color-black`} borderRadius="4px" fontFamily="Raleway">
+              <InputGroup>
+                <Input
+                  name="twitterURL"
+                  onChange={handleChange}
+                  placeholder="www.twitter.com/yourpage"
+                  fontFamily="Raleway"
+                  borderWidth="2px"
+                  borderColor={"var(--color-light-grey)"}
+                  _hover={{borderColor: "var(--color-grey)"}}
+                  _focus={{borderColor: "brand.100", borderWidth: "2px"}}
+                  isDisabled={true}
+                />
+              </InputGroup>
+            </Tooltip>
           </div>
         </div>
       </div>
       <HR />
       <div style={{margin: "60px 0px"}} className={styles.bottomButtons} >
-        <Button size="small" type="submit" color="brand-default" variant="outline" onClick={handleCancel} block>Cancel</Button>
-        <Button size="small" type="submit" color="brand-default" onClick={handleSubmit} block>Save</Button>
+        <CancelAlertDialog />
+        <SaveAlertDialog />
       </div>
     </div>
   );

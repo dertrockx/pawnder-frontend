@@ -149,7 +149,7 @@ const ShowStoryList = () => {
                 </>
               }
             </Route>
-            <Route exact path='/stories/:id' render={() => <StoryDetails data={ storiesCopy } />}/> {/* Might not pass data anymore since magre-refetch naman doon sa details page */}
+            <Route exact path='/stories/:id' render={() => <StoryDetails data={ storiesCopy } />}/>
           </Switch>
         </Router>
         </>

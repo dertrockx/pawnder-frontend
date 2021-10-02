@@ -32,15 +32,18 @@ const UserOnboarding = () => {
   
   const current = new Date().toISOString().split("T")[0];
 
-  const [imagePreview, setImagePreview] = useState(`${noPhoto}`);
+  // Might remove these two states as I don't use their values.
   const [imagePreviewError, setImagePreviewError] = useState(false);
   const [locationError, setLocationError] = useState(false);
+  
+  const [preferredAnimalsArr, setPreferredAnimalsArr] = useState([]); // user model only allows string, but will be disabling this since checkbox isn't used
+  
+  const [imagePreview, setImagePreview] = useState(`${noPhoto}`);
   const [step, setStep] = useState(1);
   const [isDisabled, setIsDisabled] = useState(false); // set to false when testing and comment out useEffect
   const [distance, setDistance] = useState(''); // for Chakra-UI NumberInput
-  const [preferredAnimalsArr, setPreferredAnimalsArr] = useState([]); // user model only allows string
   const [values, setValues] = useState({
-    photo: '',
+    avatarPhoto: '',
     firstName: '',
     middleName: '',
     lastName: '',
@@ -61,7 +64,7 @@ const UserOnboarding = () => {
   //   // If step 3, check preferred animals and distance
 
   //   if (step === 1) {
-  //     if (values.photo !== '' && values.firstName !== '' && values.lastName !== '' && values.birthDate !== '' && values.sex !== '' && values.contactNumber !== '' && values.contactNumber.match(/^\d{10}$/) && values.locationLat !== '' && values.locationLong !== '') {
+  //     if (values.avatarPhoto !== '' && values.firstName !== '' && values.lastName !== '' && values.birthDate !== '' && values.sex !== '' && values.contactNumber !== '' && values.contactNumber.match(/^\d{10}$/) && values.locationLat !== '' && values.locationLong !== '') {
   //       setIsDisabled(false);
   //     } else {
   //       setIsDisabled(true);
@@ -176,7 +179,7 @@ const handleImageChange = (e) => {
     }
     setValues({
       ...values,
-      photo: selected
+      avatarPhoto: selected
     });
     reader.readAsDataURL(selected);
     setImagePreviewError(false);
@@ -258,50 +261,41 @@ const handleImageChange = (e) => {
     e.preventDefault(); 
     // This is where to put the axios thingy with multipart/form-data put request
 
-    // const formData = new FormData();
+    const formData = new FormData();
+
     // for (const key in values) {
     //   formData.append(`${key}`, values[key])
     //   console.log(`${key}: ${values[key]}`)
     // }
-    // formData.append('firstName', values.firstName);
-    // formData.append('middleName', values.middleName);
-    // formData.append('lastName', values.lastName);
-    // formData.append('lastName', values.lastName);
-    // formData.append('birthDate', values.birthDate);
-    // formData.append('sex', values.sex);
-    // formData.append('contactNumber', values.contactNumber);
-    // formData.append('locationLat', values.locationLat);
-    // formData.append('locationLong', values.locationLong);
-    // formData.append('action', values.action);
-    // formData.append('preferredAnimal', values.preferredAnimal);
-    // formData.append('preferredDistance', values.preferredDistance);
 
-    axios.put('http://localhost:8081/api/0.1/user/' + id, values, {
-      headers: {
-        "Content-Type": "application/json"
-      }
-    })
+    formData.append('avatarPhoto', values.avatarPhoto);
+    formData.append('firstName', values.firstName);
+    formData.append('middleName', values.middleName);
+    formData.append('lastName', values.lastName);
+    formData.append('birthDate', values.birthDate);
+    formData.append('sex', values.sex);
+    formData.append('contactNumber', values.contactNumber);
+    formData.append('locationLat', values.locationLat);
+    formData.append('locationLong', values.locationLong);
+    formData.append('action', values.action);
+    formData.append('preferredAnimal', values.preferredAnimal);
+    formData.append('preferredDistance', values.preferredDistance);
+
+    axios.put('http://localhost:8081/api/0.1/user/' + id, formData)
     .then(res => {
       console.log(res);
-
-      // Redirect to feed after onboarding, put inside .then when successful
-      // history.push('/feed');
     })
     .catch(err => {
       console.log(err);
     })
 
-    // axios.get('http://localhost:8081/api/0.1/user/' + id, {
-    //   headers: {
-    //     "Content-Type": "multipart/form-data"
-    //   }
-    // })
-    // .then(res => {
-    //   console.log(res);
+    //   // Redirect to feed after onboarding, put inside .then when successful
+    //   // history.push('/feed');
     // })
     // .catch(err => {
     //   console.log(err);
     // })
+
 
     // console.log("values", values);
   }
