@@ -92,7 +92,13 @@ function ManageStoryDetails({ data }) {
     //post request has isDraft set to true
     const handlePublish = () => {
         if (storyInfo.title === '' || storyInfo.body === '' || storyInfo.headlinePhoto === '' || (storyInfo.tags).length === 0) {
-            alert("All fields are required");
+            toast({
+                title: 'All fields are required',
+                status: 'error',
+                position: 'top',
+                duration: 5000,
+                isClosable: true,
+            });
         }
         else {
             putRequestPublish();
@@ -127,7 +133,13 @@ function ManageStoryDetails({ data }) {
     //working 
     const handleDraft = (e) => {
         if (storyInfo.title === '' || storyInfo.body === '' || storyInfo.headlinePhoto === '' || (storyInfo.tags).length === 0) {
-            alert("All fields are required");
+            toast({
+                title: 'All fields are required',
+                status: 'error',
+                position: 'top',
+                duration: 5000,
+                isClosable: true,
+            });
         }
         else {
             //post request if story is newly created
