@@ -3,7 +3,7 @@ import { auth } from "constants/ActionTypes";
 import { model } from "constants/EntityType";
 import history from "utils/history";
 
-export const login = (email, password) => {
+export const login = (email, password, type = model.INSTITUTION) => {
 	return async (dispatch) => {
 		dispatch({
 			type: auth.LOGIN_PENDING,
@@ -12,7 +12,7 @@ export const login = (email, password) => {
 			const res = await axios.post("/api/0.1/auth/login", {
 				email,
 				password,
-				type: model.INSTITUTION,
+				type,
 			});
 			console.log(res.data);
 			dispatch({
