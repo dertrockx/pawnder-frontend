@@ -1,10 +1,13 @@
 import { useState, useEffect } from "react";
+import { useHistory } from "react-router";
 
 const useSignUp = (callback, validate) => {
+	const history = useHistory();
 	const [values, setValues] = useState({
 		email: "",
 		password: "",
 		password2: "",
+		emailExists: "",
 	});
 	const [errors, setErrors] = useState({});
 	const [isSubmitting, setIsSubmitting] = useState(false);
@@ -25,11 +28,36 @@ const useSignUp = (callback, validate) => {
 	};
 
 	useEffect(() => {
-		if (Object.keys(errors).length === 0 && isSubmitting) {
+		if (!errors.email && !errors.password && !errors.password2 && isSubmitting) {
 			callback();
-			console.log(values);
+			fetch(
+				"http://localhost:8081/api/0.1/user",
+				{
+					method: "POST",
+					headers: {
+						"Content-Type": "application/json"
+					},
+					body: JSON.stringify({
+						email: values.email,
+						password: values.password
+					})
+				})
+				.then(response => {
+					if(response.status === 201) {
+						//redirect 
+						history.replace("/institution/login");
+					}
+					return response.json()
+				})
+				.then(data => {
+					if (data.code) {
+						//say that email already exists 
+						setErrors(validate(values));
+						console.clear();
+						setIsSubmitting(false);
+					}
+				})
 		}
-		// eslint-disable-next-line
 	}, [errors]);
 
 	return { handleChange, handleSubmit, values, errors };

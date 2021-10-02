@@ -82,6 +82,11 @@
     width: 80%;
 }
 
+.formInputs2 {
+    margin-bottom: 5px;
+    width: 80%;
+}
+
 .formInput {
     outline-color: var(--color-black);
     display: block;

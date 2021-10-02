@@ -43,9 +43,14 @@ const FormSignup = ({ submitForm }) => {
 								{errors.email}
 							</span>
 						)}
+						{errors.emailExist && !errors.email && (
+							<span className="bold-text" id={styles.error}>
+								{errors.emailExist}
+							</span>
+						)}
 					</label>
 					<input
-						className={errors.email ? styles.formInputError : styles.formInput}
+						className={errors.email || errors.emailExist ? styles.formInputError : styles.formInput}
 						type="email"
 						name="email"
 						placeholder="Enter your email"
@@ -53,7 +58,7 @@ const FormSignup = ({ submitForm }) => {
 						onChange={handleChange}
 					/>
 				</div>
-				<div className={styles.formInputs}>
+				<div className={styles.formInputs2}>
 					<label className="paragraph">
 						Password
 						{errors.password && (
