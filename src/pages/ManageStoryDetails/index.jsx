@@ -1,26 +1,24 @@
 import React, {useState, useEffect} from "react";
 import styles from "./manageStoryDetails.module.css";
 import uploadPhoto from "assets/uploadPhoto.svg";
-import { Textarea, Input, Button, useDisclosure, useToast} from "@chakra-ui/react";
+import { Textarea, Input, Button, useDisclosure, useToast, Spinner} from "@chakra-ui/react";
 import { useParams } from 'react-router-dom';
 import axios from 'axios';
-import { useSelector, useDispatch } from 'react-redux';
-import { fetchStories } from 'redux/actions/storyActions';
+import LoadingPage from "pages/LoadingPage";
 import {Modal,ModalOverlay, ModalContent, ModalHeader, ModalFooter, ModalBody, ModalCloseButton} from "@chakra-ui/react";
 
 function ManageStoryDetails({ data }) {
     const { id } = useParams(); 
     const toast = useToast();
-    const loginType = 'institution';
     const institutionID = 1;
-    const stories = useSelector(s => s.story.stories);
-    const [hasImg, setHasImg] = useState(true);
+    const [isNew, setIsNew] = useState(true);
+    const [hasImg, setHasImg] = useState(false);
     const { isOpen: isCancelOpen, onOpen: onCancelOpen, onClose: onCancelClose } = useDisclosure();
     const { isOpen: isDraftOpen, onOpen: onDraftOpen, onClose: onDraftClose } = useDisclosure();
     const { isOpen: isPublishOpen, onOpen: onPublishOpen, onClose: onPublishClose } = useDisclosure();
+    const { isOpen: isNoPublishOpen, onOpen: onNoPublishOpen, onClose: onNoPublishClose } = useDisclosure();
     const [success, setSuccess] = useState(true);
-    const [storyId, setStoryId] = useState(0);
-    const dispatch = useDispatch();
+    const [loading, setLoading] = useState(false);
     const [storyInfo, setStoryInfo] = useState({
         title: '',
         body: '',
@@ -29,7 +27,6 @@ function ManageStoryDetails({ data }) {
         tags: []
     })
     const [picture, setPicture] = useState(uploadPhoto);
-    let storyDetail = stories;
 
     useEffect(() => {
         if (data) {
@@ -38,19 +35,29 @@ function ManageStoryDetails({ data }) {
                     ...storyInfo, 
                     title: story.title,      
                     tags: story.tags, 
-                    headlinePhoto: story.headlinePhoto, 
+                    headlinePhoto: story.headlineUrl, 
                     body: story.body
                 })
-                setPicture(story.headlinePhoto);
+                setPicture(story.headlineUrl);
             });
             if (storyInfo.headlinePhoto === '') {
                 setStoryInfo({
                     headlinePhoto: {uploadPhoto} 
                 })
                 setPicture(uploadPhoto);
+                setHasImg(false);
+            } else {
+                setHasImg(true);
             }
         }
+        if (id === undefined) {
+            setIsNew(true); 
+        } 
+        else {
+            setIsNew(false);
+        }
     }, []);
+
 
     const handleChange = (e) => {
 		setStoryInfo({
@@ -62,22 +69,6 @@ function ManageStoryDetails({ data }) {
     const movePages = (e) => {
         window.location = "/institution/manage-stories";     //go back to manage story list
     } 
-
-    const postRequest = () => {
-        let fd = new FormData(); 
-        fd.append('title', storyInfo.title);
-        fd.append('body', storyInfo.body);
-        fd.append('headlinePhoto', storyInfo.headlinePhoto);
-        fd.append('tags', storyInfo.tags);
-        fd.append('institutionId', institutionID);
-        axios.post('http://localhost:8081/api/0.1/story/', fd)
-        .then(() => {
-            setSuccess(true);
-        })
-        .catch(() => {
-            setSuccess(false);
-        })
-    }
 
     const putRequestPublish = () => {
         let fd = new FormData(); 
@@ -93,21 +84,14 @@ function ManageStoryDetails({ data }) {
         })
     }
 
-    const putRequestUpdate = () => {
-        let fd = new FormData(); 
-        fd.append('title', storyInfo.title);
-        fd.append('body', storyInfo.body);
-        fd.append('headlinePhoto', storyInfo.headlinePhoto);
-        axios.put('http://localhost:8081/api/0.1/story/' + id, fd)
-        .then(() => {
-            setSuccess(true);
-        })
-        .catch(() => {
-            setSuccess(false);
-        })
-    }
-
+    //cant publish directly (needs to be saved as draft first before publishing)
+    //put request needs id (newly created story does not have an id)
+    //post request has isDraft set to true
     const handlePublish = () => {
+        if (storyInfo.title === '' || storyInfo.body === '' || storyInfo.headlinePhoto === '' || (storyInfo.tags).length === 0) {
+            alert("All fields are required");
+        }
+        else {
             putRequestPublish();
             if (success === true) {
                 toast({
@@ -129,56 +113,87 @@ function ManageStoryDetails({ data }) {
                     isClosable: true,
                 });
             }
-        //}
+        }
     }
 
+    const sendingDraft = () => {
+        onDraftClose(); 
+        handleDraft();
+    }
+
+    //working 
     const handleDraft = (e) => {
-        //post request if story is newly created
-        if (id === undefined) {         //params is '/create/' and not '/id'
-            postRequest()               
-            if (success === true) {
-                toast({
-                    title: 'Successfully saved story as draft.',
-                    status: 'success',
-                    position: 'top',
-                    duration: 5000,
-                    isClosable: true,
-                });
-                movePages();
-            } 
-            else {
-                toast({
-                    title: 'Error saving story as draft.',
-                    description: 'Something went wrong. Please try again later.',
-                    status: 'error',
-                    position: 'top',
-                    duration: 5000,
-                    isClosable: true,
-                });
-            }
+        if (storyInfo.title === '' || storyInfo.body === '' || storyInfo.headlinePhoto === '' || (storyInfo.tags).length === 0) {
+            alert("All fields are required");
         }
-        //put request if story is not newly created
         else {
-            putRequestUpdate()
-            if (success === true) {
-                toast({
-                    title: 'Successfully saved story as draft.',
-                    status: 'success',
-                    position: 'top',
-                    duration: 5000,
-                    isClosable: true,
-                });
-                movePages();
+            //post request if story is newly created
+            if (id === undefined) {         //params is '/create/' and not '/id'
+                setLoading(true);
+                let fd = new FormData(); 
+                fd.append('title', storyInfo.title);
+                fd.append('body', storyInfo.body);
+                fd.append('headlinePhoto', storyInfo.headlinePhoto);
+                fd.append('tags', storyInfo.tags);
+                fd.append('institutionId', institutionID);
+                axios.post('http://localhost:8081/api/0.1/story/', fd)
+                .then(() => {           
+                    setLoading(false); 
+                    toast({
+                        title: 'Successfully saved story as draft. Redirecting to show list page please wait.',
+                        status: 'success',
+                        position: 'top',
+                        duration: 5000,
+                        isClosable: true,
+                    });
+                    setTimeout(function() {
+                        movePages();
+                    }, 1000);
+                })
+                .catch(() => {
+                    toast({
+                        title: 'Error saving story as draft.',
+                        description: 'Something went wrong. Please try again later.',
+                        status: 'error',
+                        position: 'top',
+                        duration: 5000,
+                        isClosable: true,
+                    });
+                    setLoading(false);
+                })               
             }
+            //put request if story is not newly created
             else {
-                toast({
-                    title: 'Error saving story as draft.',
-                    description: 'Something went wrong. Please try again later.',
-                    status: 'error',
-                    position: 'top',
-                    duration: 5000,
-                    isClosable: true,
-                });
+                setLoading(true);
+                let fd = new FormData(); 
+                fd.append('title', storyInfo.title);
+                fd.append('body', storyInfo.body);
+                fd.append('headlinePhoto', storyInfo.headlinePhoto);
+                axios.put('http://localhost:8081/api/0.1/story/' + id, fd)
+                .then(() => {
+                    setLoading(false); 
+                    toast({
+                        title: 'Successfully saved story as draft. Redirecting to show list page please wait.',
+                        status: 'success',
+                        position: 'top',
+                        duration: 5000,
+                        isClosable: true,
+                    });
+                    setTimeout(function() {
+                        movePages();
+                    }, 1000);
+                })
+                .catch(() => {
+                    toast({
+                        title: 'Error saving story as draft.',
+                        description: 'Something went wrong. Please try again later.',
+                        status: 'error',
+                        position: 'top',
+                        duration: 5000,
+                        isClosable: true,
+                    });
+                    setLoading(false);
+                })
             }
         }
     }
@@ -195,7 +210,7 @@ function ManageStoryDetails({ data }) {
                 ...storyInfo,
                 headlinePhoto: selected
             });
-            console.log(storyInfo.headlinePhoto);
+            setHasImg(true);
             reader.readAsDataURL(selected);
         } else {  
             if (selected === undefined) {
@@ -213,148 +228,166 @@ function ManageStoryDetails({ data }) {
         <>
             {
                 <form onSubmit = {handleDraft} className = {styles.form}>
-                    <div className = {styles.container}>
-                        <h3 className = 'heading-3' id = {styles.headings}>
-                            Title
-                        </h3>
-                        <Input
-                            name = "title"
-                            value = {storyInfo.title}
-                            onChange = {handleChange}
-                            placeholder = "Enter title here!"
-                            focusBorderColor = "black"
-                            background = "white"
-                        />
-                        <h3 className = 'heading-3' id = {styles.headings}>
-                            Tags
-                        </h3>
-                        <Input
-                            name = "tags"
-                            value = {storyInfo.tags}
-                            onChange= {handleChange}
-                            placeholder="Put tags here! (dogs, cats, flowers, etc.)"
-                            focusBorderColor = "black"
-                            background = "white"
-                        />
-                        <h3 className = 'heading-3' id = {styles.headings}>
-                            Display Picture
-                        </h3>
-                        <div className = {styles.uploadPicture}>
-                            <img src={picture} alt = '' className = {styles.img} />
-                            <label htmlFor = "files" className = {styles.uploadLabel}>Upload Photo</label>
-                            <input name = "headlinePhoto" id = "files" type="file" accept=".jpg, .jpeg, .png" className = {styles.visuallyHidden} onChange={onChangePicture} />
-                            {hasImg ? 
-                                (<Button
-                                    variant = "outline"
-                                    className = {styles.removePhoto}
-                                    colorScheme = "orange"
-                                    onClick = {removePicture} 
-                                >
-                                    Remove Photo
-                                </Button>
-                                ) : (
+                    {loading ? 
+                    <LoadingPage />
+                    :
+                        <div className = {styles.container}>
+                            <h3 className = 'heading-3' id = {styles.headings}>
+                                Title
+                            </h3>
+                            <Input
+                                name = "title"
+                                value = {storyInfo.title}
+                                onChange = {handleChange}
+                                placeholder = "Enter title here!"
+                                focusBorderColor = "black"
+                                background = "white"
+                            />
+                            <h3 className = 'heading-3' id = {styles.headings}>
+                                Tags
+                            </h3>
+                            <Input
+                                name = "tags"
+                                value = {storyInfo.tags}
+                                onChange= {handleChange}
+                                placeholder="Put tags here! (dogs, cats, flowers, etc.)"
+                                focusBorderColor = "black"
+                                background = "white"
+                            />
+                            <h3 className = 'heading-3' id = {styles.headings}>
+                                Display Picture
+                            </h3>
+                            <div className = {styles.uploadPicture}>
+                                <img src = {picture} alt = '' className = {styles.img} />
+                                <label htmlFor = "files" className = {styles.uploadLabel}>Upload Photo</label>
+                                <input name = "headlinePhoto" id = "files" type="file" accept=".jpg, .jpeg, .png" className = {styles.visuallyHidden} onChange={onChangePicture} />
+                                {hasImg ? 
+                                    (<Button
+                                        variant = "outline"
+                                        className = {styles.removePhoto}
+                                        colorScheme = "orange"
+                                        onClick = {removePicture} 
+                                    >
+                                        Remove Photo
+                                    </Button>
+                                    ) : (
+                                    <Button
+                                        variant = "outline"
+                                        className = {styles.removePhoto}
+                                        colorScheme = "orange"
+                                        onClick = {removePicture}
+                                        isDisabled = {true}
+                                    >
+                                        Remove Photo
+                                    </Button>)
+                                }
+                            </div>
+                            <h3 className = 'heading-3' id = {styles.headings}>
+                                Description
+                            </h3>
+                            <Textarea
+                                name = "body"
+                                placeholder = "Tell your success story here!"
+                                size = "lg"
+                                focusBorderColor = "black"
+                                resize= "none"
+                                background = "white"
+                                height = "400px"
+                                value = {storyInfo.body}
+                                onChange = {handleChange}
+                            />
+                            <div className = {styles.buttons}>
                                 <Button
-                                    variant = "outline"
-                                    className = {styles.removePhoto}
-                                    colorScheme = "orange"
-                                    onClick = {removePicture}
-                                    isDisabled = {true}
+                                    variant = "solid"
+                                    colorScheme = "red"
+                                    className = {styles.buttonOptions}
+                                    onClick = {onCancelOpen}
                                 >
-                                    Remove Photo
-                                </Button>)
-                            }
-                        </div>
-                        <h3 className = 'heading-3' id = {styles.headings}>
-                            Description
-                        </h3>
-                        <Textarea
-                            name = "body"
-                            placeholder = "Tell your success story here!"
-                            size = "lg"
-                            focusBorderColor = "black"
-                            resize= "none"
-                            background = "white"
-                            height = "400px"
-                            value = {storyInfo.body}
-                            onChange = {handleChange}
-                        />
-                        <div className = {styles.buttons}>
-                            <Button
-                                variant = "solid"
-                                colorScheme = "red"
-                                className = {styles.buttonOptions}
-                                onClick = {onCancelOpen}
-                            >
-                                Cancel
-                            </Button>
+                                    Cancel
+                                </Button>
 
-                            <Modal onClose={onCancelClose} isOpen={isCancelOpen} isCentered>
-                                <ModalOverlay />
-                                <ModalContent>
-                                <ModalHeader>Cancel Story</ModalHeader>
-                                <ModalCloseButton />
-                                <ModalBody>
-                                    <p className = "paragraph">Are you sure you want to cancel?</p>
-                                </ModalBody>
-                                <ModalFooter>
-                                    <Button onClick={onCancelClose} mr = {3}>Continue Editing</Button>
-                                    <Button colorScheme = "red" onClick={movePages}>Cancel Story</Button>
-                                </ModalFooter>
-                                </ModalContent>
-                            </Modal>
-
-                            <Button
-                                variant = "solid"
-                                colorScheme = "yellow"
-                                color = "white"
-                                className = {styles.buttonOptions}
-                                onClick = {onDraftOpen}
-                            >
-                                Save as Draft
-                            </Button>
-
-                            <Modal onClose={onDraftClose} isOpen={isDraftOpen} isCentered>
-                                <ModalOverlay />
-                                <ModalContent>
-                                <ModalHeader>Save Story as Draft</ModalHeader>
-                                <ModalCloseButton />
-                                <ModalBody>
-                                    <p className = "paragraph">Are you sure you want to save your story as draft?</p>
-                                </ModalBody>
-                                <ModalFooter>
-                                    <Button colorScheme = "red" mr = {3} onClick={onDraftClose}>Cancel</Button>
-                                    <Button colorScheme = "yellow" color = "white" onClick={handleDraft}>Save as Draft</Button>
-                                </ModalFooter>
-                                </ModalContent>
-                            </Modal>
+                                <Modal onClose={onCancelClose} isOpen={isCancelOpen} isCentered>
+                                    <ModalOverlay />
+                                    <ModalContent>
+                                    <ModalHeader>Cancel Story</ModalHeader>
+                                    <ModalCloseButton />
+                                    <ModalBody>
+                                        <p className = "paragraph">Are you sure you want to cancel?</p>
+                                    </ModalBody>
+                                    <ModalFooter>
+                                        <Button onClick={onCancelClose} mr = {3}>Continue Editing</Button>
+                                        <Button colorScheme = "red" onClick={movePages}>Cancel Story</Button>
+                                    </ModalFooter>
+                                    </ModalContent>
+                                </Modal>
 
                                 <Button
                                     variant = "solid"
-                                    colorScheme = "green"
+                                    colorScheme = "yellow"
+                                    color = "white"
                                     className = {styles.buttonOptions}
-                                    onClick = {onPublishOpen}
+                                    onClick = {onDraftOpen}
                                 >
-                                    Publish 
+                                    Save
                                 </Button>
 
+                                <Modal onClose={onDraftClose} isOpen={isDraftOpen} isCentered>
+                                    <ModalOverlay />
+                                    <ModalContent>
+                                    <ModalHeader>Save Story as Draft</ModalHeader>
+                                    <ModalCloseButton />
+                                    <ModalBody>
+                                        <p className = "paragraph">Are you sure you want to save your story as draft?</p>
+                                    </ModalBody>
+                                    <ModalFooter>
+                                        <Button colorScheme = "red" mr = {3} onClick={onDraftClose}>Cancel</Button>
+                                        <Button colorScheme = "yellow" color = "white" onClick={sendingDraft}>Save as Draft</Button>
+                                    </ModalFooter>
+                                    </ModalContent>
+                                </Modal>
+                                <Button
+                                        variant = "solid"
+                                        colorScheme = "green"
+                                        className = {styles.buttonOptions}
+                                        onClick = {isNew ? onNoPublishOpen : onPublishOpen}
+                                    >
+                                        Publish 
+                                    </Button>
+
+                                <Modal onClose={onNoPublishClose} isOpen={isNoPublishOpen} isCentered>
+                                    <ModalOverlay />
+                                    <ModalContent>
+                                    <ModalHeader>Story must be saved first</ModalHeader>
+                                    <ModalCloseButton />
+                                    <ModalBody>
+                                        <p className = "paragraph">You must save the story first before publishing it.</p>
+                                    </ModalBody>
+                                    <ModalFooter>
+                                        <Button colorScheme = "yellow" color = "white" onClick={onNoPublishClose}>Okay</Button>
+                                    </ModalFooter>
+                                    </ModalContent>
+                                </Modal>
+
+
                                 <Modal onClose={onPublishClose} isOpen={isPublishOpen} isCentered>
-                                <ModalOverlay />
-                                <ModalContent>
-                                <ModalHeader>Save Story as Draft</ModalHeader>
-                                <ModalCloseButton />
-                                <ModalBody>
-                                    <p className = "paragraph">You are about to publish a post.</p>
-                                    <br />
-                                    <p className = "paragraph">This will allow users to read your story. You can still edit your post after this. Are you sure?</p>
-                                </ModalBody>
-                                <ModalFooter>
-                                    <Button colorScheme = "red" mr = {3} onClick={onPublishClose}>Cancel</Button>
-                                    <Button colorScheme = "green" type = "submit" onClick={handlePublish}>Publish</Button>
-                                </ModalFooter>
-                                </ModalContent>
-                            </Modal>
+                                    <ModalOverlay />
+                                    <ModalContent>
+                                    <ModalHeader>Publish Story</ModalHeader>
+                                    <ModalCloseButton />
+                                    <ModalBody>
+                                        <p className = "paragraph">You are about to publish a post.</p>
+                                        <br />
+                                        <p className = "paragraph">This will allow users to read your story. Besides the tags, you can still edit your post after this. Are you sure?</p>
+                                    </ModalBody>
+                                    <ModalFooter>
+                                        <Button colorScheme = "red" mr = {3} onClick={onPublishClose}>Cancel</Button>
+                                        <Button colorScheme = "green" type = "submit" onClick={handlePublish}>Publish</Button>
+                                    </ModalFooter>
+                                    </ModalContent>
+                                </Modal>
+                            </div>
                         </div>
-                    </div>
+                    }
                 </form>
             }
         </>
