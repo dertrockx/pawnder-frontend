@@ -14,11 +14,10 @@ export const login = (email, password) => {
 				password,
 				type: model.INSTITUTION,
 			});
-			const data = res.data;
-
+			console.log(res.data);
 			dispatch({
 				type: auth.LOGIN_COMPLETED,
-				payload: data,
+				payload: res.data,
 			});
 			history.push("/feed");
 		} catch (err) {
@@ -32,8 +31,30 @@ export const login = (email, password) => {
 };
 
 export const logout = () => {
-	return (dispatch) => {
-		dispatch({ type: auth.LOGOUT });
-		history.push("/");
+	return async (dispatch) => {
+		try {
+			await axios.post("/api/0.1/auth/logout", { credentials: "include" });
+			dispatch({ type: auth.LOGOUT });
+		} catch (error) {
+			console.log(error);
+		}
+		history.push("/login");
+	};
+};
+
+export const silentRefresh = () => {
+	// console.log("Calling silent refresh")
+	return async (dispatch) => {
+		try {
+			const res = await axios.get("/api/0.1/auth/refresh_token");
+			const { model, type, token, token_expiry } = res.data;
+			dispatch({
+				type: auth.LOGIN_COMPLETED,
+				payload: { model, type, token: { auth: token }, token_expiry },
+			});
+		} catch (err) {
+			console.log(err);
+			dispatch(logout());
+		}
 	};
 };

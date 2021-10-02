@@ -1,14 +1,22 @@
-import React, { useState } from "react";
-import { Input, Select, Textarea } from "@chakra-ui/react";
+import React, { useEffect, useState } from "react";
+import { useSelector, useDispatch } from "react-redux";
+import { Input, Select, Textarea, Spinner } from "@chakra-ui/react";
 import Button from "components/Button";
 import HR from "components/HR";
 import styles from "./Profile.module.css";
+import {
+	updatePet,
+	updatePhoto,
+	createPhoto,
+	deletePhoto,
+} from "redux/actions/petActions";
+import EditableImage, { ImagePlaceholder } from "components/EditableImage";
 
 function Profile() {
-	function handleSave() {
-		alert("Saving");
-	}
-
+	const { fetching, petId, pets, updating } = useSelector((s) => s.pet);
+	const dispatch = useDispatch();
+	const [mainPhoto, setMainPhoto] = useState(null);
+	const [otherPhotos, setOtherPhotos] = useState([null, null, null, null]);
 	const [info, setInfo] = useState({
 		name: "",
 		breed: "",
@@ -16,16 +24,75 @@ function Profile() {
 		sex: "",
 		weight: "",
 		height: "",
-		ageY: "",
-		ageM: "",
+		age: "",
 		medicalHistory: "",
 		otherInfo: "",
 		action: "",
 	});
 
+	useEffect(() => {
+		if (pets && petId) {
+			console.log("setting info");
+			const pet = pets[petId];
+			setInfo({
+				...pet,
+			});
+			const { photos } = pet;
+			// separate main photo from other photo
+			let mainPhoto = null;
+			let otherPhotos = [];
+			photos.forEach((photo) => {
+				if (photo.type !== "main") otherPhotos.push(photo);
+				else mainPhoto = photo;
+			});
+			if (otherPhotos.length <= 4) {
+				// append blank stuff
+				otherPhotos = [
+					...otherPhotos,
+					...Array(4 - otherPhotos.length).fill(null),
+				];
+			}
+			setMainPhoto(mainPhoto);
+			setOtherPhotos(otherPhotos);
+		}
+
+		// eslint-disable-next-line
+	}, [pets, petId]);
+
 	function handleChange(e) {
 		setInfo({ ...info, [e.target.name]: e.target.value });
 	}
+
+	function handleSave() {
+		dispatch(updatePet(petId, info));
+	}
+
+	function handleUpload(photoId, formData) {
+		dispatch(updatePhoto(photoId, formData));
+	}
+
+	function handleNewUpload(formData) {
+		dispatch(createPhoto(formData));
+	}
+
+	function handleDelete(photoId) {
+		dispatch(deletePhoto(photoId));
+	}
+
+	if (fetching || !petId) return <Spinner />;
+
+	const {
+		name,
+		breed,
+		animalType,
+		sex,
+		height,
+		weight,
+		age,
+		medicalHistory,
+		otherInfo,
+		action,
+	} = info;
 
 	return (
 		<div>
@@ -42,19 +109,18 @@ function Profile() {
 					margin: "30px 0",
 				}}
 			>
-				<img
-					src="https://picsum.photos/481/245"
-					style={{ objectFit: "cover", width: 481, height: 245 }}
-					alt=""
-				/>
-				<div style={{ display: "flex", flexDirection: "column", gap: 15 }}>
-					<Button size="small" color="brand-default">
-						Change Picture
-					</Button>
-					<Button size="small" color="brand-default" variant="outline">
-						Remove Picture
-					</Button>
-				</div>
+				{mainPhoto && (
+					<EditableImage
+						photo={mainPhoto}
+						loading={updating}
+						handleUpdate={handleUpload}
+						handleDelete={handleDelete}
+						noDelete
+					/>
+				)}
+				<p className="caption">
+					*Hover on the picture and click the button to edit it*
+				</p>
 			</div>
 			<h3 className="heading-3">Other Pictures</h3>
 			<div className={styles.halfField}>
@@ -63,7 +129,24 @@ function Profile() {
 					pictures.
 				</p>
 				<div className={styles.pictures}>
-					<img
+					{otherPhotos.map((otherPhoto, idx) => (
+						<React.Fragment key={idx}>
+							{otherPhoto ? (
+								<EditableImage
+									photo={otherPhoto}
+									loading={updating}
+									handleUpdate={handleUpload}
+									handleDelete={handleDelete}
+								/>
+							) : (
+								<ImagePlaceholder
+									handleUpload={handleNewUpload}
+									loading={updating}
+								/>
+							)}
+						</React.Fragment>
+					))}
+					{/* <img
 						src="https://picsum.photos/229/201"
 						style={{ objectFit: "cover", width: 229, height: 201 }}
 						alt=""
@@ -82,7 +165,7 @@ function Profile() {
 						src="https://picsum.photos/229/201"
 						style={{ objectFit: "cover", width: 229, height: 201 }}
 						alt=""
-					/>
+					/> */}
 				</div>
 			</div>
 			<HR />
@@ -103,6 +186,8 @@ function Profile() {
 									focusBorderColor="brand.100"
 									name="name"
 									onChange={handleChange}
+									value={name}
+									disabled={updating}
 								/>
 							</div>
 							<div className={styles.field}>
@@ -113,6 +198,8 @@ function Profile() {
 									focusBorderColor="brand.100"
 									name="breed"
 									onChange={handleChange}
+									value={breed}
+									disabled={updating}
 								/>
 							</div>
 							<div className={styles.field}>
@@ -122,6 +209,8 @@ function Profile() {
 									focusBorderColor="brand.100"
 									name="animalType"
 									onChange={handleChange}
+									value={animalType}
+									disabled={updating}
 								>
 									<option value="dogs">Dog</option>
 									<option value="cats">Cat</option>
@@ -142,6 +231,8 @@ function Profile() {
 									focusBorderColor="brand.100"
 									name="sex"
 									onChange={handleChange}
+									value={sex}
+									disabled={updating}
 								>
 									<option value="m">Male</option>
 									<option value="f">Female</option>
@@ -155,6 +246,8 @@ function Profile() {
 									focusBorderColor="brand.100"
 									name="weight"
 									onChange={handleChange}
+									value={weight}
+									disabled={updating}
 								/>
 							</div>
 							<div className={styles.field}>
@@ -165,26 +258,19 @@ function Profile() {
 									focusBorderColor="brand.100"
 									name="height"
 									onChange={handleChange}
+									value={height}
+									disabled={updating}
 								/>
 							</div>
 							<div className={styles.field}>
-								<p className="paragraph">Age (years)</p>
+								<p className="paragraph">Age (in months)</p>
 								<Input
 									type="text"
-									placeholder="I am a placeholder"
 									focusBorderColor="brand.100"
-									name="ageY"
+									name="age"
 									onChange={handleChange}
-								/>
-							</div>
-							<div className={styles.field}>
-								<p className="paragraph">Age (months)</p>
-								<Input
-									type="text"
-									placeholder="I am a placeholder"
-									focusBorderColor="brand.100"
-									name="ageM"
-									onChange={handleChange}
+									value={age}
+									disabled={updating}
 								/>
 							</div>
 						</div>
@@ -198,6 +284,8 @@ function Profile() {
 									rows={3}
 									name="medicalHistory"
 									onChange={handleChange}
+									value={medicalHistory}
+									disabled={updating}
 								/>
 							</div>
 							<div className={styles.field}>
@@ -209,6 +297,8 @@ function Profile() {
 									rows={3}
 									name="otherInfo"
 									onChange={handleChange}
+									value={otherInfo}
+									disabled={updating}
 								/>
 							</div>
 							<div className={styles.field}>
@@ -218,6 +308,8 @@ function Profile() {
 									focusBorderColor="brand.100"
 									name="action"
 									onChange={handleChange}
+									value={action}
+									disabled={updating}
 								>
 									<option value="adopt">Adoption</option>
 									<option value="foster">Foster</option>
@@ -227,7 +319,12 @@ function Profile() {
 					</div>
 				</div>
 			</div>
-			<Button block color="brand-default" onClick={handleSave}>
+			<Button
+				block
+				color="brand-default"
+				disabled={updating}
+				onClick={handleSave}
+			>
 				Save
 			</Button>
 		</div>

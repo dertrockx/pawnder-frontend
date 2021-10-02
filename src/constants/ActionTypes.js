@@ -7,3 +7,25 @@ export const auth = keyMirror({
 
 	LOGOUT: null,
 });
+
+export const pet = keyMirror({
+	FETCH_PENDING: null,
+	FETCH_ERROR: null,
+	FETCH_SUCCESS: null,
+	// set id to reference manage pet eme
+	SET_SINGLETON: null,
+
+	CREATE_PENDING: null,
+	CREATE_SUCCESS: null,
+	CREATE_ERROR: null,
+
+	UPDATE_PENDING: null,
+	UPDATE_SUCCESS: null,
+	UPDATE_ERROR: null,
+});
+
+export const photo = keyMirror({
+	UPDATE_PENDING: null,
+	UPDATE_SUCCESS: null,
+	UPDATE_ERROR: null,
+});

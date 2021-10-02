@@ -1,4 +1,5 @@
 import React, { useEffect } from "react";
+import { useDispatch } from "react-redux";
 import {
 	Switch,
 	Route,
@@ -10,7 +11,7 @@ import {
 import ApplicantsPage from "./Applicants";
 import ProfilePage from "./Profile";
 import styles from "./Details.module.css";
-
+import { getPet } from "redux/actions/petActions";
 // reference: https://github.com/remix-run/react-router/issues/5496#issuecomment-376499389
 const BetterSidebarLink = ({ children, ...linkProps }) => (
 	<Route
@@ -22,12 +23,13 @@ const BetterSidebarLink = ({ children, ...linkProps }) => (
 
 function Details() {
 	let { path, url } = useRouteMatch();
+	const dispatch = useDispatch();
 
 	const { petId } = useParams();
 	// fetch pet information here
 	useEffect(() => {
-		console.log(petId);
-		console.log(`path: ${path}\nurl: ${url}`);
+		dispatch(getPet(petId));
+
 		// eslint-disable-next-line
 	}, []);
 

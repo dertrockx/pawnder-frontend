@@ -1,0 +1,36 @@
+.imageContainer {
+	position: relative;
+}
+
+.customButton {
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	transform: translate(-50%, -50%);
+	z-index: 2;
+	opacity: 0;
+	transition: visibility 0s, opacity 0.3s linear;
+	display: flex;
+	gap: 10px;
+}
+
+.imageOverlay {
+	height: 100%;
+	width: 100%;
+	background: rgba(0, 0, 0, 0.8);
+	position: absolute;
+	z-index: 2;
+	visibility: hidden;
+	opacity: 0;
+	transition: visibility 0s, opacity 0.3s linear;
+}
+
+.imageContainer:hover .customButton {
+	visibility: visible;
+	opacity: 1;
+}
+
+.imageContainer:hover .imageOverlay {
+	visibility: visible;
+	opacity: 1;
+}

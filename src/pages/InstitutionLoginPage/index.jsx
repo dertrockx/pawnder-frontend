@@ -1,6 +1,6 @@
 import React from "react";
 import { Link } from "react-router-dom";
-import { useSelector, useDispatch } from "react-redux";
+import { useDispatch } from "react-redux";
 
 import FormLogin from "pages/InstitutionLoginPage/InstitutionLoginForm";
 import styles from "./LoginPage.module.css";
@@ -17,7 +17,6 @@ const InstitutionSignUpPage = () => {
 	const matches = useMediaQuery("(min-width: 800px)");
 
 	const dispatch = useDispatch();
-	const { loginPending } = useSelector((s) => s.auth);
 
 	function submitCb() {
 		const { email, password } = values;
@@ -30,7 +29,6 @@ const InstitutionSignUpPage = () => {
 
 	return (
 		<>
-			<h1 className="heading-1">{loginPending && `requesting...`}</h1>
 			{matches ? (
 				<div className={styles.formContainerBig}>
 					<FormLogin

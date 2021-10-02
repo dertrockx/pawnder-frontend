@@ -11,7 +11,7 @@ const INSTITUTION_ROOT = "/institution";
 function Navbar() {
 	const auth = useSelector((s) => s.auth);
 	const dispatch = useDispatch();
-	const { token, type } = auth;
+	const { token, loginType } = auth;
 
 	const logout = () => {
 		dispatch(onLogout());
@@ -37,13 +37,7 @@ function Navbar() {
 				>
 					Nearby Institutions
 				</NavLink>
-				<NavLink
-					className={`paragraph ${styles.navbarItem}`}
-					activeClassName="bold-text"
-					to="/stories"
-				>
-					Success Stories
-				</NavLink>
+
 				<NavLink
 					className={`paragraph ${styles.navbarItem}`}
 					activeClassName="bold-text"
@@ -98,22 +92,15 @@ function Navbar() {
 				</div>
 				<div className={styles.navbarRightItems}>
 					{token &&
-						(type === model.INSTITUTION
+						(loginType === model.INSTITUTION
 							? renderInstitutionItems()
 							: renderUserItems())}
 					<NavLink
 						className={`paragraph ${styles.navbarItem}`}
 						activeClassName="bold-text"
-						to="/sample"
+						to="/stories"
 					>
-						Sample
-					</NavLink>
-					<NavLink
-						className={`paragraph ${styles.navbarItem}`}
-						activeClassName="bold-text"
-						to="/chakra-sample"
-					>
-						Chakra Sample
+						Success Stories
 					</NavLink>
 					{token ? (
 						<Button
