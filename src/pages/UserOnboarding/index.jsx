@@ -16,8 +16,8 @@ import {
 
 import Button from 'components/Button';
 import BasicInputUser from 'components/BasicInputUser';
-import Checkbox from 'components/Checkbox';
 import Radio from 'components/Radio';
+// import Checkbox from 'components/Checkbox';
 
 import logo from 'assets/logo.svg';
 import dogAdopting from 'assets/dogAdopting.png';
@@ -35,15 +35,12 @@ const UserOnboarding = () => {
   
   const current = new Date().toISOString().split("T")[0];
 
-  // Might remove these two states as I don't use their values.
-  const [imagePreviewError, setImagePreviewError] = useState(false);
-  const [locationError, setLocationError] = useState(false);
-  
-  const [preferredAnimalsArr, setPreferredAnimalsArr] = useState([]); // user model only allows string, but will be disabling this since checkbox isn't used
+  // User model only allows string, but will be disabling this since checkbox component isn't used
+  // const [preferredAnimalsArr, setPreferredAnimalsArr] = useState([]);
   
   const [imagePreview, setImagePreview] = useState(`${noPhoto}`);
   const [step, setStep] = useState(1);
-  const [isDisabled, setIsDisabled] = useState(false); // set to false when testing and comment out useEffect
+  const [isDisabled, setIsDisabled] = useState(true); // set to false when testing and comment out useEffect
   const [distance, setDistance] = useState(''); // for Chakra-UI NumberInput
   const [values, setValues] = useState({
     avatarPhoto: '',
@@ -61,35 +58,32 @@ const UserOnboarding = () => {
   });
 
   // For disabling buttons
-  // useEffect(() => {
-  //   // If step 1, check photo, first and last names, bday, sex, number, and loc coordinates
-  //   // If step 2, check action
-  //   // If step 3, check preferred animals and distance
+  useEffect(() => {
+    // If step 1, check photo, first and last names, bday, sex, number, and loc coordinates
+    // If step 2, check action
+    // If step 3, check preferred animals and distance
 
-  //   if (step === 1) {
-  //     if (values.avatarPhoto !== '' && values.firstName !== '' && values.lastName !== '' && values.birthDate !== '' && values.sex !== '' && values.contactNumber !== '' && values.contactNumber.match(/^\d{10}$/) && values.locationLat !== '' && values.locationLong !== '') {
-  //       setIsDisabled(false);
-  //     } else {
-  //       setIsDisabled(true);
-  //     }
-  //     setImagePreviewError(false);
-  //     setLocationError(false);
-  //   } else if (step === 2) {
-  //     if (values.action !== '') {
-  //       setIsDisabled(false);
-  //     } else {
-  //       setIsDisabled(true);
-  //     }
-  //   } else if (step === 3) {
-  //     if (preferredAnimalsArr.length !== 0 && values.preferredDistance !== '') {
-  //       setIsDisabled(false);
-  //     } else {
-  //       setIsDisabled(true);
-  //     }
-  //   }
-  // }, [values, step]);
+    if (step === 1) {
+      if (values.avatarPhoto !== '' && values.firstName !== '' && values.lastName !== '' && values.birthDate !== '' && values.sex !== '' && values.contactNumber !== '' && values.contactNumber.match(/^\d{10}$/) && values.locationLat !== '' && values.locationLong !== '') {
+        setIsDisabled(false);
+      } else {
+        setIsDisabled(true);
+      }
+    } else if (step === 2) {
+      if (values.action !== '') {
+        setIsDisabled(false);
+      } else {
+        setIsDisabled(true);
+      }
+    } else if (step === 3) {
+      if (values.preferredAnimal !== '' && values.preferredDistance !== '') {
+        setIsDisabled(false);
+      } else {
+        setIsDisabled(true);
+      }
+    }
+  }, [values, step]);
 
-  // For checkboxes
   const animals = [
     { text: 'dogs', value: 'dogs' },
     { text: 'cats', value: 'cats' },
@@ -158,17 +152,12 @@ const handleImageChange = (e) => {
       avatarPhoto: selected
     });
     reader.readAsDataURL(selected);
-    setImagePreviewError(false);
   } else {
-    /** 
-     * Selecting a file and cancelling returns undefined to selected.
-     * So if you select a file and cancel, the imagePreviewError would be set to true.
-     * We don't want that so we check if selected === undefined. If it's true, then we don't give out any errors.
-     */       
+    // Selecting a file and cancelling returns undefined to selected.
+    // We don't want that so we check if selected === undefined. If it's true, then we don't give out any errors.
     if (selected === undefined) {
       return;
     }
-    setImagePreviewError(true);
     toast({
       title: 'We don\'t support that file type.',
       status: 'error',
@@ -179,10 +168,8 @@ const handleImageChange = (e) => {
   }
 }
 
-  /**
-   * This handler is solely for Chakra-UI's NumberInput since it doesn't return an event object.
-   * See: https://github.com/chakra-ui/chakra-ui/issues/617
-   */
+  // This handler is solely for Chakra-UI's NumberInput since it doesn't return an event object.
+  // See: https://github.com/chakra-ui/chakra-ui/issues/617
   const handleNumberChange = (distance) => {
     setDistance(distance);
     setValues({
@@ -198,11 +185,9 @@ const handleImageChange = (e) => {
       locationLat: position.coords.latitude,
       locationLong: position.coords.longitude,
     });
-    setLocationError(false);
   }
 
   const onError = () => {
-    setLocationError(true);
     toast({
       title: 'Unable to retrieve your location. Please enable permissions.',
       status: 'error',
@@ -220,7 +205,6 @@ const handleImageChange = (e) => {
      */
     e.preventDefault();
     if (!navigator.geolocation) {
-      setLocationError(true);
       toast({
         title: 'Geolocation is not supported by your browser. Please use another.',
         status: 'error',
@@ -235,45 +219,35 @@ const handleImageChange = (e) => {
 
   const handleSubmit = (e) => {
     e.preventDefault(); 
-    // This is where to put the axios thingy with multipart/form-data put request
 
     const formData = new FormData();
 
-    // for (const key in values) {
-    //   formData.append(`${key}`, values[key])
-    //   console.log(`${key}: ${values[key]}`)
-    // }
-
-    formData.append('avatarPhoto', values.avatarPhoto);
-    formData.append('firstName', values.firstName);
-    formData.append('middleName', values.middleName);
-    formData.append('lastName', values.lastName);
-    formData.append('birthDate', values.birthDate);
-    formData.append('sex', values.sex);
-    formData.append('contactNumber', values.contactNumber);
-    formData.append('locationLat', values.locationLat);
-    formData.append('locationLong', values.locationLong);
-    formData.append('action', values.action);
-    formData.append('preferredAnimal', values.preferredAnimal);
-    formData.append('preferredDistance', values.preferredDistance);
+    for (const key in values) {
+      formData.append(`${key}`, values[key])
+    }
 
     axios.put('http://localhost:8081/api/0.1/user/' + id, formData)
-    .then(res => {
-      console.log(res);
+    .then(() => {
+      toast({
+        title: 'Successfully updated information. Redirecting to feed. Please wait.',
+        status: 'success',
+        position: 'top',
+        duration: 5000,
+        isClosable: true,
+      });
+
+      // Redirect to feed after onboarding
+      history.push('/feed');
     })
-    .catch(err => {
-      console.log(err);
+    .catch(() => {
+      toast({
+        title: 'Something went wrong. Please try again later.',
+        status: 'error',
+        position: 'top',
+        duration: 5000,
+        isClosable: true,
+      });
     })
-
-    //   // Redirect to feed after onboarding, put inside .then when successful
-    //   // history.push('/feed');
-    // })
-    // .catch(err => {
-    //   console.log(err);
-    // })
-
-
-    // console.log("values", values);
   }
 
 

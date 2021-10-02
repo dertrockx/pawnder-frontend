@@ -43,14 +43,9 @@ const Profile = () => {
 		// instagramURL: '',
 	});
 	const [imagePreview, setImagePreview] = useState(noPhoto);
-	// const [imagePreview, setImagePreview] = useState('');
   const [isImageRemoveDisabled, setIsImageRemoveDisabled] = useState(true); // set to false kapag may picture na talaga from fetched data
   const [isCancelDisabled, setIsCancelDisabled] = useState(true);
   const [isSaveDisabled, setIsSaveDisabled] = useState(true);
-
-  // Might remove these states as I don't use their values.
-  const [imagePreviewError, setImagePreviewError] = useState(false);
-  const [locationError, setLocationError] = useState(false);
 
   const toast = useToast();
 
@@ -83,8 +78,6 @@ const Profile = () => {
       });
 
       setImagePreview(institution.photoUrl);
-      console.log(currentValues.avatarPhoto);
-      // alert(imagePreview);
     })
     .catch(err => {
       console.log(err)
@@ -199,7 +192,6 @@ const Profile = () => {
       if (selected === undefined) {
         return;
       }
-      setImagePreviewError(true);
       toast({
         title: 'We don\'t support that file type.',
         status: 'error',
@@ -216,7 +208,6 @@ const Profile = () => {
       ...currentValues,
       avatarPhoto: ''
     });
-    setImagePreviewError(false);
     setIsImageRemoveDisabled(true);
   }
 
@@ -227,11 +218,9 @@ const Profile = () => {
       locationLat: position.coords.latitude,
       locationLong: position.coords.longitude,
     });
-    setLocationError(false);
   }
   
   const onError = () => {
-    setLocationError(true);
     toast({
       title: 'Unable to retrieve your location. Please enable permissions.',
       status: 'error',
@@ -242,14 +231,7 @@ const Profile = () => {
   }
 
   const handleLocation = () => {
-    /**
-     * All buttons inside a form trigger the submit event.
-     * By using the preventDefault() method, the submit event will be canceled,
-     * thus, allowing multiple buttons inside a form.
-     */
-    // e.preventDefault();
     if (!navigator.geolocation) {
-      setLocationError(true);
       toast({
         title: 'Geolocation is not supported by your browser. Please use another.',
         status: 'error',
