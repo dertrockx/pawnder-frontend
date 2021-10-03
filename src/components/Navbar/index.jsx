@@ -6,6 +6,7 @@ import { useSelector, useDispatch } from "react-redux";
 import { model } from "constants/EntityType";
 import { logout as onLogout } from "redux/actions/authActions";
 import history from "utils/history";
+import whiteLogo from "assets/logo-white.svg";
 const INSTITUTION_ROOT = "/institution";
 
 function Navbar() {
@@ -88,7 +89,19 @@ function Navbar() {
 		<header className={styles.navbar}>
 			<div className={styles.navbarContainer}>
 				<div className={styles.navbarLeftItems}>
-					<p className="bold-text">Logo goes here</p>
+					<img
+						src={whiteLogo}
+						alt="logo"
+						width="80"
+						style={{ cursor: "pointer" }}
+						onClick={() =>
+							history.push(
+								loginType === model.INSTITUTION
+									? "/institution/dashboard"
+									: "/feed"
+							)
+						}
+					/>
 				</div>
 				<div className={styles.navbarRightItems}>
 					{token &&
