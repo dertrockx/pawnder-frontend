@@ -3,8 +3,18 @@ import styles from "./style.module.css";
 import bg from "assets/bg2.png";
 import Button from "components/Button";
 import history from "utils/history";
+import { useSelector } from "react-redux";
+import { model } from "constants/EntityType";
 
 function ChooseSignup() {
+	const { token, loginType } = useSelector((s) => s.auth);
+	React.useEffect(() => {
+		if (token)
+			history.push(
+				loginType === model.INSTITUTION ? "/institution/dashboard" : "/feed"
+			);
+		// eslint-disable-next-line
+	}, [token]);
 	function goToInsti() {
 		history.push("/institution/signup");
 	}
