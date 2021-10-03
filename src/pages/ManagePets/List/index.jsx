@@ -27,7 +27,7 @@ function getPetImage(pet) {
 
 function ManagePetsList() {
 	const { model = {}, isAuthenticated } = useSelector((s) => s.auth);
-	const { pets, creating } = useSelector((s) => s.pet);
+	const { pets, fetching, creating } = useSelector((s) => s.pet);
 	// const [pets, setPets] = useState(null);
 	// const [loading, setLoading] = useState(true);
 	const { isOpen, onOpen, onClose } = useDisclosure();
@@ -135,7 +135,7 @@ function ManagePetsList() {
 						<IoAdd size={80} />
 						<h3 className="heading-3">Add new pet</h3>
 					</Card>
-					{pets && Object.keys(pets).length > 0 ? (
+					{!fetching && pets ? (
 						Object.keys(pets).map((id) => {
 							const pet = pets[id];
 							return (

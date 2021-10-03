@@ -19,7 +19,9 @@ export const login = (email, password, type = model.INSTITUTION) => {
 				type: auth.LOGIN_COMPLETED,
 				payload: res.data,
 			});
-			history.push("/feed");
+			history.push(
+				type === model.INSTITUTION ? "/institution/dashboard" : "/feed"
+			);
 		} catch (err) {
 			console.log(err);
 			dispatch({
@@ -52,6 +54,7 @@ export const silentRefresh = () => {
 				type: auth.LOGIN_COMPLETED,
 				payload: { model, type, token: { auth: token }, token_expiry },
 			});
+			history.push(type === model.USER ? "/feed" : "/institution/dashboard");
 		} catch (err) {
 			console.log(err);
 			dispatch(logout());
