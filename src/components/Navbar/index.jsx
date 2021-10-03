@@ -125,9 +125,7 @@ function Navbar() {
 								color="white"
 								variant="outline"
 								size="small"
-								onClick={() => {
-									history.push("/user/signup")
-								}}
+								onClick={login}
 							>
 								Login
 							</Button>

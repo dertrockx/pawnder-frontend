@@ -118,14 +118,14 @@ function ManagePetsList() {
 		});
 	}
 
-	if (fetching) {
+	if (!pets) {
 		return <LoadingPage />;
 	}
 
 	return (
 		<>
+			<img src={bg} className={styles.bg} alt="bg-pets" />
 			<div className={styles.container}>
-				<img src={bg} className={styles.bg} alt="bg-pets" />
 				<h2 className="heading-2">Manage my pets</h2>
 				<p className="paragraph" style={{ marginTop: 15, marginBottom: 40 }}>
 					Add a new pet or edit / delete the ones you have
@@ -135,7 +135,7 @@ function ManagePetsList() {
 						<IoAdd size={80} />
 						<h3 className="heading-3">Add new pet</h3>
 					</Card>
-					{pets && Object.keys(pets).length > 0 ? (
+					{!fetching && pets ? (
 						Object.keys(pets).map((id) => {
 							const pet = pets[id];
 							return (

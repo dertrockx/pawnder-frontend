@@ -13,11 +13,23 @@ import {
 	Button,
 	Icon,
 } from "@chakra-ui/react";
-import { IoClose, IoCheckmarkSharp, IoTrashBin } from "react-icons/io5";
+import {
+	IoClose,
+	IoCheckmarkSharp,
+	IoTrashBin,
+	IoArrowForward,
+} from "react-icons/io5";
 import PropTypes from "prop-types";
 function UserInformationModal(props) {
 	// const { isOpen, onOpen, onClose } = useDisclosure()
-	const { isOpen, onClose, underReview = false } = props;
+	const {
+		isOpen,
+		onClose,
+		underReview = false,
+		loading = false,
+		secAction = () => {},
+		primAction = () => {},
+	} = props;
 	return (
 		<Modal isOpen={isOpen} onClose={onClose} size="xl" isCentered>
 			<ModalOverlay />
@@ -52,17 +64,20 @@ function UserInformationModal(props) {
 									className="button-text"
 									colorScheme="red"
 									leftIcon={<Icon as={IoTrashBin} />}
-									onClick={onClose}
+									onClick={secAction}
+									variant="outline"
+									isLoading={loading}
 								>
 									Delete
 								</Button>
 								<Button
 									className="button-text"
 									colorScheme="green"
-									leftIcon={<Icon as={IoCheckmarkSharp} />}
-									onClick={onClose}
+									leftIcon={<Icon as={IoArrowForward} />}
+									onClick={primAction}
+									isLoading={loading}
 								>
-									Accept
+									Move under review
 								</Button>
 							</>
 						) : (
@@ -71,15 +86,18 @@ function UserInformationModal(props) {
 									className="button-text"
 									colorScheme="red"
 									leftIcon={<Icon as={IoClose} />}
-									onClick={onClose}
+									onClick={secAction}
+									variant="outline"
+									isLoading={loading}
 								>
-									Cancel
+									Reject
 								</Button>
 								<Button
 									className="button-text"
 									colorScheme="green"
 									leftIcon={<Icon as={IoCheckmarkSharp} />}
-									onClick={onClose}
+									onClick={primAction}
+									isLoading={loading}
 								>
 									Accept
 								</Button>

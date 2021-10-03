@@ -409,3 +409,8 @@ textarea,
 select {
 	border: none;
 }
+
+ul li,
+ol li {
+	margin-left: 40px;
+}

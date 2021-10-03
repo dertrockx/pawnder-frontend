@@ -1,5 +1,5 @@
 @import url("https://fonts.googleapis.com/css2?family=Raleway:wght@300;400;700&family=Rubik:wght@700&display=swap");
-
+h1,
 .heading-1 {
 	font-family: "Rubik", sans-serif;
 	font-style: normal;
@@ -10,7 +10,7 @@
 	/* identical to box height */
 	letter-spacing: -0.03em;
 }
-
+h2,
 .heading-2 {
 	font-family: "Rubik", sans-serif;
 	font-style: normal;
@@ -21,7 +21,7 @@
 	/* identical to box height */
 	letter-spacing: -0.02em;
 }
-
+h3,
 .heading-3 {
 	font-family: "Rubik", sans-serif;
 	font-style: normal;
@@ -30,7 +30,7 @@
 	line-height: 28px;
 	letter-spacing: -0.02em;
 }
-
+h4,
 .heading-4 {
 	font-family: "Rubik", sans-serif;
 	font-style: normal;
@@ -40,7 +40,7 @@
 
 	/* identical to box height */
 }
-
+p,
 .paragraph {
 	font-family: "Raleway", sans-serif;
 	font-style: normal;
@@ -71,7 +71,7 @@
 	/* identical to box height, or 28px */
 	text-decoration-line: underline;
 }
-
+b,
 .bold-text {
 	font-family: "Raleway", sans-serif;
 	font-style: normal;
@@ -107,4 +107,4 @@
 	font-weight: normal;
 	font-size: 16px;
 	line-height: 125%;
-} 
+}

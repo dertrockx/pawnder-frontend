@@ -15,9 +15,12 @@ import PropTypes from "prop-types";
 function ApplicantCard(props) {
 	const {
 		disabled = false,
+		loading = false,
 		onSuccess = () => {},
 		onView = () => {},
 		onCancel = () => {},
+		name = "User name",
+		age = null,
 	} = props;
 	return (
 		<Flex
@@ -33,10 +36,10 @@ function ApplicantCard(props) {
 			<HStack alignItems="center" spacing={5}>
 				<Image src="https://via.placeholder.com/80" borderRadius="50%" />
 				<VStack spacing="5px" alignItems="flex-start">
-					<h4 className="heading-4">User's name</h4>
+					<h4 className="heading-4">{name}</h4>
 					<HStack spacing="10px">
-						<p className="caption">X years old</p>
-						<p className="caption">Lives in Tagkawayan, Quezon</p>
+						{age && <p className="caption">{age} years old</p>}
+						{/* <p className="caption">Lives in Tagkawayan, Quezon</p> */}
 					</HStack>
 				</VStack>
 			</HStack>
@@ -46,27 +49,27 @@ function ApplicantCard(props) {
 				hasArrow
 				placement="top"
 			>
-				<ButtonGroup spacing="10px" variant="outline">
+				<ButtonGroup spacing="10px" variant="outline" isDisabled={disabled}>
 					<IconButton
 						icon={<Icon as={IoClose} width={6} height={6} />}
 						colorScheme="red"
 						borderRadius="50%"
-						disabled={disabled}
 						onClick={onCancel}
+						isLoading={loading}
 					/>
 					<IconButton
 						icon={<Icon as={IoEyeOutline} width={6} height={6} />}
 						colorScheme="yellow"
 						borderRadius="50%"
-						disabled={disabled}
 						onClick={onView}
+						isLoading={loading}
 					/>
 					<IconButton
 						icon={<Icon as={IoCheckmarkSharp} width={6} height={6} />}
 						colorScheme="green"
 						borderRadius="50%"
-						disabled={disabled}
 						onClick={onSuccess}
+						isLoading={loading}
 					/>
 				</ButtonGroup>
 			</Tooltip>

@@ -14,12 +14,10 @@ const initialState = {
 export default function reducer(state = initialState, action = {}) {
 	switch (action.type) {
 		case auth.LOGIN_PENDING: {
-			const { loginType } = action.payload;
 			return {
 				...state,
 				loginPending: true,
 				loginError: null,
-				loginType,
 			};
 		}
 		case auth.LOGIN_COMPLETED: {

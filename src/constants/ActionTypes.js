@@ -29,3 +29,13 @@ export const photo = keyMirror({
 	UPDATE_SUCCESS: null,
 	UPDATE_ERROR: null,
 });
+
+export const applicant = keyMirror({
+	FETCH_APPLICANT_PENDING: null,
+	FETCH_APPLICANT_ERROR: null,
+	FETCH_APPLICANT_SUCCESS: null,
+
+	UPDATE_APPLICANT_PENDING: null,
+	UPDATE_APPLICANT_SUCCESS: null,
+	UPDATE_APPLICANT_ERROR: null,
+});

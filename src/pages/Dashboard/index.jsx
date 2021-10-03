@@ -1,10 +1,23 @@
 import React from "react";
-import { Container, Box, Grid, HStack, VStack } from "@chakra-ui/react";
+import { Flex } from "@chakra-ui/react";
 function Dashboard() {
 	return (
-		<Container marginTop={15} maxW="1100px">
+		<Flex
+			alignItems="center"
+			justifyContent="center"
+			height="80vh"
+			// width="100vw"
+			// textAlign="center"
+			flexDirection="column"
+			gap={10}
+			// background="red"
+		>
 			<h1 className="heading-1">My Dashboard</h1>
-			<Grid
+			<p className="paragraph">
+				Use the navigation above to manage your pets, applicants, stories, or
+				settings
+			</p>
+			{/* <Grid
 				templateColumns="3fr 4fr 2fr"
 				rowGap={5}
 				columnGap={5}
@@ -44,8 +57,8 @@ function Dashboard() {
 						</VStack>
 					</HStack>
 				</Box>
-			</Grid>
-		</Container>
+			</Grid> */}
+		</Flex>
 	);
 }
 

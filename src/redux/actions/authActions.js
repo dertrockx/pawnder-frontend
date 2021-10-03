@@ -3,7 +3,7 @@ import { auth } from "constants/ActionTypes";
 import { model } from "constants/EntityType";
 import history from "utils/history";
 
-export const login = (email, password) => {
+export const login = (email, password, type = model.INSTITUTION) => {
 	return async (dispatch) => {
 		dispatch({
 			type: auth.LOGIN_PENDING,
@@ -12,14 +12,16 @@ export const login = (email, password) => {
 			const res = await axios.post("/api/0.1/auth/login", {
 				email,
 				password,
-				type: model.INSTITUTION,
+				type,
 			});
 			console.log(res.data);
 			dispatch({
 				type: auth.LOGIN_COMPLETED,
 				payload: res.data,
 			});
-			history.push("/feed");
+			history.push(
+				type === model.INSTITUTION ? "/institution/dashboard" : "/feed"
+			);
 		} catch (err) {
 			console.log(err);
 			dispatch({
@@ -52,6 +54,7 @@ export const silentRefresh = () => {
 				type: auth.LOGIN_COMPLETED,
 				payload: { model, type, token: { auth: token }, token_expiry },
 			});
+			// history.push(type === model.USER ? "/feed" : "/institution/dashboard");
 		} catch (err) {
 			console.log(err);
 			dispatch(logout());
