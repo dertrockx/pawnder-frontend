@@ -6,7 +6,6 @@ import { useParams } from 'react-router-dom';
 import { useDispatch, useSelector } from "react-redux";
 import axios from 'axios';
 import LoadingPage from "pages/LoadingPage";
-import { fetchStories } from 'redux/actions/storyActions';
 import {Modal,ModalOverlay, ModalContent, ModalHeader, ModalFooter, ModalBody, ModalCloseButton} from "@chakra-ui/react";
 
 function ManageStoryDetails({ data }) {
