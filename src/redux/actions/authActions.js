@@ -54,7 +54,7 @@ export const silentRefresh = () => {
 				type: auth.LOGIN_COMPLETED,
 				payload: { model, type, token: { auth: token }, token_expiry },
 			});
-			history.push(type === model.USER ? "/feed" : "/institution/dashboard");
+			// history.push(type === model.USER ? "/feed" : "/institution/dashboard");
 		} catch (err) {
 			console.log(err);
 			dispatch(logout());

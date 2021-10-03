@@ -1,13 +1,44 @@
-import React from "react";
-import { VStack, useDisclosure } from "@chakra-ui/react";
-
+import React, { useState } from "react";
+import { useSelector, useDispatch } from "react-redux";
+import { VStack, Spinner } from "@chakra-ui/react";
+import { updateApplicant } from "redux/actions";
 import HR from "components/HR";
 import ApplicantCard from "./ApplicantCard";
 import UserInformationModal from "./UserInformationModal";
-const dummy = [1, 2, 3, 4, 5];
 
 function Applicants() {
-	const { onOpen, isOpen, onClose } = useDisclosure();
+	const { petId } = useSelector((state) => state.pet);
+	const {
+		applicants: { pending, underReview },
+		fetching,
+		updating,
+	} = useSelector((s) => s.applicant);
+	const dispatch = useDispatch();
+	const [selected, setSelected] = useState(null);
+	function handleView(applicant) {
+		setSelected(applicant);
+	}
+
+	const onClose = () => setSelected(null);
+
+	function handleDelete(id) {
+		dispatch(updateApplicant(id, "deleted"));
+		onClose();
+	}
+	function handleAccept(id) {
+		dispatch(updateApplicant(id, "accepted"));
+		onClose();
+	}
+	function handleReview(id) {
+		dispatch(updateApplicant(id, "under review"));
+		onClose();
+	}
+	function handleReject(id) {
+		dispatch(updateApplicant(id, "rejected"));
+		onClose();
+	}
+
+	if (!petId || fetching) return <Spinner />;
 	return (
 		<VStack spacing="60px" alignItems="stretch">
 			{/* Under review section */}
@@ -16,7 +47,33 @@ function Applicants() {
 				<p className="caption" style={{ marginBottom: 20 }}>
 					Below are applicants who you are currently reviewing
 				</p>
-				<ApplicantCard onView={onOpen} />
+
+				{underReview && underReview.length > 0 ? (
+					underReview.map((applicant) => {
+						const { id, firstName = "", lastName = "", birthDate } = applicant;
+						let name = `${firstName} ${lastName}`;
+						if (!firstName || !lastName) name = "No name";
+						const age = birthDate
+							? new Date().getFullYear() - new Date(birthDate).getFullYear()
+							: null;
+						return (
+							<ApplicantCard
+								key={id}
+								onView={() => handleView(applicant)}
+								loading={updating}
+								onCancel={() => handleReject(id)}
+								onSuccess={() => handleAccept(id)}
+								name={name}
+								age={age}
+							/>
+						);
+					})
+				) : (
+					<p className="caption">
+						Nothing under review so far :) How about you check the pending
+						applicants instead?
+					</p>
+				)}
 			</div>
 			<HR />
 			<div>
@@ -25,11 +82,45 @@ function Applicants() {
 					Below are applicants who are still on queue and waiting for your
 					confirmation
 				</p>
-				{dummy.map((_, idx) => (
-					<ApplicantCard key={idx} disabled />
-				))}
+				{pending &&
+					pending.length > 0 &&
+					pending.map((applicant) => {
+						const { id, firstName = "", lastName = "", birthDate } = applicant;
+						let name = `${firstName} ${lastName}`;
+						if (!firstName || !lastName) name = "No name";
+						const age = birthDate
+							? new Date().getFullYear() - new Date(birthDate).getFullYear()
+							: null;
+						return (
+							<ApplicantCard
+								key={id}
+								onView={() => handleView(applicant)}
+								loading={updating}
+								onCancel={() => handleDelete(id)}
+								onSuccess={() => handleReview(id)}
+								name={name}
+								age={age}
+								disabled={!!underReview && underReview.length > 0}
+							/>
+						);
+					})}
 			</div>
-			<UserInformationModal isOpen={isOpen} onClose={onClose} underReview />
+			<UserInformationModal
+				isOpen={!!selected}
+				onClose={onClose}
+				underReview={!!selected && selected.status !== "under review"}
+				loading={updating || fetching}
+				secAction={
+					!!selected && selected.status === "under review"
+						? () => handleReject(selected.id)
+						: () => handleDelete(selected.id)
+				}
+				primAction={
+					!!selected && selected.status === "under review"
+						? () => handleAccept(selected.id)
+						: () => handleReview(selected.id)
+				}
+			/>
 		</VStack>
 	);
 }
