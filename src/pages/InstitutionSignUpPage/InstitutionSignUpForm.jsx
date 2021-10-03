@@ -7,9 +7,10 @@ import logo from "assets/logo.svg";
 import showPassword from "assets/showPassword.svg";
 import hidePassword from "assets/hidePassword.svg";
 import useMediaQuery from "hooks/useMediaQuery";
+import LoadingPage from "pages/LoadingPage";
 
 const FormSignup = ({ submitForm }) => {
-	const { handleChange, values, handleSubmit, errors } = useSignUp(
+	const { handleChange, values, handleSubmit, errors, isSubmitting } = useSignUp(
 		submitForm,
 		validate
 	);
@@ -28,6 +29,8 @@ const FormSignup = ({ submitForm }) => {
 	return (
 		<div className={styles.formContentRight}>
 			<form className={styles.form} onSubmit={handleSubmit}>
+			{isSubmitting ? <LoadingPage /> : 
+			<> 
 				<img
 					src={logo}
 					alt="logo"
@@ -113,6 +116,8 @@ const FormSignup = ({ submitForm }) => {
 				<Button color="brand-default" id={styles.signUpButton} type="submit">
 					Sign Up
 				</Button>
+			</>
+			}
 			</form>
 		</div>
 	);

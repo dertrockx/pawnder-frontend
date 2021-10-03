@@ -60,7 +60,7 @@ const useSignUp = (callback, validate) => {
 		}
 	}, [errors]);
 
-	return { handleChange, handleSubmit, values, errors };
+	return { handleChange, handleSubmit, values, errors, isSubmitting };
 };
 
 export default useSignUp;
