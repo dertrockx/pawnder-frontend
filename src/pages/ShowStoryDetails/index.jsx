@@ -1,11 +1,21 @@
+import {useEffect} from "react";
 import styles from './ShowStoryDetails.module.css';
-import { useParams, Link } from 'react-router-dom';
+import { useParams, Link, useHistory } from 'react-router-dom';
 import StoryDetailsTag from 'components/StoryDetailsTags';
 import { ArrowBackIcon} from '@chakra-ui/icons';
+import { useSelector } from "react-redux";
 
 const ShowStoryDetails = ({ data }) => {
     const { id } = useParams();
-    console.log(id);
+    const isAuthenticated = useSelector((s) => s.auth.isAuthenticated);
+	const loginType = useSelector((s) => s.auth.loginType);
+    const history = useHistory();
+
+    useEffect(() => {
+		if(!isAuthenticated && loginType !== "INSTITUTION") history.replace("/institution/login") 
+	}, []);
+
+    //console.log(id);
     return (
         <>
             {

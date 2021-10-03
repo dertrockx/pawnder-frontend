@@ -7,11 +7,17 @@ import { useDispatch, useSelector } from "react-redux";
 import axios from 'axios';
 import LoadingPage from "pages/LoadingPage";
 import {Modal,ModalOverlay, ModalContent, ModalHeader, ModalFooter, ModalBody, ModalCloseButton} from "@chakra-ui/react";
+import { useHistory } from "react-router-dom";
 
 function ManageStoryDetails({ data }) {
     const { id } = useParams(); 
+    const history = useHistory();
     const toast = useToast();
-    const institutionID = 1;
+    const isAuthenticated = useSelector((s) => s.auth.isAuthenticated);
+	const loginType = useSelector((s) => s.auth.loginType);
+    const model = useSelector((s) => s.auth.model);
+	const institutionID = Object.values(model)[0];
+    //const institutionID = 1;
     const dispatch = useDispatch();
     const [hasImg, setHasImg] = useState(false);
     const { isOpen: isCancelOpen, onOpen: onCancelOpen, onClose: onCancelClose } = useDisclosure();
@@ -30,6 +36,7 @@ function ManageStoryDetails({ data }) {
     const [picture, setPicture] = useState(uploadPhoto);
 
     useEffect(() => {
+        if(!isAuthenticated && loginType !== "INSTITUTION") history.replace("/institution/login");
         if (data) {
             data.filter(story => story.id === parseInt(id)).map(story => {
                 setStoryInfo({
