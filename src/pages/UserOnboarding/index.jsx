@@ -1,6 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import { useHistory } from 'react-router';
-import axios from 'axios';
 import { IoLocationSharp, IoArrowBack } from 'react-icons/io5';
 import {
   NumberInput,
@@ -10,6 +8,10 @@ import {
   NumberDecrementStepper,
   useToast
 } from '@chakra-ui/react';
+
+// Change to utils
+import { useHistory } from 'react-router';
+import axios from 'axios';
 
 import Button from 'components/Button';
 import BasicInputUser from 'components/BasicInputUser';
@@ -32,10 +34,10 @@ const UserOnboarding = () => {
   
   const current = new Date().toISOString().split("T")[0];
 
-  // User model only allows string, but will be disabling this since checkbox component isn't used
+  // User model only allows string, but will be commenting this out since checkbox component isn't used
   // const [preferredAnimalsArr, setPreferredAnimalsArr] = useState([]);
   
-  const [imagePreview, setImagePreview] = useState(`${noPhoto}`);
+  const [imagePreview, setImagePreview] = useState(noPhoto);
   const [step, setStep] = useState(1);
   const [isDisabled, setIsDisabled] = useState(true); // set to false when testing and comment out useEffect
   const [distance, setDistance] = useState(''); // for Chakra-UI NumberInput
@@ -242,7 +244,7 @@ const handleImageChange = (e) => {
   }
 
   const handleSubmit = (e) => {
-    e.preventDefault(); 
+    e.preventDefault(); // so page doesn't reload
 
     const formData = new FormData();
 
@@ -253,7 +255,7 @@ const handleImageChange = (e) => {
     axios.put('http://localhost:8081/api/0.1/user/' + id, formData)
     .then(() => {
       toast({
-        title: 'Successfully updated information. Redirecting to feed. Please wait.',
+        title: 'Successfully updated information. Redirecting to feed, please wait.',
         status: 'success',
         position: 'top',
         duration: 5000,
@@ -261,7 +263,7 @@ const handleImageChange = (e) => {
       });
 
       // Redirect to feed after onboarding
-      history.push('/feed');
+      // history.push('/feed');
     })
     .catch(() => {
       toast({
