@@ -1,6 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { IoLocationSharp, IoArrowBack } from 'react-icons/io5';
 import {
+  Input,
+  InputGroup,
+  InputLeftAddon,
   NumberInput,
   NumberInputField,
   NumberInputStepper,
@@ -117,7 +120,6 @@ const UserOnboarding = () => {
     );
   }
 
-<<<<<<< HEAD
   const handleSubmit = (e) => {
     e.preventDefault(); 
 
@@ -142,7 +144,7 @@ const UserOnboarding = () => {
 
 		// Redirect to feed after onboarding, put inside .then when successful
 		// history.push('/feed');
-=======
+
   // For input of types text or radio
   const handleChange = (e) => {
     setValues({
@@ -163,7 +165,7 @@ const UserOnboarding = () => {
 //     preferredAnimal: newArray.join(', '), // using newArr becayse preferredAnimalsArr holds the prev state of newArr
 //   });
 // };
->>>>>>> Connect onboarding to backend (no image yet)
+
 
 const handleImageChange = (e) => {
   const selected = e.target.files[0];
@@ -357,10 +359,19 @@ const handleImageChange = (e) => {
               </div>
               <div>
                 <label className="bold-text">Contact Number</label>
-                <BasicInput
+              <InputGroup marginTop="10px">
+                <InputLeftAddon children="+63" fontFamily="Raleway" />
+                <Input
                   type="tel"
+                  placeholder="Contact Number"
                   name="contactNumber"
                   onChange={handleChange}
+                  onKeyPress={(e) => {
+                    if (e.target.value.length > 9) {
+                      e.preventDefault();
+                      e.stopPropagation();
+                    }
+                  }}
                   value={values.contactNumber}
                   fontFamily="Raleway"
                   borderWidth="2px"

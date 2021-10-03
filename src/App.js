@@ -1,16 +1,11 @@
 import React, { lazy, Suspense, useEffect, useState } from "react";
 import { Router, Switch, Redirect } from "react-router-dom";
-
 import { Route } from "react-router";
 
 // reset default styles for all html elements - https://en.wikipedia.org/wiki/Reset_style_sheet
 import { UserLoginPage, UserSignupPage } from "pages";
 import InstitutionOnboardingPage from "pages/InstitutionOnboarding";
 import NavRoute from "components/NavRoute";
-import UserOnboarding from "pages/UserOnboarding";
-import InstitutionSettings from "pages/InstitutionSettings";
-import ShowStoryList from "pages/ShowStoryList";
-import ManageStoryList from "pages/ManageStoryList";
 
 import history from "utils/history";
 import LoadingPage from "pages/LoadingPage";
@@ -33,9 +28,13 @@ const ManagePetDetails = lazy(() =>
 );
 const Dashboard = lazy(() => import("pages/Dashboard"));
 const UserSettings = lazy(() => import("pages/UserSettings"));
+const UserOnboarding = lazy(() => import("pages/UserOnboarding"));
+const ShowStoryList = lazy(() => import("pages/ShowStoryList"));
+const ShowStoryDetails = lazy(() => import("pages/ShowStoryDetails"));
 const InstitutionSignUp = lazy(() => import("pages/InstitutionSignUpPage"));
 const InstitutionLogin = lazy(() => import("pages/InstitutionLoginPage"));
-const ShowStoryDetails = lazy(() => import("pages/ShowStoryDetails"));
+const InstitutionSettings = lazy(() => import("pages/InstitutionSettings"));
+const ManageStoryList = lazy(() => import("pages/ManageStoryList"));
 const ManageStoryDetails = lazy(() => import("pages/ManageStoryDetails"));
 const ChooseLogin = lazy(() => import("pages/ChooseLogin"));
 const ChooseSignup = lazy(() => import("pages/ChooseSignup"));
