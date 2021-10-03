@@ -17,7 +17,6 @@ function ManageStoryDetails({ data }) {
 	const loginType = useSelector((s) => s.auth.loginType);
     const model = useSelector((s) => s.auth.model);
 	const institutionID = Object.values(model)[0];
-    //const institutionID = 1;
     const dispatch = useDispatch();
     const [hasImg, setHasImg] = useState(false);
     const { isOpen: isCancelOpen, onOpen: onCancelOpen, onClose: onCancelClose } = useDisclosure();
