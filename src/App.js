@@ -34,6 +34,7 @@ const ChooseLogin = lazy(() => import("pages/ChooseLogin"));
 const ChooseSignup = lazy(() => import("pages/ChooseSignup"));
 const store = configureStore();
 const INSTITUTION_ROOT = "/institution";
+const USER_ROOT = "/user";
 
 function App() {
 	return (
@@ -45,7 +46,7 @@ function App() {
 							<NavRoute path="/feed" exact component={Feed} />
 							<NavRoute path="/nearby" exact component={NearbyInstitution} />
 							<NavRoute path="/stories/" component={ShowStoryList} />
-							<Route path="/user/onboarding" component={UserOnboarding} />
+							<Route path={`${USER_ROOT}/onboarding`} component={UserOnboarding} />
 
 							<Route
 								path={`${INSTITUTION_ROOT}/login`}
