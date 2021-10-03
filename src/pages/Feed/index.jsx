@@ -1,17 +1,100 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import Button from "components/Button";
 import feedPage from "./Feed.module.css";
 import { IoHeart, IoClose } from "react-icons/io5";
+import axios from "utils/axios";
+import { useSelector } from "react-redux";
+import LoadingPage from "pages/LoadingPage";
 
 function Feed() {
+	const { token, model } = useSelector((s) => s.auth);
+	const [loading, setLoading] = useState(true);
+	const [pets, setPets] = useState(null);
+	const [count, setCount] = useState(1);
+	// set current pet id
+	const [stack, setStack] = useState([]);
+	useEffect(() => {
+		if (token && !pets) {
+			const getPets = async () => {
+				try {
+					const { id: userId } = model;
+					const userRes = await axios.get(`/api/0.1/user/${userId}`, {
+						headers: {
+							Authorization: `Bearer ${token}`,
+						},
+					});
+					const { user } = userRes.data;
+					const {
+						locationLat: lat,
+						locationLong: long,
+						preferredDistance: distance,
+					} = user;
+					console.log(userId);
+					const res = await axios.get(
+						`/api/0.1/pet?nearby=true&centerLat=${lat}&centerLong=${long}&distance=${distance}&userId=${userId}`,
+						{
+							headers: {
+								Authorization: `Bearer ${token}`,
+							},
+						}
+					);
+					const { pets } = res.data;
+					let petMap = {};
+					pets.forEach((pet) => {
+						const { id, ...rest } = pet;
+						Object.assign(petMap, { [id]: rest });
+					});
+					setPets(petMap);
+					setStack(Object.keys(petMap).reverse());
+					setLoading(false);
+				} catch (error) {
+					console.log(error);
+				}
+			};
+			getPets();
+		}
+		// eslint-disable-next-line
+	}, [token]);
+	function popTop() {
+		let stackCopy = [...stack];
+		const top = stackCopy.shift();
+		setStack(stackCopy);
+		return top;
+	}
 	function handlePass() {
-		alert("Pass");
+		const top = popTop();
+		const { id: userId } = model;
+		const payload = {};
+		Object.assign(payload, { userId, petId: top });
+		axios
+			.post(`/api/0.1/ignore`, payload, {
+				headers: {
+					Authorization: `Bearer ${token}`,
+				},
+			})
+			.then((res) => {
+				console.log(res.data);
+			})
+			.catch((err) => console.log(err));
 	}
 
 	function handleLike() {
-		alert("Like");
+		const top = popTop();
+		const { id: userId } = model;
+		const payload = {};
+		Object.assign(payload, { userId, petId: top });
+		axios
+			.post(`/api/0.1/application`, payload, {
+				headers: {
+					Authorization: `Bearer ${token}`,
+				},
+			})
+			.then((res) => {
+				console.log(res.data);
+			})
+			.catch((err) => console.log(err));
 	}
-
+	if (loading) return <LoadingPage />;
 	return (
 		<div className={feedPage.container}>
 			<h2 className="heading-2">Recommended just for you</h2>

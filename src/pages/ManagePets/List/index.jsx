@@ -27,7 +27,7 @@ function getPetImage(pet) {
 
 function ManagePetsList() {
 	const { model = {}, isAuthenticated } = useSelector((s) => s.auth);
-	const { pets, fetching, creating } = useSelector((s) => s.pet);
+	const { pets, creating } = useSelector((s) => s.pet);
 	// const [pets, setPets] = useState(null);
 	// const [loading, setLoading] = useState(true);
 	const { isOpen, onOpen, onClose } = useDisclosure();
