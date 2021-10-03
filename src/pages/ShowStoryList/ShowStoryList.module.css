@@ -1,0 +1,30 @@
+.center {
+  height: fit-content;
+  width: fit-content;
+  text-align: center;
+  /* flex display not working */
+  margin: 15% auto;
+}
+
+.container {
+  width: 1200px;
+  margin: auto;
+}
+
+.options {
+  width: 1200px;
+  margin: 40px auto 40px;
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+}
+
+.sortDate {
+  display: flex;
+  flex-direction: row;
+  gap: 24px;
+}
+
+.searchBar {
+  width: 600px;
+}

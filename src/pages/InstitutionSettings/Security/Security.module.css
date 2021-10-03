@@ -1,0 +1,35 @@
+.halfField {
+  margin-top: 5px;
+	display: grid;
+	grid-template-columns: 0.75fr 2fr;
+	column-gap: 60px;
+	margin-bottom: 60px;
+}
+
+.twoFields {
+	display: grid;
+	grid-template-columns: 1.25fr 2fr;
+	column-gap: 10px;
+  margin-bottom: 32px;
+  align-items: baseline;
+}
+
+.bottomButtons{
+  width: 276px;
+  float: right;
+  display: flex;
+  gap: 20px;
+  justify-content: flex-end;
+}
+
+/* .bottomButtons Button {
+  filter: drop-shadow(0px 4px 4px rgba(0, 0, 0, 0.25));
+}
+
+.bottomButtons Button:hover {
+  filter: drop-shadow(0px 4px 4px rgba(0, 0, 0, 0.25));
+}
+
+.bottomButtons :first-child {
+  background-color: var(--color-white);
+} */

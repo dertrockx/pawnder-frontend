@@ -1,0 +1,76 @@
+.baseStyles {
+  width: 1200px;
+  height: 256px;
+  margin: 0px auto 48px;
+  background-color: var(--color-white);
+  filter: drop-shadow(0px 4px 4px rgba(0, 0, 0, 0.25));
+  display: flex;
+}
+
+.image {
+  /* 
+   * Just using width and height doesn't work, especially when the width
+   * of an image is shorter than the 340px.
+   */
+  min-height: 256px;
+  min-width: 340px;
+  max-height: 256px;
+  max-width: 340px;
+
+  object-fit: cover;
+}
+
+.rightContainer {
+  overflow: hidden; /* So the title, body, and tags don't overflow to the right */
+  padding: 8px 16px 8px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.titleContainer {
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 1;
+}
+
+.contentContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.paragraphContainer {
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 4;
+  line-height: 32px;
+  word-spacing: 4px;
+  text-align: justify
+}
+
+.linkText {
+  width: max-content;
+  color: var(--color-brand-default);
+}
+
+.linkText:hover {
+  color: var(--color-brand-darker);
+}
+
+.bottomContainer {
+  display: flex;
+  margin-top: auto;
+  gap: 16px;
+  overflow: hidden;
+  /* For date and institution name. */
+  display: -webkit-box;
+  -webkit-box-orient: horizontal;
+}
+
+.icon {
+  display: flex;
+  gap: 8px;
+}

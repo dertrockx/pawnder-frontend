@@ -1,0 +1,84 @@
+<<<<<<< HEAD
+* {
+	position: relative;
+}
+
+.baseStyles:focus {
+	border: 2px solid var(--color-brand-default);
+	outline: none;
+}
+
+.inputError {
+	border: 2px solid var(--color-red);
+	border-radius: 5px;
+	width: 100%;
+	height: 40px;
+	padding: 10px;
+	margin-top: 5px;
+	margin-bottom: 5px;
+}
+
+.baseStyles {
+<<<<<<< HEAD
+	border: 2px solid var(--color-light-grey);
+	border-radius: 5px;
+	width: 100%;
+	height: 40px;
+	padding: 10px;
+	margin-top: 5px;
+	margin-bottom: 5px;
+	font-size: 16px;
+	font-size: 16;
+	font-family: "Raleway";
+=======
+=======
+.baseStyles {
+>>>>>>> 6f24e80395dd1ab0aecd31fa25bd999cabe09cd9
+  border: 2px solid var(--color-light-grey);
+  border-radius: 5px;
+  width: 100%;
+  height: 40px;
+  padding: 10px;
+  margin-top: 5px;
+  margin-bottom: 5px;
+  font-size: 16px;
+  font-size: 16;
+  font-family: 'Raleway';
+  transition: all 0.25s;
+<<<<<<< HEAD
+>>>>>>> Lift state up in manage stories and more
+}
+
+.baseStyles:focus {
+	border: 2px solid var(--color-brand-default);
+	outline: none;
+=======
+}
+
+.baseStyles:focus {
+  border: 2px solid var(--color-brand-default);
+  outline: none;
+>>>>>>> 6f24e80395dd1ab0aecd31fa25bd999cabe09cd9
+}
+
+.baseStyles:hover:not(:focus) {
+  border: 2px solid var(--color-grey);
+  outline: none;
+}
+
+.baseStyles::placeholder {
+<<<<<<< HEAD
+	color: #bbc8d4;
+	font-size: 16px;
+	font-size: 16;
+	font-family: "Raleway";
+	font-weight: 400;
+}
+=======
+  color: #BBC8D4;
+  font-size: 16px;
+  font-size: 16;
+  font-family: 'Raleway';
+  font-weight: 400;
+}
+>>>>>>> 6f24e80395dd1ab0aecd31fa25bd999cabe09cd9

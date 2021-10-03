@@ -1,6 +1,5 @@
 import React, { lazy, Suspense, useEffect, useState } from "react";
 import { Router, Switch, Redirect } from "react-router-dom";
-
 import { Route } from "react-router";
 
 // reset default styles for all html elements - https://en.wikipedia.org/wiki/Reset_style_sheet
@@ -29,9 +28,13 @@ const ManagePetDetails = lazy(() =>
 );
 const Dashboard = lazy(() => import("pages/Dashboard"));
 const UserSettings = lazy(() => import("pages/UserSettings"));
+const UserOnboarding = lazy(() => import("pages/UserOnboarding"));
+const ShowStoryList = lazy(() => import("pages/ShowStoryList"));
+const ShowStoryDetails = lazy(() => import("pages/ShowStoryDetails"));
 const InstitutionSignUp = lazy(() => import("pages/InstitutionSignUpPage"));
 const InstitutionLogin = lazy(() => import("pages/InstitutionLoginPage"));
-const ShowStoryDetails = lazy(() => import("pages/ShowStoryDetails"));
+const InstitutionSettings = lazy(() => import("pages/InstitutionSettings"));
+const ManageStoryList = lazy(() => import("pages/ManageStoryList"));
 const ManageStoryDetails = lazy(() => import("pages/ManageStoryDetails"));
 const ChooseLogin = lazy(() => import("pages/ChooseLogin"));
 const ChooseSignup = lazy(() => import("pages/ChooseSignup"));
@@ -64,7 +67,6 @@ function App() {
 			<Router history={history}>
 				<Switch>
 					{/* NavRoute props are for authenticated sessions */}
-
 					<NavRoute path="/feed" exact component={Feed} type={model.USER} />
 					<NavRoute
 						path="/nearby"
@@ -77,7 +79,6 @@ function App() {
 						component={ShowStoryDetails}
 						type={null}
 					/>
-
 					<Route
 						path={`${INSTITUTION_ROOT}/login`}
 						exact
@@ -109,7 +110,6 @@ function App() {
 						component={ManageStoryDetails}
 						type={model.INSTITUTION}
 					/>
-
 					{/* cutoff */}
 					<Route path={`${USER_ROOT}/login`} exact component={UserLoginPage} />
 					<Route
@@ -129,6 +129,22 @@ function App() {
 					/>
 					<NavRoute path="/login" exact component={ChooseLogin} />
 					<NavRoute path="/signup" exact component={ChooseSignup} />
+					<Route
+						path="/user/onboarding"
+						exact
+						component={UserOnboarding}
+					/>{" "}
+					{/* Maybe change to /onboarding kasi depende pa rin kung logged in as user or onboarding? */}
+					<NavRoute
+						path="/institution/settings"
+						component={InstitutionSettings}
+					/>{" "}
+					{/* Maybe change to just /settings kapag logged in as insti?*/}
+					<NavRoute path="/stories" component={ShowStoryList} />
+					<NavRoute
+						path="/institution/manage-stories"
+						component={ManageStoryList}
+					/>
 					<Redirect path="/" to="/signup" exact />
 				</Switch>
 			</Router>

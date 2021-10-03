@@ -1,0 +1,32 @@
+.baseStyles {
+  color: var(--color-black);
+  text-align: center;
+  display: flex;
+  flex-direction: row;
+  gap: 10px;
+}
+
+.tagContainer {
+  display: flex;
+  flex-direction: row;
+  max-height: 18px;
+}
+
+/*
+ * I would have used clip-path but the left side gets more streched
+ * the longer the tag is. So I opted for making a separate triangle
+ * and a separate paragraph and have them side-by-side.
+ */
+.triangle {
+  width: 0;
+  height: 0;
+  border: 9px solid transparent;
+  border-left: 0;
+  border-right: 18px solid var(--color-brand-lighter)
+}
+
+.baseStyles p {
+  padding: 0px 10px 0px 5px;
+  background-color:var(--color-brand-lighter);
+  overflow: hidden; /* Because people might create sentence tags. Hopefully not though. */
+}

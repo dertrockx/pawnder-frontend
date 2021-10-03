@@ -1,18 +1,19 @@
-import React, { useEffect } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import React, { useEffect } from 'react';
 import {
 	Switch,
 	Route,
 	useRouteMatch,
 	Redirect,
-	useParams,
 	Link,
-} from "react-router-dom";
-import ApplicantsPage from "./Applicants";
-import ProfilePage from "./Profile";
-import styles from "./Details.module.css";
-import { getPet, fetchApplicants } from "redux/actions/";
+} from 'react-router-dom';
+import {IoSettingsSharp} from 'react-icons/io5';
 
+import SecurityPage from './Security';
+import ProfilePage from './Profile';
+import styles from './InstitutionSettings.module.css';
+
+
+// See comment in manage pets page
 const BetterSidebarLink = ({ children, ...linkProps }) => (
 	<Route
 		path={linkProps.to}
@@ -21,29 +22,15 @@ const BetterSidebarLink = ({ children, ...linkProps }) => (
 	/>
 );
 
-function Details() {
-	const { token } = useSelector((s) => s.auth);
-	const { petId: cachedPetId } = useSelector((s) => s.pet);
-	const { applicants } = useSelector((s) => s.applicant);
+const InstitutionSettings= () => {
 	let { path, url } = useRouteMatch();
-	const dispatch = useDispatch();
-
-	const { petId } = useParams();
-	// fetch pet information here
-	useEffect(() => {
-		if (token && (!cachedPetId || !applicants)) {
-			dispatch(getPet(petId));
-			dispatch(fetchApplicants(petId));
-		}
-
-		// eslint-disable-next-line
-	}, [token, cachedPetId]);
 
 	return (
 		<div className={styles.container}>
-			<h1 className="heading-1" style={{ marginLeft: 90 }}>
-				Manage Pet
-			</h1>
+      <h1 className="heading-1" style={{display: "flex", gap: "10px", marginLeft: "30px"}} >
+        <IoSettingsSharp style={{color: "var(--color-brand-darker)"}} />
+        Settings
+      </h1>
 			<div className={styles.content}>
 				<nav className={styles.sidebar}>
 					<div className={styles.sidebarContent}>
@@ -62,7 +49,7 @@ function Details() {
 							)}
 						</BetterSidebarLink>
 
-						<BetterSidebarLink to={`${url}/applicants`}>
+						<BetterSidebarLink to={`${url}/security`}>
 							{({ active, linkProps }) => (
 								<div
 									className={`${styles.sidebarItem} ${
@@ -70,7 +57,7 @@ function Details() {
 									}`}
 								>
 									<Link {...linkProps}>
-										<h2 className="heading-2">Applicants</h2>
+										<h2 className="heading-2">Security</h2>
 									</Link>
 								</div>
 							)}
@@ -80,11 +67,7 @@ function Details() {
 				<main className={styles.main}>
 					<Switch>
 						<Route path={`${path}/profile`} exact component={ProfilePage} />
-						<Route
-							path={`${path}/applicants`}
-							exact
-							component={ApplicantsPage}
-						/>
+						<Route path={`${path}/security`} exact component={SecurityPage}/>
 						<Redirect path={path} to={`${path}/profile`} exact />
 					</Switch>
 				</main>
@@ -93,4 +76,4 @@ function Details() {
 	);
 }
 
-export default Details;
+export default InstitutionSettings;

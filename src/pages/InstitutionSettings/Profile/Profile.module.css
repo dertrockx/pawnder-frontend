@@ -1,0 +1,100 @@
+.center {
+  height: fit-content;
+  width: fit-content;
+  text-align: center;
+  /* flex display not working */
+  margin: 15% auto;
+}
+
+.halfField {
+  margin-top: 5px;
+	display: grid;
+	grid-template-columns: 0.75fr 2fr;
+	column-gap: 60px;
+	margin-bottom: 60px;
+}
+
+.leftLabel > p {
+  margin-top: 10px;
+}
+
+.twoFields {
+	display: grid;
+	grid-template-columns: 0.75fr 2fr;
+	column-gap: 10px;
+  margin-bottom: 32px;
+  align-items: baseline;
+}
+
+.bottomButtons {
+  width: 276px;
+  float: right;
+  display: flex;
+  gap: 20px;
+  justify-content: flex-end;
+}
+
+/* .bottomButtons Button {
+  filter: drop-shadow(0px 4px 4px rgba(0, 0, 0, 0.25));
+}
+
+.bottomButtons :first-child {
+  background-color: var(--color-white);
+} */
+
+
+/* Image */
+.imageContainer {
+  display: flex;
+  flex-direction: row;
+}
+
+.imageContainerRight {
+  padding-top: 30px;
+  margin-left: 30px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+
+.img{
+  width: 150px;
+  height: 150px;
+  border-radius: 50%;
+  object-fit: cover;
+  margin-bottom: 10px;
+}
+
+.imageUploadButton{
+  /* Small variant */
+  padding: 10px 20px;
+
+  /* Typography */
+  font-family: "Raleway", sans-serif;
+	font-style: normal;
+	font-weight: bold;
+	font-size: 18px;
+	line-height: 21px;
+	letter-spacing: -0.01em;
+	text-transform: uppercase;
+
+  /* Base styles */
+  display: inline-block;
+	cursor: pointer;
+	background: #ddd;
+	border-radius: 10px;
+	transition: all 0.3s;
+
+  /* Filled brand-default */
+  background: var(--color-brand-default);
+	color: var(--color-white);
+}
+
+.imageUploadButton:hover {
+	filter: brightness(0.8);
+}
+
+.hideInput {
+	display: none;
+}
