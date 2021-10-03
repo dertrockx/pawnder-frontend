@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useHistory } from "react-router";
+import history from "utils/history";
 import BasicInput from "components/BasicInput";
 import Button from "components/Button";
 import BasicLink from "components/BasicLink";
@@ -7,7 +7,6 @@ import styles from "./UserSignup.module.css"
 // import { IoConstructOutline } from "react-icons/io5";
 
 function UserSignupPage() {
-	const history = useHistory();
 	const [ email, setEmail ] = useState("");
 	const [ password, setPassword ] = useState("");
 	const [ confirmPassword, setConfirmPassword ] = useState("");    

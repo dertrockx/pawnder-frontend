@@ -33,10 +33,10 @@ function UserSettingsPreferences() {
 	const isAuthenticated = useSelector((s) => s.auth.isAuthenticated);
 	const loginType = useSelector((s) => s.auth.loginType);
   const model = useSelector((s) => s.auth.model);
-  
+
   //checks if user is authenticated
   useEffect(() => {
-    if(!isAuthenticated && loginType !== "USER") history.replace("/user/login")
+    if(!isAuthenticated && loginType !== "USER") return history.replace("/user/login")
     const id = Object.values(model)[0];
     fetch(
       `http://localhost:8081/api/0.1/user/` + id,
@@ -66,7 +66,7 @@ function UserSettingsPreferences() {
     })
 
     // console.log(type)
-  }, [])
+  }, [isAuthenticated])
 
   const handleChange = (e, setData) => {
     const data= e.target.value
@@ -87,7 +87,6 @@ function UserSettingsPreferences() {
   const handleSubmit = (e) => {
     e.preventDefault();
     const id = Object.values(model)[0];
-
     //submit to backend
     fetch(
       `http://localhost:8081/api/0.1/user/` + id,
