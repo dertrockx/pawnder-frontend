@@ -141,8 +141,16 @@ function UserSettingsInformation() {
 		const id = model.id;
 		if (
 			values.firstName === "" ||
+      values.firstName === null ||
 			values.lastName === "" ||
-			values.contactNumber === ""
+			values.lastName === null ||
+			values.contactNumber === "" || 
+      values.contactNumber === null ||
+			values.locationLat === "" ||
+			values.locationLong === "" ||
+      values.locationLat === null ||
+			values.locationLong === null
+      
 		)
 			return setIsRequired(true);
 		// change logic of this one
@@ -151,7 +159,7 @@ function UserSettingsInformation() {
 		if (
 			isNaN(values.contactNumber) ||
 			!values.contactNumber ||
-			values.contactNumber.length !== 1
+			values.contactNumber.length !== 11
 		)
 			return setContactNumberError(true);
 
