@@ -11,7 +11,7 @@ import moment from 'moment';
 const StoryCardManage = ({
   story,
   handleDelete,
-  handlePublish        
+  handlePublish,
 }) => {
   const DeleteAlertDialog = ({ id }) => {
     const [isOpen, setIsOpen] = useState(false);

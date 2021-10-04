@@ -1,8 +1,11 @@
 import React, { useState, useEffect, useRef } from 'react';
+import { useSelector, useDispatch } from 'react-redux';
 import { IoLocationSharp } from 'react-icons/io5';
 import { Input, InputGroup, InputLeftAddon, Textarea, useToast, Tooltip} from '@chakra-ui/react';
 import { Button as ChakraButton, AlertDialog, AlertDialogOverlay, AlertDialogContent, AlertDialogHeader, AlertDialogBody, AlertDialogFooter } from '@chakra-ui/react';
-import axios from'axios'
+
+import axios from 'utils/axios';
+import history from 'utils/history';
 
 import Button from 'components/Button';
 import HR from 'components/HR';
@@ -13,7 +16,9 @@ import styles from './Profile.module.css';
 
 const Profile = () => {
   // fetch user id here from redux login
-  const id = 4;
+  // const id = 4;
+
+  const { model, isAuthenticated, loginType, token } =  useSelector(s => s.auth);
 
   const [values, setValues] = useState({
 		avatarPhoto: '',
@@ -53,7 +58,11 @@ const Profile = () => {
   const toast = useToast();
 
   useEffect(() => {
-    axios.get('http://localhost:8081/api/0.1/institution/' + id)
+    axios.get(`/api/0.1/institution/${model.id}`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      }
+    })
     .then(res => {
       console.log(res);
       const { institution } = res.data;
@@ -129,6 +138,8 @@ const Profile = () => {
     })
 
     setImagePreview(values.avatarPhoto);
+    history.push('/institution/settings');
+
   }
 
   const CancelAlertDialog = () => {
@@ -165,8 +176,16 @@ const Profile = () => {
     const onClose = () => setIsOpen(false);
     const cancelRef = useRef();
 
-    const handleSave = () => {
-      if (/^\d{10}$/.test(currentValues.contactNumber) === false) {
+    const handleSave = () => {      
+      if (currentValues.locationLat === null && currentValues.locationLong === null) {
+        toast({
+          title: 'Location is required.',
+          status: 'error',
+          position: 'top',
+          duration: 5000,
+          isClosable: true,
+        });
+      } else if (/^\d{10}$/.test(currentValues.contactNumber) === false) {
         toast({
           title: 'Contact number format is invalid.',
           status: 'error',
@@ -254,11 +273,21 @@ const Profile = () => {
 
   // Location handler
   const onSuccess = (position) => {
-    setValues({
-      ...values,
-      locationLat: position.coords.latitude,
-      locationLong: position.coords.longitude,
-    });
+    if (position.coords.latitude !== currentValues.locationLat && position.coords.longitude !== currentValues.locationLong) { 
+      setCurrentValues({
+        ...currentValues,
+        locationLat: position.coords.latitude,
+        locationLong: position.coords.longitude,
+      });
+    } else {
+      toast({
+        title: 'Cannot update your location because it is the same.',
+        status: 'error',
+        position: 'top',
+        duration: 5000,
+        isClosable: true,
+      });
+    }
   }
   
   const onError = () => {
@@ -305,7 +334,11 @@ const Profile = () => {
     formData.append('locationLat', currentValues.locationLat);
     formData.append('locationLong', currentValues.locationLong);
 
-    axios.put('http://localhost:8081/api/0.1/institution/' + id, formData)
+    axios.put(`/api/0.1/institution/${model.id}`, formData, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      }
+    })
     .then(res => {
       console.log(res);
       setLoading(false);
@@ -316,6 +349,8 @@ const Profile = () => {
         duration: 5000,
         isClosable: true,
       });
+
+      history.push('/institution/settings');
     })
     .catch(err => {
       console.log(err);
@@ -328,11 +363,6 @@ const Profile = () => {
         isClosable: true,
       });
     })
-
-    // Might refetch insti data or use window reload
-
-    // For testing
-    console.log(values);
   }
 
   return (
@@ -450,7 +480,7 @@ const Profile = () => {
                 <div className={styles.twoFields}>
                   <p className="paragraph">Location</p>
                   {/* Interchange current values and values */}
-                  {(values.locationLat !== currentValues.locationLat && values.locationLong !== currentValues.locationLat)
+                  {(currentValues.locationLat !== values.locationLat && currentValues.locationLong !== values.locationLat)
                   ? <Button size="small" color="brand-default" onClick={handleLocation}> <span>Location updated</span><IoLocationSharp /> </Button>
                   : <Button size="small" color="brand-default" onClick={handleLocation} variant="outline"><IoLocationSharp /> <span>Update location</span></Button> 
                   }
