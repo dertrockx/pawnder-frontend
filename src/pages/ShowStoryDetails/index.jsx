@@ -2,7 +2,7 @@ import {useEffect} from "react";
 import styles from './ShowStoryDetails.module.css';
 import { useParams, Link, useHistory } from 'react-router-dom';
 import StoryDetailsTag from 'components/StoryDetailsTags';
-import { ArrowBackIcon} from '@chakra-ui/icons';
+import { ArrowBackIcon} from '@chakra-ui/react';
 import { useSelector } from "react-redux";
 
 const ShowStoryDetails = ({ data }) => {
