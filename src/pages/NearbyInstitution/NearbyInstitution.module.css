@@ -16,6 +16,18 @@
 	border-radius: 4px;
 }
 
+.floatingCardWithNoImage {
+	position: absolute;
+	z-index: 1;
+	top: 0;
+	left: 0;
+	margin: 40px;
+	width: 300px;
+	padding: 15px;
+	background: #fff;
+	border-radius: 15px;
+}
+
 .floatingCard {
 	position: absolute;
 	z-index: 1;
