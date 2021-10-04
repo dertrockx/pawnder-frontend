@@ -145,7 +145,14 @@ function UserSettingsInformation() {
 			values.contactNumber === ""
 		)
 			return setIsRequired(true);
-		if (values.contactNumber.length !== 11 || isNaN(values.contactNumber))
+		// change logic of this one
+		// regardless of the left-part's value, it still checks the right side
+		// that's why it results to a .null error
+		if (
+			isNaN(values.contactNumber) ||
+			!values.contactNumber ||
+			values.contactNumber.length !== 1
+		)
 			return setContactNumberError(true);
 
 		const data = new FormData();
