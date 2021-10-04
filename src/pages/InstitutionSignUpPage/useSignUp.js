@@ -31,7 +31,7 @@ const useSignUp = (callback, validate) => {
 		if (!errors.email && !errors.password && !errors.password2 && isSubmitting) {
 			callback();
 			fetch(
-				"http://localhost:8081/api/0.1/user",
+				"http://localhost:8081/api/0.1/institution",
 				{
 					method: "POST",
 					headers: {
