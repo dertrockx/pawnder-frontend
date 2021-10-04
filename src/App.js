@@ -74,6 +74,11 @@ function App() {
 						component={NearbyInstitution}
 						type={model.USER}
 					/>
+					<NavRoute 
+						path="/stories"
+						component={ShowStoryList}
+						type={null}	
+					/>
 					<NavRoute
 						path="/stories/:id"
 						component={ShowStoryDetails}
@@ -106,10 +111,22 @@ function App() {
 						type={model.INSTITUTION}
 					/>
 					<NavRoute
+						path="/institution/manage-stories"
+						component={ManageStoryList}
+						type={model.INSTITUTION}
+					/>
+					<NavRoute
 						path={`${INSTITUTION_ROOT}/manage-stories/:id`}
 						component={ManageStoryDetails}
 						type={model.INSTITUTION}
 					/>
+					<NavRoute
+						path={`${INSTITUTION_ROOT}/settings`}
+						component={InstitutionSettings}
+						exact
+						type={model.INSTITUTION}
+					/>
+
 					{/* cutoff */}
 					<Route path={`${USER_ROOT}/login`} exact component={UserLoginPage} />
 					<Route
@@ -118,9 +135,14 @@ function App() {
 						component={UserSignupPage}
 					/>
 					<Route
-						path={`${INSTITUTION_ROOT}/onboarding`}
+						path={`${USER_ROOT}/onboarding`}
 						exact
 						component={InstitutionOnboardingPage}
+					/>
+					<Route
+						path={`${INSTITUTION_ROOT}/onboarding`}
+						exact
+						component={UserOnboarding}
 					/>
 					<NavRoute
 						path={`${USER_ROOT}/settings`}
@@ -129,22 +151,6 @@ function App() {
 					/>
 					<NavRoute path="/login" exact component={ChooseLogin} />
 					<NavRoute path="/signup" exact component={ChooseSignup} />
-					<Route
-						path="/user/onboarding"
-						exact
-						component={UserOnboarding}
-					/>{" "}
-					{/* Maybe change to /onboarding kasi depende pa rin kung logged in as user or onboarding? */}
-					<NavRoute
-						path="/institution/settings"
-						component={InstitutionSettings}
-					/>{" "}
-					{/* Maybe change to just /settings kapag logged in as insti?*/}
-					<NavRoute path="/stories" component={ShowStoryList} />
-					<NavRoute
-						path="/institution/manage-stories"
-						component={ManageStoryList}
-					/>
 					<Redirect path="/" to="/signup" exact />
 				</Switch>
 			</Router>
