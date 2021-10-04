@@ -108,6 +108,7 @@ function Applicants() {
 			<UserInformationModal
 				isOpen={!!selected}
 				onClose={onClose}
+				selectedApplicant={selected || {}}
 				underReview={!!selected && selected.status !== "under review"}
 				loading={updating || fetching}
 				secAction={
