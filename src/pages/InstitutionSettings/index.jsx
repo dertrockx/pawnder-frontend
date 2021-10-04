@@ -1,17 +1,10 @@
-import React, { useEffect } from 'react';
-import {
-	Switch,
-	Route,
-	useRouteMatch,
-	Redirect,
-	Link,
-} from 'react-router-dom';
-import {IoSettingsSharp} from 'react-icons/io5';
+import React from "react";
+import { Switch, Route, useRouteMatch, Redirect, Link } from "react-router-dom";
+import { IoSettingsSharp } from "react-icons/io5";
 
-import SecurityPage from './Security';
-import ProfilePage from './Profile';
-import styles from './InstitutionSettings.module.css';
-
+import SecurityPage from "./Security";
+import ProfilePage from "./Profile";
+import styles from "./InstitutionSettings.module.css";
 
 // See comment in manage pets page
 const BetterSidebarLink = ({ children, ...linkProps }) => (
@@ -22,15 +15,18 @@ const BetterSidebarLink = ({ children, ...linkProps }) => (
 	/>
 );
 
-const InstitutionSettings= () => {
+const InstitutionSettings = () => {
 	let { path, url } = useRouteMatch();
 
 	return (
 		<div className={styles.container}>
-      <h1 className="heading-1" style={{display: "flex", gap: "10px", marginLeft: "30px"}} >
-        <IoSettingsSharp style={{color: "var(--color-brand-darker)"}} />
-        Settings
-      </h1>
+			<h1
+				className="heading-1"
+				style={{ display: "flex", gap: "10px", marginLeft: "30px" }}
+			>
+				<IoSettingsSharp style={{ color: "var(--color-brand-darker)" }} />
+				Settings
+			</h1>
 			<div className={styles.content}>
 				<nav className={styles.sidebar}>
 					<div className={styles.sidebarContent}>
@@ -67,13 +63,13 @@ const InstitutionSettings= () => {
 				<main className={styles.main}>
 					<Switch>
 						<Route path={`${path}/profile`} exact component={ProfilePage} />
-						<Route path={`${path}/security`} exact component={SecurityPage}/>
+						<Route path={`${path}/security`} exact component={SecurityPage} />
 						<Redirect path={path} to={`${path}/profile`} exact />
 					</Switch>
 				</main>
 			</div>
 		</div>
 	);
-}
+};
 
 export default InstitutionSettings;
