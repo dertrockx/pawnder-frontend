@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { useHistory } from "react-router-dom";
+import history from "utils/history";
 import { useSelector } from "react-redux";
 import { IoArrowBack } from 'react-icons/io5';
 
@@ -13,7 +13,6 @@ import { useToast } from '@chakra-ui/react';
 
 function InstitutionOnboardingPage() {
 	const noPhoto = '/images/Avatar.png';
-	const history = useHistory();
 	const toast = useToast();
 	const [ step, setStep ] = useState(1);
 	const [ value, setValue ] = useState({
@@ -36,10 +35,9 @@ function InstitutionOnboardingPage() {
 	const isAuthenticated = useSelector((s) => s.auth.isAuthenticated);
 	const loginType = useSelector((s) => s.auth.loginType);
 	const model = useSelector((s) => s.auth.model);
-	const id = Object.values(model)[0];
 
 	useEffect(() => {
-		if(!isAuthenticated && loginType !== "INSTITUTION") history.replace("/institution/login") 
+		if(!isAuthenticated && loginType !== "INSTITUTION") return history.replace("/institution/login") 
 		if(value.name !== "" && value.description !== "" && value.contactNumber !== "") setNextDisabled(false);
 	}, []);
 
@@ -54,6 +52,7 @@ function InstitutionOnboardingPage() {
 
 	const handleSubmit = (e) => {
     e.preventDefault();
+	const id = Object.values(model)[1];
     // console.log(value);
 
 		//sends PUT request

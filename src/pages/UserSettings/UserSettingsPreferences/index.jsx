@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { useHistory } from "react-router-dom";
+import history from "utils/history";
 import { useSelector } from "react-redux";
 
 import BasicDescription from "components/BasicDescription";
@@ -21,7 +21,6 @@ import {
 } from "@chakra-ui/react"
 
 function UserSettingsPreferences() {
-	const history = useHistory();
   const format = (val) => "" + val
   const parse = (val) => val.replace(/^\$/, "")
   const [ currentType, setCurrentType ] = useState(null)
@@ -34,11 +33,11 @@ function UserSettingsPreferences() {
 	const isAuthenticated = useSelector((s) => s.auth.isAuthenticated);
 	const loginType = useSelector((s) => s.auth.loginType);
   const model = useSelector((s) => s.auth.model);
-	const id = Object.values(model)[0];
-
+  
   //checks if user is authenticated
   useEffect(() => {
     if(!isAuthenticated && loginType !== "USER") history.replace("/user/login")
+    const id = Object.values(model)[0];
     fetch(
       `http://localhost:8081/api/0.1/user/` + id,
       {
@@ -87,6 +86,7 @@ function UserSettingsPreferences() {
 
   const handleSubmit = (e) => {
     e.preventDefault();
+    const id = Object.values(model)[0];
 
     //submit to backend
     fetch(

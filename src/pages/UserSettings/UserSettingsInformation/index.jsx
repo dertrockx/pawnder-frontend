@@ -1,6 +1,10 @@
 import React, { useState, useEffect } from "react";
 import { useSelector } from "react-redux";
+<<<<<<< HEAD
 import { useHistory } from "react-router-dom";
+=======
+import history from "utils/history";
+>>>>>>> ec7264d (get id from redux)
 
 import BasicDescription from "components/BasicDescription";
 import BasicHR from "components/BasicHR";
@@ -16,7 +20,11 @@ import {
   Stack,
   useToast,
 } from "@chakra-ui/react";
+<<<<<<< HEAD
 import axios from 'axios';
+=======
+import axios from "utils/axios";
+>>>>>>> ec7264d (get id from redux)
 
 function UserSettingsInformation() {
   const noPhoto = '/images/Avatar.png';
@@ -48,7 +56,6 @@ function UserSettingsInformation() {
   const isAuthenticated = useSelector((s) => s.auth.isAuthenticated);
   const loginType = useSelector((s) => s.auth.loginType);
   const model = useSelector((s) => s.auth.model);
-  const id = Object.values(model)[0];
   const [ imagePreviewError, setImagePreviewError ] = useState(false);
   const [ imagePreview, setImagePreview ] = useState(`${noPhoto}`);
   const [ locationError, setLocationError ] = useState(false);
@@ -59,7 +66,8 @@ function UserSettingsInformation() {
 
   //checks if user is authenticated
   useEffect(() => {
-    if(!isAuthenticated && loginType !== "USER") history.replace("/user/login")
+    if(!isAuthenticated && loginType !== "USER") return history.replace("/user/login")
+    const id = Object.values(model)[1];
     fetch(
       `http://localhost:8081/api/0.1/user/` + id,
       {
@@ -110,7 +118,7 @@ function UserSettingsInformation() {
         setImagePreview(body.user.photoUrl)
     })
 
-  }, [])
+  }, [isAuthenticated])
 
   function checkObjects(keys1){
     for (let key of keys1) {
@@ -141,7 +149,8 @@ function UserSettingsInformation() {
   }
 
   const handleSubmit = (e) => {
-    
+    e.preventDefault();
+    const id = Object.values(model)[0];
     if (values.firstName === "" || values.lastName === "" || values.contactNumber === "") return setIsRequired(true)
     if (values.contactNumber.length !== 11 || isNaN(values.contactNumber)) return setContactNumberError(true);
 
