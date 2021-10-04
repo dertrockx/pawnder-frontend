@@ -1,6 +1,12 @@
 import React, { useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { Input, Select, Textarea, Spinner } from "@chakra-ui/react";
+import {
+	Input,
+	Select,
+	Textarea,
+	Spinner,
+	useDisclosure,
+} from "@chakra-ui/react";
 import Button from "components/Button";
 import HR from "components/HR";
 import styles from "./Profile.module.css";
@@ -11,6 +17,7 @@ import {
 	deletePhoto,
 } from "redux/actions/petActions";
 import EditableImage, { ImagePlaceholder } from "components/EditableImage";
+import ConfirmDeleteModal from "./ConfirmDeleteModal";
 
 function Profile() {
 	const { fetching, petId, pets, updating } = useSelector((s) => s.pet);
@@ -29,6 +36,8 @@ function Profile() {
 		otherInfo: "",
 		action: "",
 	});
+
+	const { isOpen, onClose, onOpen } = useDisclosure();
 
 	useEffect(() => {
 		if (pets && petId) {
@@ -79,6 +88,14 @@ function Profile() {
 		dispatch(deletePhoto(photoId));
 	}
 
+	function openDeleteModal() {
+		onOpen();
+	}
+
+	function handlePetDelete() {
+		onClose();
+	}
+
 	if (fetching || !petId) return <Spinner />;
 
 	const {
@@ -95,239 +112,255 @@ function Profile() {
 	} = info;
 
 	return (
-		<div>
-			<h3 className="heading-3">Main picture</h3>
-			<p className="caption" style={{ marginTop: 7 }}>
-				Upload your pet’s main picture to be displayed on screen
-			</p>
-			<div
-				style={{
-					display: "flex",
-					alignItems: "center",
-					// justifyContent: "space-between",
-					gap: 52,
-					margin: "30px 0",
-				}}
-			>
-				{mainPhoto && (
-					<EditableImage
-						photo={mainPhoto}
-						loading={updating}
-						handleUpdate={handleUpload}
-						handleDelete={handleDelete}
-						noDelete
-					/>
-				)}
-				<p className="caption">
-					*Hover on the picture and click the button to edit it*
+		<>
+			<div>
+				<h3 className="heading-3">Main picture</h3>
+				<p className="caption" style={{ marginTop: 7 }}>
+					Upload your pet’s main picture to be displayed on screen
 				</p>
-			</div>
-			<h3 className="heading-3">Other Pictures</h3>
-			<div className={styles.halfField}>
-				<p className="caption">
-					Upload your pet’s other pictures. Can be more than one, maximum of 4
-					pictures.
-				</p>
-				<div className={styles.pictures}>
-					{otherPhotos.map((otherPhoto, idx) => (
-						<React.Fragment key={idx}>
-							{otherPhoto ? (
-								<EditableImage
-									photo={otherPhoto}
-									loading={updating}
-									handleUpdate={handleUpload}
-									handleDelete={handleDelete}
-								/>
-							) : (
-								<ImagePlaceholder
-									handleUpload={handleNewUpload}
-									loading={updating}
-								/>
-							)}
-						</React.Fragment>
-					))}
-					{/* <img
-						src="https://picsum.photos/229/201"
-						style={{ objectFit: "cover", width: 229, height: 201 }}
-						alt=""
-					/>
-					<img
-						src="https://picsum.photos/229/201"
-						style={{ objectFit: "cover", width: 229, height: 201 }}
-						alt=""
-					/>
-					<img
-						src="https://picsum.photos/229/201"
-						style={{ objectFit: "cover", width: 229, height: 201 }}
-						alt=""
-					/>
-					<img
-						src="https://picsum.photos/229/201"
-						style={{ objectFit: "cover", width: 229, height: 201 }}
-						alt=""
-					/> */}
+				<div
+					style={{
+						display: "flex",
+						alignItems: "center",
+						// justifyContent: "space-between",
+						gap: 52,
+						margin: "30px 0",
+					}}
+				>
+					{mainPhoto && (
+						<EditableImage
+							photo={mainPhoto}
+							loading={updating}
+							handleUpdate={handleUpload}
+							handleDelete={handleDelete}
+							noDelete
+						/>
+					)}
+					<p className="caption">
+						*Hover on the picture and click the button to edit it*
+					</p>
 				</div>
-			</div>
-			<HR />
-
-			<div style={{ marginTop: 60 }}>
-				<h3 className="heading-3">Pet information</h3>
+				<h3 className="heading-3">Other Pictures</h3>
 				<div className={styles.halfField}>
 					<p className="caption">
-						Upload your pet’s basic information to be displayed on their profile
+						Upload your pet’s other pictures. Can be more than one, maximum of 4
+						pictures.
 					</p>
-					<div>
-						<div className={styles.twoFields}>
-							<div className={styles.field}>
-								<p className="paragraph">Pet Name</p>
-								<Input
-									type="text"
-									placeholder="I am a placeholder"
-									focusBorderColor="brand.100"
-									name="name"
-									onChange={handleChange}
-									value={name}
-									disabled={updating}
-								/>
-							</div>
-							<div className={styles.field}>
-								<p className="paragraph">Breed</p>
-								<Input
-									type="text"
-									placeholder="I am a placeholder"
-									focusBorderColor="brand.100"
-									name="breed"
-									onChange={handleChange}
-									value={breed}
-									disabled={updating}
-								/>
-							</div>
-							<div className={styles.field}>
-								<p className="paragraph">Animal type</p>
-								<Select
-									placeholder="Select option"
-									focusBorderColor="brand.100"
-									name="animalType"
-									onChange={handleChange}
-									value={animalType}
-									disabled={updating}
-								>
-									<option value="dogs">Dog</option>
-									<option value="cats">Cat</option>
-									<option value="fish and aquariums">Fish and Aquariums</option>
-									<option value="reptiles and amphibians">
-										Reptile / Amphibian
-									</option>
-									<option value="exotic pets">Exotic pet</option>
+					<div className={styles.pictures}>
+						{otherPhotos.map((otherPhoto, idx) => (
+							<React.Fragment key={idx}>
+								{otherPhoto ? (
+									<EditableImage
+										photo={otherPhoto}
+										loading={updating}
+										handleUpdate={handleUpload}
+										handleDelete={handleDelete}
+									/>
+								) : (
+									<ImagePlaceholder
+										handleUpload={handleNewUpload}
+										loading={updating}
+									/>
+								)}
+							</React.Fragment>
+						))}
+					</div>
+				</div>
+				<HR />
 
-									<option value="rabbits">Rabbit</option>
-									<option value="rodents">Rodent</option>
-								</Select>
+				<div style={{ marginTop: 60, marginBottom: 60 }}>
+					<h3 className="heading-3">Pet information</h3>
+					<div className={styles.halfField}>
+						<p className="caption">
+							Upload your pet’s basic information to be displayed on their
+							profile
+						</p>
+						<div>
+							<div className={styles.twoFields}>
+								<div className={styles.field}>
+									<p className="paragraph">Pet Name</p>
+									<Input
+										type="text"
+										placeholder="I am a placeholder"
+										focusBorderColor="brand.100"
+										name="name"
+										onChange={handleChange}
+										value={name}
+										disabled={updating}
+									/>
+								</div>
+								<div className={styles.field}>
+									<p className="paragraph">Breed</p>
+									<Input
+										type="text"
+										placeholder="I am a placeholder"
+										focusBorderColor="brand.100"
+										name="breed"
+										onChange={handleChange}
+										value={breed}
+										disabled={updating}
+									/>
+								</div>
+								<div className={styles.field}>
+									<p className="paragraph">Animal type</p>
+									<Select
+										placeholder="Select option"
+										focusBorderColor="brand.100"
+										name="animalType"
+										onChange={handleChange}
+										value={animalType}
+										disabled={updating}
+									>
+										<option value="dogs">Dog</option>
+										<option value="cats">Cat</option>
+										<option value="fish and aquariums">
+											Fish and Aquariums
+										</option>
+										<option value="reptiles and amphibians">
+											Reptile / Amphibian
+										</option>
+										<option value="exotic pets">Exotic pet</option>
+
+										<option value="rabbits">Rabbit</option>
+										<option value="rodents">Rodent</option>
+									</Select>
+								</div>
+								<div className={styles.field}>
+									<p className="paragraph">Sex</p>
+									<Select
+										placeholder="Select option"
+										focusBorderColor="brand.100"
+										name="sex"
+										onChange={handleChange}
+										value={sex}
+										disabled={updating}
+									>
+										<option value="m">Male</option>
+										<option value="f">Female</option>
+									</Select>
+								</div>
+								<div className={styles.field}>
+									<p className="paragraph">Weight (kg)</p>
+									<Input
+										type="text"
+										placeholder="I am a placeholder"
+										focusBorderColor="brand.100"
+										name="weight"
+										onChange={handleChange}
+										value={weight}
+										disabled={updating}
+									/>
+								</div>
+								<div className={styles.field}>
+									<p className="paragraph">Height (kg)</p>
+									<Input
+										type="text"
+										placeholder="I am a placeholder"
+										focusBorderColor="brand.100"
+										name="height"
+										onChange={handleChange}
+										value={height}
+										disabled={updating}
+									/>
+								</div>
+								<div className={styles.field}>
+									<p className="paragraph">Age (in months)</p>
+									<Input
+										type="text"
+										focusBorderColor="brand.100"
+										name="age"
+										onChange={handleChange}
+										value={age}
+										disabled={updating}
+									/>
+								</div>
 							</div>
-							<div className={styles.field}>
-								<p className="paragraph">Sex</p>
-								<Select
-									placeholder="Select option"
-									focusBorderColor="brand.100"
-									name="sex"
-									onChange={handleChange}
-									value={sex}
-									disabled={updating}
-								>
-									<option value="m">Male</option>
-									<option value="f">Female</option>
-								</Select>
-							</div>
-							<div className={styles.field}>
-								<p className="paragraph">Weight (kg)</p>
-								<Input
-									type="text"
-									placeholder="I am a placeholder"
-									focusBorderColor="brand.100"
-									name="weight"
-									onChange={handleChange}
-									value={weight}
-									disabled={updating}
-								/>
-							</div>
-							<div className={styles.field}>
-								<p className="paragraph">Height (kg)</p>
-								<Input
-									type="text"
-									placeholder="I am a placeholder"
-									focusBorderColor="brand.100"
-									name="height"
-									onChange={handleChange}
-									value={height}
-									disabled={updating}
-								/>
-							</div>
-							<div className={styles.field}>
-								<p className="paragraph">Age (in months)</p>
-								<Input
-									type="text"
-									focusBorderColor="brand.100"
-									name="age"
-									onChange={handleChange}
-									value={age}
-									disabled={updating}
-								/>
-							</div>
-						</div>
-						<div className={styles.oneField} style={{ marginTop: 20 }}>
-							<div className={styles.field}>
-								<p className="paragraph">Medical History</p>
-								<Textarea
-									type="text"
-									placeholder="I am a placeholder"
-									focusBorderColor="brand.100"
-									rows={3}
-									name="medicalHistory"
-									onChange={handleChange}
-									value={medicalHistory}
-									disabled={updating}
-								/>
-							</div>
-							<div className={styles.field}>
-								<p className="paragraph">Other information</p>
-								<Textarea
-									type="text"
-									placeholder="I am a placeholder"
-									focusBorderColor="brand.100"
-									rows={3}
-									name="otherInfo"
-									onChange={handleChange}
-									value={otherInfo}
-									disabled={updating}
-								/>
-							</div>
-							<div className={styles.field}>
-								<p className="paragraph">Open for...</p>
-								<Select
-									placeholder="Select option"
-									focusBorderColor="brand.100"
-									name="action"
-									onChange={handleChange}
-									value={action}
-									disabled={updating}
-								>
-									<option value="adopt">Adoption</option>
-									<option value="foster">Foster</option>
-								</Select>
+							<div className={styles.oneField} style={{ marginTop: 20 }}>
+								<div className={styles.field}>
+									<p className="paragraph">Medical History</p>
+									<Textarea
+										type="text"
+										placeholder="I am a placeholder"
+										focusBorderColor="brand.100"
+										rows={3}
+										name="medicalHistory"
+										onChange={handleChange}
+										value={medicalHistory}
+										disabled={updating}
+									/>
+								</div>
+								<div className={styles.field}>
+									<p className="paragraph">Other information</p>
+									<Textarea
+										type="text"
+										placeholder="I am a placeholder"
+										focusBorderColor="brand.100"
+										rows={3}
+										name="otherInfo"
+										onChange={handleChange}
+										value={otherInfo}
+										disabled={updating}
+									/>
+								</div>
+								<div className={styles.field}>
+									<p className="paragraph">Open for...</p>
+									<Select
+										placeholder="Select option"
+										focusBorderColor="brand.100"
+										name="action"
+										onChange={handleChange}
+										value={action}
+										disabled={updating}
+									>
+										<option value="adopt">Adoption</option>
+										<option value="foster">Foster</option>
+									</Select>
+								</div>
 							</div>
 						</div>
 					</div>
+					<Button
+						block
+						color="brand-default"
+						disabled={updating}
+						onClick={handleSave}
+					>
+						Save
+					</Button>
+				</div>
+
+				<HR />
+				<h2 className="heading-2">Danger zone</h2>
+				<div
+					style={{
+						marginTop: 30,
+						marginBottom: 60,
+						display: "flex",
+						gap: 15,
+						alignItems: "center",
+						justifyContent: "space-between",
+					}}
+				>
+					<div style={{ display: "flex", flexDirection: "column", gap: 15 }}>
+						<h3 className="heading-3">Delete pet</h3>
+						<p className="caption">
+							Permanently delete pet and all of its applicants
+						</p>
+					</div>
+
+					<div style={{ alignSelf: "flex-end" }}>
+						<Button variant="outline" color="red" onClick={openDeleteModal}>
+							Delete
+						</Button>
+					</div>
 				</div>
 			</div>
-			<Button
-				block
-				color="brand-default"
-				disabled={updating}
-				onClick={handleSave}
-			>
-				Save
-			</Button>
-		</div>
+			<ConfirmDeleteModal
+				isOpen={isOpen}
+				onClose={onClose}
+				onSuccess={handlePetDelete}
+			/>
+		</>
 	);
 }
 

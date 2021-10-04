@@ -28,8 +28,7 @@ function getPetImage(pet) {
 function ManagePetsList() {
 	const { model = {}, isAuthenticated } = useSelector((s) => s.auth);
 	const { pets, fetching, creating } = useSelector((s) => s.pet);
-	// const [pets, setPets] = useState(null);
-	// const [loading, setLoading] = useState(true);
+
 	const { isOpen, onOpen, onClose } = useDisclosure();
 	const [file, setFile] = useState(null);
 	const [others, setOthers] = useState({});
@@ -90,8 +89,6 @@ function ManagePetsList() {
 	}
 
 	useEffect(() => {
-		// if (loading) return;
-
 		if (isAuthenticated) {
 			dispatch(getPets());
 		}
@@ -109,7 +106,6 @@ function ManagePetsList() {
 		Object.values(others).forEach((otherPhoto) => {
 			formData.append("others", otherPhoto);
 		});
-		// formData.append("others", others);
 
 		console.log(...formData);
 		dispatch(createPet(formData)).then(() => {
@@ -157,11 +153,6 @@ function ManagePetsList() {
 					)}
 				</div>
 			</div>
-			{/* <UserInformationModal
-					isOpen={isOpen}
-					onClose={onClose}
-					underReview={true}
-				/> */}
 			<CreatePetModal
 				isOpen={isOpen}
 				onClose={onClose}

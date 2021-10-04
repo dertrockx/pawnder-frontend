@@ -110,7 +110,7 @@ function CreatePetModal({
 								</Select>
 							</FormControl>
 							<FormControl isRequired id="sex">
-								<FormLabel>Height</FormLabel>
+								<FormLabel>Sex</FormLabel>
 								<Select
 									placeholder="Select option"
 									focusBorderColor="brand.100"
@@ -209,7 +209,7 @@ function CreatePetModal({
 						</FormControl>
 						<Grid gridTemplateColumns="1fr 1fr" gap={5}>
 							<FormControl isRequired id="others">
-								<FormLabel >Other picture 1</FormLabel>
+								<FormLabel>Other picture 1</FormLabel>
 								<input
 									type="file"
 									name="other1"
