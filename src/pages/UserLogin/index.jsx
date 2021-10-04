@@ -48,9 +48,10 @@ function UserLoginPage() {
 			form[0].reset();
 			// console.log(`model : ${model.values()}`)
 			// console.log(`model.id : ${Object.values(model)[0]}`)
-			const modelFirstName = Object.values(model)[4];
-			if (modelFirstName === null) history.replace("/user/onboarding");
-			else history.replace("/feed");
+
+			// const modelFirstName = Object.values(model)[4];
+			// if (modelFirstName === null) history.replace("/user/onboarding");
+			// else history.replace("/feed");
 		} else {
 			// may server error or wrong credentials
 			// setInputError(true);
