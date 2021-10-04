@@ -24,14 +24,14 @@ const BetterSidebarLink = ({ children, ...linkProps }) => (
 function Details() {
 	const { token } = useSelector((s) => s.auth);
 	const { petId: cachedPetId } = useSelector((s) => s.pet);
-	const { applicants } = useSelector((s) => s.applicant);
+
 	let { path, url } = useRouteMatch();
 	const dispatch = useDispatch();
 
 	const { petId } = useParams();
 	// fetch pet information here
 	useEffect(() => {
-		if (token && (!cachedPetId || !applicants)) {
+		if (token) {
 			dispatch(getPet(petId));
 			dispatch(fetchApplicants(petId));
 		}

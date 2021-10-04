@@ -21,6 +21,7 @@ function ApplicantCard(props) {
 		onCancel = () => {},
 		name = "User name",
 		age = null,
+		photoUrl,
 	} = props;
 	return (
 		<Flex
@@ -34,7 +35,7 @@ function ApplicantCard(props) {
 		>
 			{/* left side */}
 			<HStack alignItems="center" spacing={5}>
-				<Image src="https://via.placeholder.com/80" borderRadius="50%" />
+				<Image src={photoUrl} borderRadius="50%" boxSize="80px" />
 				<VStack spacing="5px" alignItems="flex-start">
 					<h4 className="heading-4">{name}</h4>
 					<HStack spacing="10px">

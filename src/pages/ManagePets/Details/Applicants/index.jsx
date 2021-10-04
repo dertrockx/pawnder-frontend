@@ -50,7 +50,13 @@ function Applicants() {
 
 				{underReview && underReview.length > 0 ? (
 					underReview.map((applicant) => {
-						const { id, firstName = "", lastName = "", birthDate } = applicant;
+						const {
+							id,
+							firstName = "",
+							lastName = "",
+							birthDate,
+							photoUrl,
+						} = applicant;
 						let name = `${firstName} ${lastName}`;
 						if (!firstName || !lastName) name = "No name";
 						const age = birthDate
@@ -65,6 +71,7 @@ function Applicants() {
 								onSuccess={() => handleAccept(id)}
 								name={name}
 								age={age}
+								photoUrl={photoUrl}
 							/>
 						);
 					})
@@ -85,7 +92,13 @@ function Applicants() {
 				{pending &&
 					pending.length > 0 &&
 					pending.map((applicant) => {
-						const { id, firstName = "", lastName = "", birthDate } = applicant;
+						const {
+							id,
+							firstName = "",
+							lastName = "",
+							birthDate,
+							photoUrl,
+						} = applicant;
 						let name = `${firstName} ${lastName}`;
 						if (!firstName || !lastName) name = "No name";
 						const age = birthDate
@@ -101,6 +114,7 @@ function Applicants() {
 								name={name}
 								age={age}
 								disabled={!!underReview && underReview.length > 0}
+								photoUrl={photoUrl}
 							/>
 						);
 					})}

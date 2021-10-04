@@ -5,8 +5,11 @@ import logo from "assets/logo.svg";
 import showPassword from "assets/showPassword.svg";
 import hidePassword from "assets/hidePassword.svg";
 import useMediaQuery from "hooks/useMediaQuery";
+import { useSelector } from "react-redux";
 
 const FormSignup = ({ handleSubmit, errors, values, handleChange }) => {
+	const { loginError } = useSelector((state) => state.auth);
+
 	const matches = useMediaQuery("(min-width: 800px)");
 	const [passwordShown, setPasswordShown] = useState(false);
 
@@ -28,6 +31,11 @@ const FormSignup = ({ handleSubmit, errors, values, handleChange }) => {
 				{errors.invalidInput && (
 					<span className="bold-text" id={styles.error}>
 						{errors.invalidInput}
+					</span>
+				)}
+				{loginError && (
+					<span className="bodl-text" id={styles.error}>
+						{loginError}
 					</span>
 				)}
 				<div className={styles.formInputs}>

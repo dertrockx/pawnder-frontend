@@ -23,10 +23,15 @@ export const login = (email, password, type = model.INSTITUTION) => {
 				type === model.INSTITUTION ? "/institution/dashboard" : "/feed"
 			);
 		} catch (err) {
-			console.log(err);
+			let message = "Invalid email / password combination";
+			if (err.response) {
+				const { msg } = err.response.data;
+				if (msg) message = msg;
+			}
+
 			dispatch({
 				type: auth.LOGIN_FAILED,
-				payload: "Request error.",
+				payload: message,
 			});
 		}
 	};

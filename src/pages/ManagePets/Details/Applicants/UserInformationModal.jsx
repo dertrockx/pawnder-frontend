@@ -32,15 +32,15 @@ function UserInformationModal(props) {
 		selectedApplicant = {},
 	} = props;
 
-	const {
-		firstName = "",
-		middleName = "",
-		lastName = "",
-		email = "",
-		birthDate = new Date(),
-		photoUrl = "https://via.placeholder.com/200",
-		contactNumber = "+639706062319",
-	} = selectedApplicant;
+	const firstName = selectedApplicant.firstName || "";
+	const middleName = selectedApplicant.middleName || "";
+	const lastName = selectedApplicant.lastName || "";
+	const email = selectedApplicant.email || "";
+	const birthDate = selectedApplicant.birthDate || new Date();
+	const photoUrl =
+		selectedApplicant.photoUrl ||
+		"https://avatars.dicebear.com/api/human/41234jl1.svg";
+	const contactNumber = selectedApplicant.contactNumber || "+639xxxxxxxxx";
 
 	return (
 		<Modal isOpen={isOpen} onClose={onClose} size="xl" isCentered>
