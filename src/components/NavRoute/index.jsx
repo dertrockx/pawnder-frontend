@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import PropTypes from "prop-types";
 import Navbar from "components/Navbar";
 import { Route } from "react-router";
@@ -12,21 +12,24 @@ function NavRoute({ component: Component, type, ...rest }) {
 	if auth.loginType is user but type is not for user, return feed
 	else if auth.loginType is institution but type is not for institution, return dashboard
 	*/
-	if (auth.isAuthenticated && type === null) {
-		history.push(
-			auth.loginType === model.USER ? "/feed" : "/institution/dashboard"
-		);
-	}
-	if (type) {
-		if (auth.loginType === model.USER && type !== model.USER) {
-			history.push("/feed");
-		} else if (
-			auth.loginType === model.INSTITUTION &&
-			type !== model.INSTITUTION
-		) {
-			history.push("/institution/dashboard");
+	useEffect(() => {
+		if (auth.isAuthenticated && type !== null) {
+			history.push(
+				auth.loginType === model.USER ? "/feed" : "/institution/dashboard"
+			);
 		}
-	}
+		if (type) {
+			if (auth.loginType === model.USER && type !== model.USER) {
+				history.push("/feed");
+			} else if (
+				auth.loginType === model.INSTITUTION &&
+				type !== model.INSTITUTION
+			) {
+				history.push("/institution/dashboard");
+			}
+		}
+		// eslint-disable-next-line
+	}, []);
 
 	return (
 		<>

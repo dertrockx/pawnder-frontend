@@ -14,7 +14,6 @@ export const login = (email, password, type) => {
 				password,
 				type: type,
 			});
-			const data = res.data; 
 
 			dispatch({
 				type: auth.LOGIN_COMPLETED,

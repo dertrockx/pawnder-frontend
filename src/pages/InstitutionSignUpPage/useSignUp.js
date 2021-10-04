@@ -28,36 +28,45 @@ const useSignUp = (callback, validate) => {
 	};
 
 	useEffect(() => {
-		if (!errors.email && !errors.password && !errors.password2 && isSubmitting) {
+		if (
+			!errors.email &&
+			!errors.password &&
+			!errors.password2 &&
+			isSubmitting
+		) {
 			callback();
 			fetch(
-				"http://localhost:8081/api/0.1/institution",
+				`${
+					process.env.REACT_APP_BACKEND_URL || "http://localhost:8081"
+				}/api/0.1/institution`,
 				{
 					method: "POST",
 					headers: {
-						"Content-Type": "application/json"
+						"Content-Type": "application/json",
 					},
 					body: JSON.stringify({
 						email: values.email,
-						password: values.password
-					})
-				})
-				.then(response => {
-					if(response.status === 201) {
-						//redirect 
+						password: values.password,
+					}),
+				}
+			)
+				.then((response) => {
+					if (response.status === 201) {
+						//redirect
 						history.replace("/institution/login");
 					}
-					return response.json()
+					return response.json();
 				})
-				.then(data => {
+				.then((data) => {
 					if (data.code) {
-						//say that email already exists 
+						//say that email already exists
 						setErrors(validate(values));
 						console.clear();
 						setIsSubmitting(false);
 					}
-				})
+				});
 		}
+		// eslint-disable-next-line
 	}, [errors]);
 
 	return { handleChange, handleSubmit, values, errors, isSubmitting };
