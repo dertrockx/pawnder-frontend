@@ -141,11 +141,26 @@ function UserSettingsInformation() {
 		const id = model.id;
 		if (
 			values.firstName === "" ||
+      values.firstName === null ||
 			values.lastName === "" ||
-			values.contactNumber === ""
+			values.lastName === null ||
+			values.contactNumber === "" || 
+      values.contactNumber === null ||
+			values.locationLat === "" ||
+			values.locationLong === "" ||
+      values.locationLat === null ||
+			values.locationLong === null
+      
 		)
 			return setIsRequired(true);
-		if (values.contactNumber.length !== 11 || isNaN(values.contactNumber))
+		// change logic of this one
+		// regardless of the left-part's value, it still checks the right side
+		// that's why it results to a .null error
+		if (
+			isNaN(values.contactNumber) ||
+			!values.contactNumber ||
+			values.contactNumber.length !== 11
+		)
 			return setContactNumberError(true);
 
 		const data = new FormData();
