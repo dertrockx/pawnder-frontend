@@ -8,12 +8,11 @@ import BasicLabel from "components/BasicLabel";
 import BasicHR from "components/BasicHR";
 import Button from "components/Button";
 
-import moment from 'moment';
 import styles from "./UserSettingsPreferences.module.css"
 import {
   Select,
   NumberInput,
-  NumberInputField,
+  NumberInputField, 
   NumberInputStepper,
   NumberIncrementStepper,
   NumberDecrementStepper,
@@ -34,13 +33,14 @@ function UserSettingsPreferences() {
   const [ distance, setDistance ] = useState(0);
   const [ action, setAction ] = useState(null);
   const [ isSaveDisabled, setIsSaveDisabled ] = useState(true);
-  const [ loading, setLoading ] = useState(true); // for fetching insti data and updating insti data
-  const [ hasError, setHasError ] = useState(false); // for fetching insti data
+  const [ loading, setLoading ] = useState(true);
+  const [ hasError, setHasError ] = useState(false); 
 	const isAuthenticated = useSelector((s) => s.auth.isAuthenticated);
 	const loginType = useSelector((s) => s.auth.loginType);
   const model = useSelector((s) => s.auth.model);
   const token = useSelector((s) => s.auth.token);
   const toast = useToast();
+
   //checks if user is authenticated
   useEffect(() => {
     if(!isAuthenticated && loginType !== "USER") return history.replace("/user/login")
@@ -53,7 +53,9 @@ function UserSettingsPreferences() {
         },
       })
       .then(data => {
-        console.log(data.data.user);
+        setLoading(false);
+        setHasError(false);
+        
         const user = data.data.user;
         setType(user.preferredAnimal)
         setAction(user.action)
@@ -72,34 +74,6 @@ function UserSettingsPreferences() {
       setHasError(true);
     }
 
-    // fetch(
-    //   `http://localhost:8081/api/0.1/user/` + id,
-    //   {
-    //     method: "GET",
-    //     headers: {
-    //       "Content-Type": "application/json"
-    //     }
-    //   }
-    // )
-    // .then(response => {
-    //   if (response.status === 200){
-    //     return response.json();
-    //   }
-    // })
-    // .then(body => {
-    //   setType(body.user.preferredAnimal)
-    //   setAction(body.user.action)
-    //   setDistance(body.user.preferredDistance)
-    //   setCurrentType(body.user.preferredAnimal)
-    //   setCurrentDistance(body.user.preferredDistance)
-    //   setCurrentAction(body.user.action)
-
-    // })
-    // setCurrentDistance({
-    //   distance: (distance) => distance.replace(/^\$/, "")
-    // })
-
-    // console.log(type)
   }, [token])
 
   const handleChange = (e, setData) => {
@@ -128,7 +102,7 @@ function UserSettingsPreferences() {
         preferredDistance: distance
       })
       .then(response => {
-        console.log(response);
+        setHasError(false);
         setLoading(false);
         toast({
           title: 'Successfully saved your changes.',
@@ -140,8 +114,6 @@ function UserSettingsPreferences() {
       })
 
     } catch (error) {
-      console.log("///////////////////////////")
-      console.log(error);
       setLoading(false);
       setHasError(true);
       toast({
@@ -153,22 +125,6 @@ function UserSettingsPreferences() {
       });
     }
 
-    // fetch(
-    //   `http://localhost:8081/api/0.1/user/` + id,
-    //   {
-    //     method: "PUT",
-    //     headers: {
-    //       "Content-Type": "application/json"
-    //     },
-    //     body: JSON.stringify({ preferredAnimal: type, action: action, preferredDistance: distance })
-    //   }
-    // )
-    // .then(response => {
-    //   if(response.status === 200) {
-    //     console.log(response.status);
-    //   }
-    // })
-    // window.location.reload(false);  //auto-reload to render the changes in the state but it needs the refresh token
   }
 
   return (

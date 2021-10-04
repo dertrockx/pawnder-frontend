@@ -44,7 +44,7 @@ function UserSettingsInformation() {
     locationLat: "",
     locationLong: ""
   });
-  // const [ BDAY, setBDAY ] = useState(null);
+  
   const isAuthenticated = useSelector((s) => s.auth.isAuthenticated);
   const loginType = useSelector((s) => s.auth.loginType);
   const token = useSelector((s) => s.auth.token);
@@ -55,15 +55,14 @@ function UserSettingsInformation() {
   const [ isSaveDisabled , setIsSaveDisabled ] = useState(false);
   const [ isRequired, setIsRequired ] = useState(false);
   const [ contactNumberError, setContactNumberError ] = useState(false);
-  const [ loading, setLoading ] = useState(true); // for fetching insti data and updating insti data
-  const [ hasError, setHasError ] = useState(false); // for fetching insti data
-  // var bday;
+  const [ loading, setLoading ] = useState(true); 
+  const [ hasError, setHasError ] = useState(false); 
 
   //checks if user is authenticated
   useEffect(() => {
     if(!isAuthenticated && loginType !== "USER") return history.replace("/user/login")
       const id = Object.values(model)[1];
-      // console.log(Object.values(model));
+      
       try {
         axios.get(`/api/0.1/user/${id}`, {
           headers: {
@@ -72,22 +71,7 @@ function UserSettingsInformation() {
         })
         .then((data) => {
           const user = data.data.user;
-          // console.log("===========")
-          // console.log(data)
-          // console.log(data.data)
-          // console.log(data.data.user)
-          // console.log(data.data.user.firstName)
-          // console.log("===========")
-          // var myDate = document.querySelector('input[type="date"]');
           var today = new Date(user.birthDate);
-          // today.toString()
-          // console.log(today);
-          // today.toISOString().substr(0, 10);
-          // console.log(today);
-          // myDate.value = today.toISOString().substr(0, 10);
-          // setBDAY(myDate.value)
-          // bday = BDAY;
-
           setValues({
             avatarPhoto: user.photoUrl,
             firstName: user.firstName,
@@ -146,9 +130,7 @@ function UserSettingsInformation() {
       ...values,
       [e.target.name]: e.target.value,
     });
-    // if (e.target.name !== "birthDate" && values.birthDate === currentValues.birthDate) {
-    //   setValues({ ...values, "birthDate": bday })
-    // }
+
     if(isRequired) setIsRequired(false)
 
   }
@@ -166,7 +148,6 @@ function UserSettingsInformation() {
     data.append("firstName", values.firstName);
     data.append("middleName", values.middleName);
     data.append("lastName", values.lastName);
-    // data.append("birthDate", values.birthDate);
     data.append("contactNumber", values.contactNumber);
     data.append("locationLat", values.locationLat);
     data.append("locationLong", values.locationLong);
@@ -195,8 +176,6 @@ function UserSettingsInformation() {
         });
       })
         
-
-    // window.location.reload(false);  //auto-reload to render the changes in the state but it needs the refresh token
   }
 
   const handleImageChange = (e) => {
