@@ -16,7 +16,8 @@ export default function validateSignUpInfo(values) {
         errors.password2 = "*Confirmation is required"
     } else if (values.password2 !== values.password) {
         errors.password2 = "*Passwords do not match"
-    }
+    } 
+    errors.emailExist = "Email already exists!"
 
     return errors;
 }

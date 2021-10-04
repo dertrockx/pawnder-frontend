@@ -20,7 +20,7 @@ const InstitutionSignUpPage = () => {
 
 	function submitCb() {
 		const { email, password } = values;
-		dispatch(login(email, password));
+		dispatch(login(email, password, 'INSTITUTION'));
 	}
 	const { handleChange, values, handleSubmit, errors } = useLogin(
 		submitCb,

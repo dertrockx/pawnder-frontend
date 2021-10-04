@@ -1,6 +1,6 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
-
+import history from "utils/history";
 import { login } from "redux/actions/authActions";
 
 import BasicInput from "components/BasicInput";
@@ -13,8 +13,9 @@ import styles from "./UserLogin.module.css";
 function UserLoginPage() {
 	const loginPending = useSelector((s) => s.auth.loginPending);
 	const loginError = useSelector((s) => s.auth.loginError);
-	// const isAuthenticated = useSelector((s) => s.auth.isAuthenticated);
-
+	const isAuthenticated = useSelector((s) => s.auth.isAuthenticated);
+	const model = useSelector((s) => s.auth.model);
+	
 	const dispatch = useDispatch();
 
 	const [email, setEmail] = useState(null);
@@ -22,8 +23,9 @@ function UserLoginPage() {
 	const [isRequired, setIsRequired] = useState(false);
 
 	function handleValueChange(e, valueCb) {
-		const newValue = e.target.value;
-		valueCb(newValue);
+			const newValue = e.target.value;
+			valueCb(newValue);
+			setIsRequired(false)
 	}
 
 	function handleFormSubmit(e) {
@@ -31,30 +33,29 @@ function UserLoginPage() {
 
 		//send a POST request here to validate inputs and authenticate
 
-		// setIsLoggedIn(true);
-		// console.log(setIsLoggedIn);
-		console.log(email, password);
-		if (email && password) {
-			dispatch(login(email, password, model.USER));
-		} else {
-			setIsRequired(true);
-			// alert("Email and password required.");
-		}
+			if(email && password) {
+				dispatch(login(email, password, 'USER'));
+			} else {
+				setIsRequired(true)
+				// alert("Email and password required.");
+			}
 	}
 
-	// useEffect(() => {
-	// 	if (isAuthenticated) {
-	// 		//clears the fields of the form
-	// 		const form = document.getElementsByName("login-form");
-	// 		form[0].reset();
-
-	// 		history.replace("/feed"); //must be redirected to user feed page
-	// 	} else {
-	// 		// may server error or wrong credentials
-	// 		// setInputError(true);
-	// 	}
-	// 	// eslint-disable-next-line
-	// }, [isAuthenticated]);
+	useEffect(() => {
+		if(isAuthenticated) {
+			//clears the fields of the form
+			const form = document.getElementsByName("login-form");
+			form[0].reset();
+			// console.log(`model : ${model.values()}`)
+			// console.log(`model.id : ${Object.values(model)[0]}`)
+			const modelFirstName = Object.values(model)[4];
+			if(modelFirstName === null) history.replace("/user/onboarding")
+			else history.replace("/feed")
+		} else {
+			// may server error or wrong credentials 
+			// setInputError(true);
+		}
+	}, [isAuthenticated]);
 
 	return (
 		<div className={styles.page}>

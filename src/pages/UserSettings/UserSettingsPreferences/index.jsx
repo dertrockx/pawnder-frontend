@@ -33,12 +33,14 @@ function UserSettingsPreferences() {
   const [ isSaveDisabled, setIsSaveDisabled ] = useState(true);
 	const isAuthenticated = useSelector((s) => s.auth.isAuthenticated);
 	const loginType = useSelector((s) => s.auth.loginType);
+  const model = useSelector((s) => s.auth.model);
+	const id = Object.values(model)[0];
 
   //checks if user is authenticated
   useEffect(() => {
-    // if(!isAuthenticated && loginType !== "USER") history.replace("/user/login")
+    if(!isAuthenticated && loginType !== "USER") history.replace("/user/login")
     fetch(
-      `http://localhost:8081/api/0.1/user/` + `12`,
+      `http://localhost:8081/api/0.1/user/` + id,
       {
         method: "GET",
         headers: {
@@ -64,12 +66,12 @@ function UserSettingsPreferences() {
       distance: (distance) => distance.replace(/^\$/, "")
     })
 
-    console.log(type)
+    // console.log(type)
   }, [])
 
   const handleChange = (e, setData) => {
     const data= e.target.value
-    console.log(data)
+    // console.log(data)
     setData(data)
 	}
 
@@ -88,7 +90,7 @@ function UserSettingsPreferences() {
 
     //submit to backend
     fetch(
-      `http://localhost:8081/api/0.1/user/` + `12`,
+      `http://localhost:8081/api/0.1/user/` + id,
       {
         method: "PUT",
         headers: {

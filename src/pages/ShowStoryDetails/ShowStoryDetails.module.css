@@ -18,12 +18,12 @@
 }
 
 #username {
-    margin-top: 24px;
+    margin-top: 23px;
     margin-left: 11px;
 }
 
 #title {
-    margin-top: 40px;
+    margin-top: 15px;
     margin-bottom: 12px;
     margin-left: 5%;
     margin-right: 5%;
@@ -51,10 +51,10 @@
 .rectangleForTags {
     display: flex;
     background-color: var(--color-brand-lighter);
-    width: 70%;
+    min-width: 70%;
     height: 45px;
-    margin-left: auto;
-    margin-right: auto;
+    margin-left: 15%;
+    margin-right: 15%;
     margin-bottom: 22px;
     border-radius: 50px;
     text-align: justify !important;

@@ -17,7 +17,7 @@ function InstitutionOnboardingPage() {
 	const toast = useToast();
 	const [ step, setStep ] = useState(1);
 	const [ value, setValue ] = useState({
-		photoURL: "",
+		avatarPhoto: "",
 		name: "",
 		description: "",
 		contactNumber: "",
@@ -35,14 +35,13 @@ function InstitutionOnboardingPage() {
 	const [ nextDisabled, setNextDisabled ] = useState(true);
 	const isAuthenticated = useSelector((s) => s.auth.isAuthenticated);
 	const loginType = useSelector((s) => s.auth.loginType);
+	const model = useSelector((s) => s.auth.model);
+	const id = Object.values(model)[0];
 
 	useEffect(() => {
-		// if(!isAuthenticated && loginType !== "INSTITUTION") history.replace("/institution/login") 
-		// else if (loginType === 'institution') {
-			if(value.name !== "" && value.description !== "" && value.contactNumber !== "") setNextDisabled(false);
-		// }
-		
-	});
+		if(!isAuthenticated && loginType !== "INSTITUTION") history.replace("/institution/login") 
+		if(value.name !== "" && value.description !== "" && value.contactNumber !== "") setNextDisabled(false);
+	}, []);
 
 	const handleChange = (e) => {
 		setValue({
@@ -55,11 +54,11 @@ function InstitutionOnboardingPage() {
 
 	const handleSubmit = (e) => {
     e.preventDefault();
-    console.log(value);
+    // console.log(value);
 
 		//sends PUT request
 		fetch(
-			`http://localhost:8081/api/0.1/institution/` + `1`,	//hardcoded id
+			`http://localhost:8081/api/0.1/institution/` + id,	//hardcoded id
 			{
 				method: "PUT",
 				headers: {
@@ -81,26 +80,37 @@ function InstitutionOnboardingPage() {
 
 	}
 
-	function imageHandler(e) {
+	const handleImageChange = (e) => {
 		const selected = e.target.files[0];
 		const ALLOWED_TYPES=['image/png', 'image/jpg', 'image/jpeg'];
-		if(selected && ALLOWED_TYPES.includes(selected.type)) {
-			const reader = new FileReader();
-			reader.onload = () => {
-				if(reader.readyState === 2) {
-					setValue({
-						...value,
-						[e.target.name]: reader.result,
-					})
-					setImagePreview(`${reader.result}`)
-				}
-			}
-			reader.readAsDataURL(e.target.files[0]);
+		if (selected && ALLOWED_TYPES.includes(selected.type)) {
+			let reader = new FileReader();
+			reader.onloadend = () => {
+			setImagePreview(`${reader.result}`)
+		}
+			setValue({
+				...value,
+				avatarPhoto: selected
+			});
+			reader.readAsDataURL(selected);
+			setImagePreviewError(false);
 		} else {
-			if (selected === undefined) {
-				return;
-			}
-			setImagePreviewError(true);
+		/** 
+		   * Selecting a file and cancelling returns undefined to selected.
+		   * So if you select a file and cancel, the imagePreviewError would be set to true.
+		   * We don't want that so we check if selected === undefined. If it's true, then we don't give out any errors.
+		   */       
+		if (selected === undefined) {
+			return;
+		}
+		setImagePreviewError(true);
+		toast({
+			title: 'We don\'t support that file type.',
+			status: 'error',
+			position: 'top',
+			duration: 5000,
+			isClosable: true,
+		});
 		}
 	}
 
@@ -157,7 +167,7 @@ function InstitutionOnboardingPage() {
 						<div className={styles.item}>
 							<div className="heading-2" style={{ "text-align": "center", width: 600 }}>Welcome! Let's create your profile.</div>
 
-							<BasicImageInput src={imagePreview} label="Add Picture" onChange={imageHandler} imagePreviewError={imagePreviewError}/>
+							<BasicImageInput src={imagePreview} label="Add Picture" onChange={handleImageChange} imagePreviewError={imagePreviewError}/>
 							
 							<div style={{ display: "flex" }}>
 								<div style={{ width: 200, "padding-top": 5 }}>

@@ -11,7 +11,6 @@ const InstitutionSignUpPage = () => {
 
 	function submitForm() {
 		setIsSubmitted(true);
-		alert("Submitted");
 	}
 	return (
 		<>
