@@ -98,7 +98,7 @@ function Navbar() {
 							history.push(
 								loginType === model.INSTITUTION
 									? "/institution/dashboard"
-									: "/feed"
+									: ( loginType === model.USER ? "/feed" : "/")
 							)
 						}
 					/>

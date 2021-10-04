@@ -3,8 +3,7 @@ import { Router, Switch, Redirect } from "react-router-dom";
 import { Route } from "react-router";
 
 // reset default styles for all html elements - https://en.wikipedia.org/wiki/Reset_style_sheet
-import { UserLoginPage, UserSignupPage } from "pages";
-import InstitutionOnboardingPage from "pages/InstitutionOnboarding";
+
 import NavRoute from "components/NavRoute";
 
 import history from "utils/history";
@@ -18,6 +17,9 @@ import "./normalize.css";
 import "./typography.css";
 
 // lazy-loading pages
+const InstitutionOnboardingPage = lazy(() =>
+	import("pages/InstitutionOnboarding")
+);
 const Feed = lazy(() => import("pages/Feed"));
 const NearbyInstitution = lazy(() => import("pages/NearbyInstitution"));
 const ManagePetList = lazy(() =>
@@ -26,6 +28,8 @@ const ManagePetList = lazy(() =>
 const ManagePetDetails = lazy(() =>
 	import("pages/ManagePets").then((module) => ({ default: module.Details }))
 );
+const UserLoginPage = lazy(() => import("pages/UserLogin"));
+const UserSignupPage = lazy(() => import("pages/UserSignup"));
 const Dashboard = lazy(() => import("pages/Dashboard"));
 const UserSettings = lazy(() => import("pages/UserSettings"));
 const UserOnboarding = lazy(() => import("pages/UserOnboarding"));
@@ -74,11 +78,7 @@ function App() {
 						component={NearbyInstitution}
 						type={model.USER}
 					/>
-					<NavRoute 
-						path="/stories"
-						component={ShowStoryList}
-						type={null}	
-					/>
+					<NavRoute path="/stories" component={ShowStoryList} type={null} />
 					<NavRoute
 						path="/stories/:id"
 						component={ShowStoryDetails}

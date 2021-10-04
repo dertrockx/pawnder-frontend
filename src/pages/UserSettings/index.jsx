@@ -1,18 +1,12 @@
 import React, { useEffect } from "react";
 import history from "utils/history";
-import {
-	Switch,
-	Route,
-	useRouteMatch,
-	Redirect,
-	Link,
-} from "react-router-dom";
+import { Switch, Route, useRouteMatch, Redirect, Link } from "react-router-dom";
 import { useSelector } from "react-redux";
 import UserSettingsPreferences from "./UserSettingsPreferences";
 import UserSettingsInformation from "./UserSettingsInformation";
 import styles from "./UserSettings.module.css";
 
-import { IoSettingsSharp } from 'react-icons/io5';
+import { IoSettingsSharp } from "react-icons/io5";
 
 // reference: https://github.com/remix-run/react-router/issues/5496#issuecomment-376499389
 const BetterSidebarLink = ({ children, ...linkProps }) => (
@@ -23,21 +17,25 @@ const BetterSidebarLink = ({ children, ...linkProps }) => (
 	/>
 );
 
-
 function BasicSideBar() {
 	const isAuthenticated = useSelector((s) => s.auth.isAuthenticated);
 	const loginType = useSelector((s) => s.auth.loginType);
 
 	let { path, url } = useRouteMatch();
-	
+
 	useEffect(() => {
-		if(!isAuthenticated && loginType !== "USER") history.replace("/user/login")
-	}, [])
+		if (!isAuthenticated && loginType !== "USER")
+			history.replace("/user/login");
+		// eslint-disable-next-line
+	}, []);
 
 	return (
 		<div className={styles.container}>
-			<h1 className="heading-1" style={{display: "flex", gap: "10px", marginLeft: "30px"}} >
-				<IoSettingsSharp style={{color: "var(--color-brand-darker)"}} />
+			<h1
+				className="heading-1"
+				style={{ display: "flex", gap: "10px", marginLeft: "30px" }}
+			>
+				<IoSettingsSharp style={{ color: "var(--color-brand-darker)" }} />
 				Settings
 			</h1>
 			<div className={styles.content}>
@@ -75,15 +73,22 @@ function BasicSideBar() {
 				</nav>
 				<main className={styles.main}>
 					<Switch>
-						<Route path={`${path}/information`} exact component={UserSettingsInformation} />
-						<Route path={`${path}/preferences`} exact component={UserSettingsPreferences}/>
+						<Route
+							path={`${path}/information`}
+							exact
+							component={UserSettingsInformation}
+						/>
+						<Route
+							path={`${path}/preferences`}
+							exact
+							component={UserSettingsPreferences}
+						/>
 						<Redirect path={path} to={`${path}/information`} exact />
 					</Switch>
 				</main>
 			</div>
 		</div>
 	);
-
 }
 
 export default BasicSideBar;
