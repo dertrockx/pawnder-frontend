@@ -1,5 +1,4 @@
 import { useState, useEffect } from "react";
-import history from "utils/history";
 import { useSelector, useDispatch } from "react-redux";
 
 import { login } from "redux/actions/authActions";
@@ -15,7 +14,6 @@ function UserLoginPage() {
 	const loginPending = useSelector((s) => s.auth.loginPending);
 	const loginError = useSelector((s) => s.auth.loginError);
 	const isAuthenticated = useSelector((s) => s.auth.isAuthenticated);
-	const model = useSelector((s) => s.auth.model);
 
 	const dispatch = useDispatch();
 
