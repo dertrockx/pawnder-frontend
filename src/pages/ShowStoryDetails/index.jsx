@@ -1,6 +1,7 @@
 import styles from './ShowStoryDetails.module.css';
-import { useParams } from 'react-router-dom';
+import { useParams, Link } from 'react-router-dom';
 import StoryDetailsTag from 'components/StoryDetailsTags';
+import { ArrowBackIcon} from '@chakra-ui/icons';
 
 const ShowStoryDetails = ({ data }) => {
     const { id } = useParams();
@@ -12,7 +13,9 @@ const ShowStoryDetails = ({ data }) => {
                     .filter(story => (story.id === parseInt(id)))
                     .map(story => (
                         <>
-                            {console.log(story.id)}
+                            <Link to = {'/stories'} >
+                                <ArrowBackIcon boxSize = {8} mt = "30px" ml = "35px"/>
+                            </Link>
                             <div className = {styles.container}>
                                 <h1 className = 'heading-1' id = {styles.title}>
                                     {story.title}
