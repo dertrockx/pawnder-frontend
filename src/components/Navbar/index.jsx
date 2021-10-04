@@ -67,13 +67,13 @@ function Navbar() {
 				>
 					Manage Pets
 				</NavLink>
-				<NavLink
+				{/* <NavLink
 					className={`paragraph ${styles.navbarItem}`}
 					activeClassName="bold-text"
 					to={`${INSTITUTION_ROOT}/manage-stories`}
 				>
 					Manage Stories
-				</NavLink>
+				</NavLink> */}
 				<NavLink
 					className={`paragraph ${styles.navbarItem}`}
 					activeClassName="bold-text"
@@ -98,7 +98,9 @@ function Navbar() {
 							history.push(
 								loginType === model.INSTITUTION
 									? "/institution/dashboard"
-									: ( loginType === model.USER ? "/feed" : "/")
+									: loginType === model.USER
+									? "/feed"
+									: "/"
 							)
 						}
 					/>
@@ -108,13 +110,13 @@ function Navbar() {
 						(loginType === model.INSTITUTION
 							? renderInstitutionItems()
 							: renderUserItems())}
-					<NavLink
+					{/* <NavLink
 						className={`paragraph ${styles.navbarItem}`}
 						activeClassName="bold-text"
 						to="/stories"
 					>
 						Success Stories
-					</NavLink>
+					</NavLink> */}
 					{token ? (
 						<Button
 							color="white"
