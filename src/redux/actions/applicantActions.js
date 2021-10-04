@@ -19,6 +19,10 @@ export const fetchApplicants = (petId) => {
 			applicants
 				.sort((app1, app2) => app1.updateAt - app2.updatedAt)
 				.forEach(async (app) => {
+					if (!app.photoUrl)
+						Object.assign(app, {
+							photoUrl: `https://avatars.dicebear.com/api/human/${app.id}.svg`,
+						});
 					if (app.status === "pending") pending.push(app);
 					else if (app.status === "under review") underReview.push(app);
 				});
