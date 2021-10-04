@@ -1,5 +1,6 @@
-  import React, { useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { useSelector } from "react-redux";
+import { useHistory } from "react-router-dom";
 
 import BasicDescription from "components/BasicDescription";
 import BasicHR from "components/BasicHR";
@@ -15,12 +16,14 @@ import {
   Stack,
   useToast,
 } from "@chakra-ui/react";
+import axios from 'axios';
 
 function UserSettingsInformation() {
   const noPhoto = '/images/Avatar.png';
   const toast = useToast();
+  const history = useHistory();
   const [ values, setValues ] = useState({
-    photoUrl: null,
+    avatarPhoto: null,
     firstName: null,
     middleName: null,
     lastName: null,
@@ -31,7 +34,7 @@ function UserSettingsInformation() {
     locationLong: ""
   });
   const [currentValues, setCurrentValues ] = useState({
-    photoUrl: null,
+    avatarPhoto: null,
     firstName: null,
     middleName: null,
     lastName: null,
@@ -42,22 +45,23 @@ function UserSettingsInformation() {
     locationLong: ""
   });
   const [ BDAY, setBDAY ] = useState(null);
-	const isAuthenticated = useSelector((s) => s.auth.isAuthenticated);
-	const loginType = useSelector((s) => s.auth.loginType);
-	const [ imagePreviewError, setImagePreviewError ] = useState(false);
+  const isAuthenticated = useSelector((s) => s.auth.isAuthenticated);
+  const loginType = useSelector((s) => s.auth.loginType);
+  const model = useSelector((s) => s.auth.model);
+  const id = Object.values(model)[0];
+  const [ imagePreviewError, setImagePreviewError ] = useState(false);
   const [ imagePreview, setImagePreview ] = useState(`${noPhoto}`);
-	const [ locationError, setLocationError ] = useState(false);
+  const [ locationError, setLocationError ] = useState(false);
   const [ isSaveDisabled , setIsSaveDisabled ] = useState(false);
-  const [ isSaveClicked, setIsSaveClicked ] = useState(false);
   const [ isRequired, setIsRequired ] = useState(false);
   const [ contactNumberError, setContactNumberError ] = useState(false);
   var bday;
 
   //checks if user is authenticated
   useEffect(() => {
-    // if(!isAuthenticated && loginType !== "USER") history.replace("/user/login")
+    if(!isAuthenticated && loginType !== "USER") history.replace("/user/login")
     fetch(
-      `http://localhost:8081/api/0.1/user/` + `12`,
+      `http://localhost:8081/api/0.1/user/` + id,
       {
         method: "GET",
         headers: {
@@ -71,7 +75,7 @@ function UserSettingsInformation() {
         }
       })
       .then(body => {
-        console.log(`from db: ${body.user.birthDate}`)
+        // console.log(`from db: ${body.user.birthDate}`)
         var myDate = document.querySelector('input[type="date"]');
         var today = new Date(body.user.birthDate);
         myDate.value = today.toISOString().substr(0, 10);
@@ -80,7 +84,7 @@ function UserSettingsInformation() {
         bday = BDAY;
 
         setValues({
-          photoUrl: body.user.photoUrl,
+          avatarPhoto: body.user.photoUrl,
           firstName: body.user.firstName,
           middleName: body.user.middleName,
           lastName: body.user.lastName,
@@ -92,7 +96,7 @@ function UserSettingsInformation() {
         })
 
         setCurrentValues({
-          photoUrl: body.user.photoUrl,
+          avatarPhoto: body.user.photoUrl,
           firstName: body.user.firstName,
           middleName: body.user.middleName,
           lastName: body.user.lastName,
@@ -102,9 +106,11 @@ function UserSettingsInformation() {
           locationLat: body.user.locationLat,
           locationLong: body.user.locationLat
         })
+
+        setImagePreview(body.user.photoUrl)
     })
 
-  }, [isSaveClicked])
+  }, [])
 
   function checkObjects(keys1){
     for (let key of keys1) {
@@ -122,167 +128,142 @@ function UserSettingsInformation() {
   })
 
   const handleChange = (e) => {
-    console.log(`e.target.name: ${e.target.name}`)
-    console.log(`e.target.value: ${e.target.value}`)
     if(e.target.name === "contactNumber" && contactNumberError) setContactNumberError(false)
     setValues({
       ...values,
-			[e.target.name]: e.target.value,
-		});
+      [e.target.name]: e.target.value,
+    });
     if (e.target.name !== "birthDate" && values.birthDate === currentValues.birthDate) {
       setValues({ ...values, "birthDate": bday })
     }
     if(isRequired) setIsRequired(false)
 
-	}
+  }
 
   const handleSubmit = (e) => {
     
     if (values.firstName === "" || values.lastName === "" || values.contactNumber === "") return setIsRequired(true)
     if (values.contactNumber.length !== 11 || isNaN(values.contactNumber)) return setContactNumberError(true);
 
+    const data = new FormData()
+    data.append("avatarPhoto", values.avatarPhoto);
+    data.append("firstName", values.firstName);
+    data.append("middleName", values.middleName);
+    data.append("lastName", values.lastName);
+    data.append("birthDate", values.birthDate);
+    data.append("contactNumber", values.contactNumber);
+    data.append("locationLat", values.locationLat);
+    data.append("locationLong", values.locationLong);
 
-    if (values.photoUrl !== currentValues.photoUrl || values.photoUrl !== null) {
+    axios.put('http://localhost:8081/api/0.1/user/' + id, data)
+        .then((res) => {
+            console.log(res)
+            // setSuccess(true);
+        })
+        .catch((err) => {
+          console.log(err)
+            // setSuccess(false);
+        })
+        
 
-      const data = new FormData()
-      data.append("photoUrl", values.photoUrl);
-      // data.append("tags", `codeinfuse, medium, gist`);
-      // data.append("upload_preset", "pvhilzh7");    // Replace the preset name with your own
-      // data.append("api_key", "522121975193432");   // Cloudinary key
-      // data.append("timestamp", (Date.now() / 1000) | 0);
-      try {
-  
-        fetch(
-            "https://api.cloudinary.com/v1_1/dbky7zvuf/image/upload",       // change to https://api.cloudinary.com/v1_1/dbky7zvuf/image/upload
-          {
-            method: "POST", 
-            headers: {
-              "Content-Type": "multipart/form-data",
-              'Accept': 'application/json'
-            },
-            body: JSON.stringify(data)
-          })
-          .then(response => {
-            if(response.status === 200) {
-              console.log(response.status);
-            }
-            return response.json()
-          })
-          .then(data => {
-            console.log(data)
-            const fileURL = data.secure_url // You should store this URL for future references in your app
-            console.log(fileURL);
-            setValues({ ...values, "photoUrl": fileURL })
-            console.log(data);
-          })
-  
-      } catch (err) {
-        console.log(err);
-        // setErrMsg("Something went wrong!");
-      }
-
-    } else {
-      fetch(
-        `http://localhost:8081/api/0.1/user/` + `12`,
-        {
-          method: "PUT",
-          headers: {
-            "Content-Type": "application/json"
-          },
-          body: JSON.stringify(values)
-        }
-      )
-      .then(response => {
-        if(response.status === 200) {
-          console.log(response.status);
-        }
-      })
-    }
-
-
-    setIsSaveClicked(true);
-    // window.location.reload(false);  //auto-reload to render the changes in the state but it needs the refresh token
+    window.location.reload(false);  //auto-reload to render the changes in the state but it needs the refresh token
   }
 
-  function imageHandler(e) {
-		const selected = e.target.files[0];
-		const ALLOWED_TYPES=['image/png', 'image/jpg', 'image/jpeg'];
-		if(selected && ALLOWED_TYPES.includes(selected.type)) {
-			const reader = new FileReader();
-			reader.onload = () => {
-				if(reader.readyState === 2) {
-					setValues({
-						...values,
-						[e.target.name]: reader.result,
-					})
-          setImagePreview(`${reader.result}`)
-				}
-			}
-			reader.readAsDataURL(e.target.files[0]);
-		} else {
-			if (selected === undefined) {
-				return;
-			}
-			setImagePreviewError(true);
-		}
+  const handleImageChange = (e) => {
+    const selected = e.target.files[0];
+    const ALLOWED_TYPES=['image/png', 'image/jpg', 'image/jpeg'];
+    if (selected && ALLOWED_TYPES.includes(selected.type)) {
+      let reader = new FileReader();
+      reader.onloadend = () => {
+        setImagePreview(`${reader.result}`)
+      }
+      setValues({
+        ...values,
+        avatarPhoto: selected
+      });
+      reader.readAsDataURL(selected);
+      setImagePreviewError(false);
+      // setIsImageDisabled(false);
+    } else {
+      /** 
+       * Selecting a file and cancelling returns undefined to selected.
+       * So if you select a file and cancel, the imagePreviewError would be set to true.
+       * We don't want that so we check if selected === undefined. If it's true, then we don't give out any errors.
+       */       
+      if (selected === undefined) {
+        setImagePreviewError(false);
+        return;
+      }
+      setImagePreviewError(true);
+      toast({
+        title: 'We don\'t support that file type.',
+        status: 'error',
+        position: 'top',
+        duration: 5000,
+        isClosable: true,
+      });
+    }
   }
 
   const handleImageRemove = (e) => {
+    e.preventDefault()
     setImagePreview(`${noPhoto}`);
     setValues({
       ...values,
-      [e.target.name]: null
+      avatarPhoto: null
     });
   }
 
   // For location
-	const onSuccess = (position) => {
-		setValues({
-			...values,
-			locationLat: position.coords.latitude,
-			locationLong: position.coords.longitude,
-		});
-		setLocationError(false);
-    toast({
-			title: 'Access to location allowed.',
-			status: 'success',
-			position: 'top',
-			duration: 5000,
-			isClosable: true,
-		});
-	}
-	
-	const onError = () => {
-		setLocationError(true);
-		toast({
-			title: 'Unable to retrieve your location. Please enable permissions.',
-			status: 'error',
-			position: 'top',
-			duration: 5000,
-			isClosable: true,
-		});
-	}
+  const onSuccess = (position) => {
+    setValues({
+      ...values,
+      locationLat: position.coords.latitude,
+      locationLong: position.coords.longitude,
+    });
 
-	const handleLocation = (e) => {
-		/* See note in image handler. */
-		e.preventDefault();
-		if (!navigator.geolocation) {
-		setLocationError(true);
-		toast({
-			title: 'Geolocation is not supported by your browser. Please use another.',
-			status: 'error',
-			position: 'top',
-			duration: 5000,
-			isClosable: true,
-		});
-		} else {
-			navigator.geolocation.getCurrentPosition(onSuccess, onError);
-		}
-	}
+    setLocationError(false);
+    toast({
+      title: 'Access to location allowed.',
+      status: 'success',
+      position: 'top',
+      duration: 5000,
+      isClosable: true,
+    });
+  }
+  
+  const onError = () => {
+    setLocationError(true);
+    toast({
+      title: 'Unable to retrieve your location. Please enable permissions.',
+      status: 'error',
+      position: 'top',
+      duration: 5000,
+      isClosable: true,
+    });
+  }
+
+  const handleLocation = (e) => {
+    /* See note in image handler. */
+    e.preventDefault();
+    if (!navigator.geolocation) {
+    setLocationError(true);
+    toast({
+      title: 'Geolocation is not supported by your browser. Please use another.',
+      status: 'error',
+      position: 'top',
+      duration: 5000,
+      isClosable: true,
+    });
+    } else {
+      navigator.geolocation.getCurrentPosition(onSuccess, onError);
+    }
+  }
 
   function handleCancel(e) {
     e.preventDefault();
     setValues(currentValues);
+
   }
 
   return (
@@ -292,7 +273,7 @@ function UserSettingsInformation() {
           <BasicDescription title="Display Picture" body="Upload your display picture to share in public." />
         </div>
         <div>
-          <BasicImageInput2 src={imagePreview} label="Change Picture" onChange={imageHandler} onClick={handleImageRemove} imagePreviewError={imagePreviewError}/>
+          <BasicImageInput2 src={imagePreview} label="Change Picture" onChange={handleImageChange} onClick={handleImageRemove} imagePreviewError={imagePreviewError}/>
         </div>
       </div>
 
@@ -377,6 +358,7 @@ function UserSettingsInformation() {
                 outline={isRequired ? "red": "gray"}
                 onChange={handleChange}
                 value={values.birthDate}
+                disabled
               />
             </div>
           </div>

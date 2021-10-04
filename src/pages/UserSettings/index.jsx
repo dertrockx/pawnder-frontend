@@ -32,9 +32,7 @@ function BasicSideBar() {
 	let { path, url } = useRouteMatch();
 	
 	useEffect(() => {
-		// if(isAuthenticated && loginType === 'user') return
-		// else history.replace("/user/login")
-		console.log("========")
+		if(!isAuthenticated && loginType !== "USER") history.replace("/user/login")
 	}, [])
 
 	return (
