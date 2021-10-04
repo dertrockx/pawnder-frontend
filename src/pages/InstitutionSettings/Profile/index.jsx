@@ -1,8 +1,11 @@
 import React, { useState, useEffect, useRef } from 'react';
+import { useSelector, useDispatch } from 'react-redux';
 import { IoLocationSharp } from 'react-icons/io5';
 import { Input, InputGroup, InputLeftAddon, Textarea, useToast, Tooltip} from '@chakra-ui/react';
 import { Button as ChakraButton, AlertDialog, AlertDialogOverlay, AlertDialogContent, AlertDialogHeader, AlertDialogBody, AlertDialogFooter } from '@chakra-ui/react';
-import axios from'axios'
+
+import axios from 'utils/axios';
+import history from 'utils/history';
 
 import Button from 'components/Button';
 import HR from 'components/HR';
@@ -13,7 +16,9 @@ import styles from './Profile.module.css';
 
 const Profile = () => {
   // fetch user id here from redux login
-  const id = 4;
+  // const id = 4;
+
+  const { model, isAuthenticated, loginType, token } =  useSelector(s => s.auth);
 
   const [values, setValues] = useState({
 		avatarPhoto: '',
@@ -53,7 +58,11 @@ const Profile = () => {
   const toast = useToast();
 
   useEffect(() => {
-    axios.get('http://localhost:8081/api/0.1/institution/' + id)
+    axios.get(`/api/0.1/institution/${model.id}`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      }
+    })
     .then(res => {
       console.log(res);
       const { institution } = res.data;
@@ -305,7 +314,11 @@ const Profile = () => {
     formData.append('locationLat', currentValues.locationLat);
     formData.append('locationLong', currentValues.locationLong);
 
-    axios.put('http://localhost:8081/api/0.1/institution/' + id, formData)
+    axios.put(`/api/0.1/institution/${model.id}`, formData, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      }
+    })
     .then(res => {
       console.log(res);
       setLoading(false);
