@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { useSelector } from "react-redux";
-import { useHistory } from "react-router-dom";
+import history from "utils/history";
 
+import LoadingPage from 'pages/LoadingPage';
 import BasicDescription from "components/BasicDescription";
 import BasicHR from "components/BasicHR";
 import BasicImageInput2 from "components/BasicImageInput2";
@@ -16,12 +17,11 @@ import {
   Stack,
   useToast,
 } from "@chakra-ui/react";
-import axios from 'axios';
+import axios from "utils/axios";
 
 function UserSettingsInformation() {
   const noPhoto = '/images/Avatar.png';
   const toast = useToast();
-  const history = useHistory();
   const [ values, setValues ] = useState({
     avatarPhoto: null,
     firstName: null,
@@ -44,73 +44,85 @@ function UserSettingsInformation() {
     locationLat: "",
     locationLong: ""
   });
-  const [ BDAY, setBDAY ] = useState(null);
+  // const [ BDAY, setBDAY ] = useState(null);
   const isAuthenticated = useSelector((s) => s.auth.isAuthenticated);
   const loginType = useSelector((s) => s.auth.loginType);
+  const token = useSelector((s) => s.auth.token);
   const model = useSelector((s) => s.auth.model);
-  const id = Object.values(model)[0];
   const [ imagePreviewError, setImagePreviewError ] = useState(false);
   const [ imagePreview, setImagePreview ] = useState(`${noPhoto}`);
   const [ locationError, setLocationError ] = useState(false);
   const [ isSaveDisabled , setIsSaveDisabled ] = useState(false);
   const [ isRequired, setIsRequired ] = useState(false);
   const [ contactNumberError, setContactNumberError ] = useState(false);
-  var bday;
+  const [ loading, setLoading ] = useState(true); // for fetching insti data and updating insti data
+  const [ hasError, setHasError ] = useState(false); // for fetching insti data
+  // var bday;
 
   //checks if user is authenticated
   useEffect(() => {
-    if(!isAuthenticated && loginType !== "USER") history.replace("/user/login")
-    fetch(
-      `http://localhost:8081/api/0.1/user/` + id,
-      {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json"
-        }
+    if(!isAuthenticated && loginType !== "USER") return history.replace("/user/login")
+      const id = Object.values(model)[1];
+      // console.log(Object.values(model));
+      try {
+        axios.get(`/api/0.1/user/${id}`, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        })
+        .then((data) => {
+          const user = data.data.user;
+          // console.log("===========")
+          // console.log(data)
+          // console.log(data.data)
+          // console.log(data.data.user)
+          // console.log(data.data.user.firstName)
+          // console.log("===========")
+          // var myDate = document.querySelector('input[type="date"]');
+          var today = new Date(user.birthDate);
+          // today.toString()
+          // console.log(today);
+          // today.toISOString().substr(0, 10);
+          // console.log(today);
+          // myDate.value = today.toISOString().substr(0, 10);
+          // setBDAY(myDate.value)
+          // bday = BDAY;
+
+          setValues({
+            avatarPhoto: user.photoUrl,
+            firstName: user.firstName,
+            middleName: user.middleName,
+            lastName: user.lastName,
+            sex: user.sex,
+            birthDate: today.toISOString().substr(0, 10),
+            contactNumber: user.contactNumber,
+            locationLat: user.locationLat,
+            locationLong: user.locationLat
+          })
+
+          setCurrentValues({
+            avatarPhoto: user.photoUrl,
+            firstName: user.firstName,
+            middleName: user.middleName,
+            lastName: user.lastName,
+            sex: user.sex,
+            birthDate: today.toISOString().substr(0, 10),
+            contactNumber: user.contactNumber,
+            locationLat: user.locationLat,
+            locationLong: user.locationLat
+          })
+
+          setImagePreview(user.photoUrl)
+          setLoading(false);
+          setHasError(false);
+        })
+      } catch (error) {
+        console.log(error);
+        setLoading(false);
+        setHasError(true);
       }
-      )
-      .then(response => {
-        if (response.status === 200){
-          return response.json();
-        }
-      })
-      .then(body => {
-        // console.log(`from db: ${body.user.birthDate}`)
-        var myDate = document.querySelector('input[type="date"]');
-        var today = new Date(body.user.birthDate);
-        myDate.value = today.toISOString().substr(0, 10);
-        setBDAY(myDate.value)
 
-        bday = BDAY;
-
-        setValues({
-          avatarPhoto: body.user.photoUrl,
-          firstName: body.user.firstName,
-          middleName: body.user.middleName,
-          lastName: body.user.lastName,
-          sex: body.user.sex,
-          birthDate: BDAY,
-          contactNumber: body.user.contactNumber,
-          locationLat: body.user.locationLat,
-          locationLong: body.user.locationLat
-        })
-
-        setCurrentValues({
-          avatarPhoto: body.user.photoUrl,
-          firstName: body.user.firstName,
-          middleName: body.user.middleName,
-          lastName: body.user.lastName,
-          sex: body.user.sex,
-          birthDate: BDAY,
-          contactNumber: body.user.contactNumber,
-          locationLat: body.user.locationLat,
-          locationLong: body.user.locationLat
-        })
-
-        setImagePreview(body.user.photoUrl)
-    })
-
-  }, [])
+}, [token])
 
   function checkObjects(keys1){
     for (let key of keys1) {
@@ -128,20 +140,24 @@ function UserSettingsInformation() {
   })
 
   const handleChange = (e) => {
+
     if(e.target.name === "contactNumber" && contactNumberError) setContactNumberError(false)
     setValues({
       ...values,
       [e.target.name]: e.target.value,
     });
-    if (e.target.name !== "birthDate" && values.birthDate === currentValues.birthDate) {
-      setValues({ ...values, "birthDate": bday })
-    }
+    // if (e.target.name !== "birthDate" && values.birthDate === currentValues.birthDate) {
+    //   setValues({ ...values, "birthDate": bday })
+    // }
     if(isRequired) setIsRequired(false)
 
   }
 
   const handleSubmit = (e) => {
+    e.preventDefault();
+    setLoading(true);
     
+    const id = Object.values(model)[1];
     if (values.firstName === "" || values.lastName === "" || values.contactNumber === "") return setIsRequired(true)
     if (values.contactNumber.length !== 11 || isNaN(values.contactNumber)) return setContactNumberError(true);
 
@@ -150,23 +166,37 @@ function UserSettingsInformation() {
     data.append("firstName", values.firstName);
     data.append("middleName", values.middleName);
     data.append("lastName", values.lastName);
-    data.append("birthDate", values.birthDate);
+    // data.append("birthDate", values.birthDate);
     data.append("contactNumber", values.contactNumber);
     data.append("locationLat", values.locationLat);
     data.append("locationLong", values.locationLong);
 
-    axios.put('http://localhost:8081/api/0.1/user/' + id, data)
-        .then((res) => {
-            console.log(res)
-            // setSuccess(true);
-        })
-        .catch((err) => {
-          console.log(err)
-            // setSuccess(false);
-        })
+    axios.put(`/api/0.1/user/${id}`, data)
+      .then((res) => {
+        setLoading(false);
+        toast({
+          title: 'Successfully saved your changes.',
+          status: 'success',
+          position: 'top',
+          duration: 5000,
+          isClosable: true,
+        });
+          console.log(res)
+      })
+      .catch((err) => {
+        console.log(err)
+        setLoading(false);
+        toast({
+          title: 'Something went wrong. Please try again later.',
+          status: 'error',
+          position: 'top',
+          duration: 5000,
+          isClosable: true,
+        });
+      })
         
 
-    window.location.reload(false);  //auto-reload to render the changes in the state but it needs the refresh token
+    // window.location.reload(false);  //auto-reload to render the changes in the state but it needs the refresh token
   }
 
   const handleImageChange = (e) => {
@@ -183,7 +213,6 @@ function UserSettingsInformation() {
       });
       reader.readAsDataURL(selected);
       setImagePreviewError(false);
-      // setIsImageDisabled(false);
     } else {
       /** 
        * Selecting a file and cancelling returns undefined to selected.
@@ -263,156 +292,170 @@ function UserSettingsInformation() {
   function handleCancel(e) {
     e.preventDefault();
     setValues(currentValues);
-
   }
 
   return (
-    <div className={styles.container}>
-      <div className={styles.row}>
-        <div>
-          <BasicDescription title="Display Picture" body="Upload your display picture to share in public." />
+    <>
+    {
+      loading ? <LoadingPage /> :
+      <>
+        {
+          hasError ?
+          <div className={styles.center}>
+            <h1 className="heading-1" >Something went wrong. Please try again later.</h1>
+          </div>
+          : 
+          <div className={styles.container}>
+          <div className={styles.row}>
+            <div>
+              <BasicDescription title="Display Picture" body="Upload your display picture to share in public." />
+            </div>
+            <div>
+              <BasicImageInput2 src={imagePreview} label="Change Picture" onChange={handleImageChange} onClick={handleImageRemove} imagePreviewError={imagePreviewError}/>
+            </div>
+          </div>
+
+          <BasicHR />
+
+          <div className={styles.row}>
+            <div>
+              <BasicDescription title=" Basic Information" body="Update your basic information to display on your profile." />
+            </div>
+            <div>
+              <div className={styles.row}>
+                <div className={styles.label}>
+                  <BasicLabel label="First Name" />
+                </div>
+                <div className={styles.input}>
+                  <BasicInput
+                    type="text"
+                    name="firstName"
+                    outline={isRequired ? "red": "gray"}
+                    onChange={handleChange}
+                    value={values.firstName}
+                  />
+                </div>
+              </div>
+
+              <div className={styles.row}>
+                <div className={styles.label}>
+                  <BasicLabel label="Last Name" />
+                </div>
+                <div className={styles.input}>
+                  <BasicInput
+                    type="text"
+                    name="lastName"
+                    outline={isRequired ? "red": "gray"}
+                    onChange={handleChange}
+                    value={values.lastName}
+                  />
+                </div>
+              </div>
+
+              <div className={styles.row}>
+                <div className={styles.label}>
+                  <BasicLabel label="Middle Name (Optional)" />
+                </div>
+                <div className={styles.input}>
+                  <BasicInput
+                    type="text"
+                    name="middleName"
+                    onChange={handleChange}
+                    value={values.middleName}
+                  />
+                </div>
+              </div>
+
+              <div className={styles.row}>
+                <div className={styles.label}>
+                  <BasicLabel label="Sex"/>
+                </div>
+                <div className={styles.input}>
+                  <RadioGroup 
+                    name="sex" 
+                    onChange={handleChange} 
+                    value={values.sex}
+                  >
+                    <Stack spacing={8} direction="row">
+                      <Radio isDisabled name="sex" variantColor="brand.100" value="m">Male</Radio>
+                      <Radio isDisabled name="sex" variantColor="brand.100" value="f">Female</Radio>
+                    </Stack>
+                  </RadioGroup>
+                </div>
+              </div>
+
+
+              <div className={styles.row}>
+                <div className={styles.label}>
+                  <BasicLabel label="Birthdate" />
+                </div>
+                <div className={styles.input}>
+                  <BasicInput
+                    type="date"
+                    name="birthDate"
+                    outline={isRequired ? "red": "gray"}
+                    onChange={handleChange}
+                    value={values.birthDate}
+                    disabled
+                  />
+                </div>
+              </div>
+
+              <div className={styles.row}>
+                <div className={styles.label}>
+                  <BasicLabel label="Contact Number" />
+                </div>
+                <div className={styles.input}>
+                  <BasicInput
+                    type="tel"
+                    name="contactNumber"
+                    maxlength="11"
+                    outline={contactNumberError || isRequired ? "red" : "gray"}
+                    onChange={handleChange}
+                    value={values.contactNumber}
+                  />
+                </div>
+              </div>
+
+              <div className={styles.row}>
+                <div className={styles.label}>
+                  <BasicLabel label="Address" />
+                </div>
+                <div className={styles.input}>
+                  {(values.locationLat !== currentValues.locationLat && values.locationLong !== currentValues.locationLong) ? <Button size="small" color="brand-default" onClick={handleLocation}> <span>Location updated</span><IoLocationSharp /> </Button> : <Button size="small" color="brand-default" onClick={handleLocation} variant="outline"><IoLocationSharp /> <span>Update location</span></Button> }
+                  {locationError !== '' && <p className="paragraph">{locationError}</p>}
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <BasicHR />
+
+          <div className={styles.row}>
+            <div>
+              <BasicDescription />
+            </div>
+            <div className={styles.row}>
+              <div className={styles.label}></div>
+              <div className={styles.row}>
+                <div style={{ width: 190, 'margin-right': 10 }}>
+                  <Button onClick={handleCancel} color="brand-default" variant="outline" size="small" block>Cancel</Button>
+                </div>
+                <div style={{ width: 190, 'margin-left': 10 }}>
+                  <Button onClick={handleSubmit} color="brand-default" size="small" block disabled={isSaveDisabled}>Save</Button>
+                </div>
+              </div>
+            </div>
+
+          </div>
+          <br /><br />
         </div>
-        <div>
-          <BasicImageInput2 src={imagePreview} label="Change Picture" onChange={handleImageChange} onClick={handleImageRemove} imagePreviewError={imagePreviewError}/>
-        </div>
-      </div>
 
-      <BasicHR />
-
-      <div className={styles.row}>
-        <div>
-          <BasicDescription title=" Basic Information" body="Update your basic information to display on your profile." />
-        </div>
-        <div>
-          <div className={styles.row}>
-            <div className={styles.label}>
-              <BasicLabel label="First Name" />
-            </div>
-            <div className={styles.input}>
-              <BasicInput
-                type="text"
-                name="firstName"
-                outline={isRequired ? "red": "gray"}
-                onChange={handleChange}
-                value={values.firstName}
-              />
-            </div>
-          </div>
-
-          <div className={styles.row}>
-            <div className={styles.label}>
-              <BasicLabel label="Last Name" />
-            </div>
-            <div className={styles.input}>
-              <BasicInput
-                type="text"
-                name="lastName"
-                outline={isRequired ? "red": "gray"}
-                onChange={handleChange}
-                value={values.lastName}
-              />
-            </div>
-          </div>
-
-          <div className={styles.row}>
-            <div className={styles.label}>
-              <BasicLabel label="Middle Name (Optional)" />
-            </div>
-            <div className={styles.input}>
-              <BasicInput
-                type="text"
-                name="middleName"
-                onChange={handleChange}
-                value={values.middleName}
-              />
-            </div>
-          </div>
-
-          <div className={styles.row}>
-            <div className={styles.label}>
-              <BasicLabel label="Sex"/>
-            </div>
-            <div className={styles.input}>
-              <RadioGroup 
-                name="sex" 
-                onChange={handleChange} 
-                value={values.sex}
-              >
-                <Stack spacing={8} direction="row">
-                  <Radio isDisabled name="sex" variantColor="brand.100" value="m">Male</Radio>
-                  <Radio isDisabled name="sex" variantColor="brand.100" value="f">Female</Radio>
-                </Stack>
-              </RadioGroup>
-            </div>
-          </div>
-
-
-          <div className={styles.row}>
-            <div className={styles.label}>
-              <BasicLabel label="Birthdate" />
-            </div>
-            <div className={styles.input}>
-              <BasicInput
-                type="date"
-                name="birthDate"
-                outline={isRequired ? "red": "gray"}
-                onChange={handleChange}
-                value={values.birthDate}
-                disabled
-              />
-            </div>
-          </div>
-
-          <div className={styles.row}>
-            <div className={styles.label}>
-              <BasicLabel label="Contact Number" />
-            </div>
-            <div className={styles.input}>
-              <BasicInput
-                type="tel"
-                name="contactNumber"
-                maxlength="11"
-                outline={contactNumberError || isRequired ? "red" : "gray"}
-                onChange={handleChange}
-                value={values.contactNumber}
-              />
-            </div>
-          </div>
-
-          <div className={styles.row}>
-            <div className={styles.label}>
-              <BasicLabel label="Address" />
-            </div>
-            <div className={styles.input}>
-              {(values.locationLat !== currentValues.locationLat && values.locationLong !== currentValues.locationLong) ? <Button size="small" color="brand-default" onClick={handleLocation}> <span>Location updated</span><IoLocationSharp /> </Button> : <Button size="small" color="brand-default" onClick={handleLocation} variant="outline"><IoLocationSharp /> <span>Update location</span></Button> }
-              {locationError !== '' && <p className="paragraph">{locationError}</p>}
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <BasicHR />
-
-      <div className={styles.row}>
-        <div>
-          <BasicDescription />
-        </div>
-        <div className={styles.row}>
-          <div className={styles.label}></div>
-          <div className={styles.row}>
-            <div style={{ width: 190, 'margin-right': 10 }}>
-              <Button onClick={handleCancel} color="brand-default" variant="outline" size="small" block>Cancel</Button>
-            </div>
-            <div style={{ width: 190, 'margin-left': 10 }}>
-              <Button onClick={handleSubmit} color="brand-default" size="small" block disabled={isSaveDisabled}>Save</Button>
-            </div>
-          </div>
-        </div>
-
-      </div>
-      <br /><br />
-    </div>
-
+        }
+    </>
+    }
+    
+  </>
   )
 }
 

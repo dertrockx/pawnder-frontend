@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from "react";
-import { useHistory } from "react-router-dom";
+import history from "utils/history";
 import { useSelector } from "react-redux";
 import { IoArrowBack } from 'react-icons/io5';
 
+import LoadingPage from 'pages/LoadingPage';
 import Button from "components/Button";
 import BasicInput from "components/BasicInput"
 import BasicTextArea from "components/BasicTextArea";
@@ -10,10 +11,10 @@ import BasicImageInput from "components/BasicImageInput";
 import BasicLabel from "components/BasicLabel";
 import styles from "./InstitutionOnboarding.module.css"
 import { useToast } from '@chakra-ui/react';
+import axios from "axios";
 
 function InstitutionOnboardingPage() {
 	const noPhoto = '/images/Avatar.png';
-	const history = useHistory();
 	const toast = useToast();
 	const [ step, setStep ] = useState(1);
 	const [ value, setValue ] = useState({
@@ -29,19 +30,25 @@ function InstitutionOnboardingPage() {
 		messengerURL: "",
 		instagramURL: ""
 	});
-	const [ locationError, setLocationError ] = useState(false);
 	const [ imagePreview, setImagePreview ] = useState(`${noPhoto}`);
 	const [ imagePreviewError, setImagePreviewError ] = useState(false);
 	const [ nextDisabled, setNextDisabled ] = useState(true);
 	const isAuthenticated = useSelector((s) => s.auth.isAuthenticated);
 	const loginType = useSelector((s) => s.auth.loginType);
 	const model = useSelector((s) => s.auth.model);
-	const id = Object.values(model)[0];
+	const token = useSelector((s) => s.auth.token);
+	const [ loading, setLoading ] = useState(true); // for fetching insti data and updating insti data
+	const [ hasError, setHasError ] = useState(false); // for fetching insti data
 
 	useEffect(() => {
-		if(!isAuthenticated && loginType !== "INSTITUTION") history.replace("/institution/login") 
+		if(!isAuthenticated && loginType !== "INSTITUTION") return history.replace("/institution/login")
+		setLoading(false)
+	}, [token])
+
+	useEffect(() => {
+		setLoading(false)
 		if(value.name !== "" && value.description !== "" && value.contactNumber !== "") setNextDisabled(false);
-	}, []);
+	});
 
 	const handleChange = (e) => {
 		setValue({
@@ -49,34 +56,56 @@ function InstitutionOnboardingPage() {
 			[e.target.name]: e.target.value,
 		});
 
-		console.log(e.target.value);
 	}
 
 	const handleSubmit = (e) => {
     e.preventDefault();
-    // console.log(value);
+	const id = Object.values(model)[1];
 
+		axios.put(`/api/0.1/institution/${id}`, value)
+		.then((response) => {
+			setLoading(false);
+			toast({
+				title: 'Successfully saved your changes.',
+				status: 'success',
+				position: 'top',
+				duration: 5000,
+				isClosable: true,
+			});
+		})
+		.catch((err) => {
+			console.log(err)
+			setLoading(false);
+			setHasError(true);
+			toast({
+			title: 'Something went wrong. Please try again later.',
+			status: 'error',
+			position: 'top',
+			duration: 5000,
+			isClosable: true,
+			});
+		})
 		//sends PUT request
-		fetch(
-			`http://localhost:8081/api/0.1/institution/` + id,	//hardcoded id
-			{
-				method: "PUT",
-				headers: {
-					"Content-Type": "application/json"
-				},
-				body: JSON.stringify(value)
-			})
-			.then(response =>
-				{
-				if(response.status === 200){
-					history.replace("/feed")		//must be redirected to user feed page
-				}
-				return response.json();
-			}
-			)
-			.then(body => {
-				console.log(body)
-			})
+		// fetch(
+		// 	`http://localhost:8081/api/0.1/institution/` + id,
+		// 	{
+		// 		method: "PUT",
+		// 		headers: {
+		// 			"Content-Type": "application/json"
+		// 		},
+		// 		body: JSON.stringify(value)
+		// 	})
+		// 	.then(response =>
+		// 		{
+		// 		if(response.status === 200){
+		// 			history.replace("/feed")		//must be redirected to user feed page
+		// 		}
+		// 		return response.json();
+		// 	}
+		// 	)
+		// 	.then(body => {
+		// 		console.log(body)
+		// 	})
 
 	}
 
@@ -121,11 +150,9 @@ function InstitutionOnboardingPage() {
 			locationLat: position.coords.latitude,
 			locationLong: position.coords.longitude,
 		});
-		setLocationError(false);
 	}
 	
 	const onError = () => {
-		setLocationError(true);
 		toast({
 			title: 'Unable to retrieve your location. Please enable permissions.',
 			status: 'error',
@@ -139,7 +166,6 @@ function InstitutionOnboardingPage() {
 		/* See note in image handler. */
 		e.preventDefault();
 		if (!navigator.geolocation) {
-		setLocationError(true);
 		toast({
 			title: 'Geolocation is not supported by your browser. Please use another.',
 			status: 'error',
@@ -153,176 +179,191 @@ function InstitutionOnboardingPage() {
 	}
 
 	return (
-		<div className={styles.container}>
-			<div className={styles.svg}>
-				<img src="/images/paw.svg" alt="paw"/>
-			</div>
-			<div className={styles.form}>
+		<>
+		{
+			loading ? <LoadingPage /> :
+			<>
+			{
+				hasError ? 
+				<div className={styles.center}>
+					<h1 className="heading-1" >Something went wrong. Please try again later.</h1>
+				</div>
+				:
+				<div className={styles.container}>
+					<div className={styles.svg}>
+						<img src="/images/paw.svg" alt="paw"/>
+					</div>
+					<div className={styles.form}>
 
-				{step > 1 && (<div style={{ "margin-top": 15, "margin-bottom": 15 }}><Button style={{ "margin-top": 10, "margin-bottom": 20 }} size="small" onClick={() => setStep(step - 1)}><IoArrowBack /></Button></div>)}
-				
-				<form onSubmit={handleSubmit} name="onboarding-form">
+						{step > 1 && (<div style={{ "margin-top": 15, "margin-bottom": 15 }}><Button style={{ "margin-top": 10, "margin-bottom": 20 }} size="small" onClick={() => setStep(step - 1)}><IoArrowBack /></Button></div>)}
+						
+						<form onSubmit={handleSubmit} name="onboarding-form">
 
-					{ step === 1 && (
-						<div className={styles.item}>
-							<div className="heading-2" style={{ "text-align": "center", width: 600 }}>Welcome! Let's create your profile.</div>
+							{ step === 1 && (
+								<div className={styles.item}>
+									<div className="heading-2" style={{ "text-align": "center", width: 600 }}>Welcome! Let's create your profile.</div>
 
-							<BasicImageInput src={imagePreview} label="Add Picture" onChange={handleImageChange} imagePreviewError={imagePreviewError}/>
-							
-							<div style={{ display: "flex" }}>
-								<div style={{ width: 200, "padding-top": 5 }}>
-									<BasicLabel label="Institution Name"/>
-								</div>
-								<div style={{ width: 400 }}>
-									<BasicInput
-										type="text"
-										name="name"
-										onChange={handleChange}
-										value={value.name}
-										placeholder="Institution Name"
-										required="true"
-									/>
-								</div>
-							</div>
+									<BasicImageInput src={imagePreview} label="Add Picture" onChange={handleImageChange} imagePreviewError={imagePreviewError}/>
+									
+									<div style={{ display: "flex" }}>
+										<div style={{ width: 200, "padding-top": 5 }}>
+											<BasicLabel label="Institution Name"/>
+										</div>
+										<div style={{ width: 400 }}>
+											<BasicInput
+												type="text"
+												name="name"
+												onChange={handleChange}
+												value={value.name}
+												placeholder="Institution Name"
+												required="true"
+											/>
+										</div>
+									</div>
 
-							<div style={{ display: "flex"}}>
-								<div style={{ width: 200, "padding-top": 5 }}>
-									<BasicLabel label="Description"/>
-								</div>
-								<div style={{ width: 400 }}>
-									<BasicTextArea
-										rows={5}
-										cols={100}
-										name="description"
-										onChange={handleChange}
-										value={value.description}
-										placeholder="Enter your description"
-										required="true"
-									/>
-								</div>
-							</div>
+									<div style={{ display: "flex"}}>
+										<div style={{ width: 200, "padding-top": 5 }}>
+											<BasicLabel label="Description"/>
+										</div>
+										<div style={{ width: 400 }}>
+											<BasicTextArea
+												rows={5}
+												cols={100}
+												name="description"
+												onChange={handleChange}
+												value={value.description}
+												placeholder="Enter your description"
+												required="true"
+											/>
+										</div>
+									</div>
 
-							<div style={{ display: "flex"}}>
-								<div style={{ width: 200, "padding-top": 5 }}>
-									<BasicLabel label="Contact Number"/>
-								</div>
-								<div style={{ width: 400 }}>
-									<BasicInput 
-										type="text"
-										name="contactNumber"
-										onChange={handleChange}
-										value={value.contactNumber}
-										placeholder="Contact Number"
-										required="true"
-									/>
-								</div>
-							</div>
+									<div style={{ display: "flex"}}>
+										<div style={{ width: 200, "padding-top": 5 }}>
+											<BasicLabel label="Contact Number"/>
+										</div>
+										<div style={{ width: 400 }}>
+											<BasicInput 
+												type="text"
+												name="contactNumber"
+												onChange={handleChange}
+												value={value.contactNumber}
+												placeholder="Contact Number"
+												required="true"
+											/>
+										</div>
+									</div>
 
-							<div style={{ display: "flex"}}>
-								<div style={{ width: 200, "padding-top": 5 }}>
-									<BasicLabel label="Address"/>
-								</div>
-								<div style={{ width: 400 }}>							
-									{/* <BasicInput 
-										type="text"
-										name="address"
-										onChange={handleChange}
-										value={value.address}
-										placeholder="Address"
-									/><br/> */}
-									<Button onClick={handleLocation} color="brand-default" variant="outline" size="small">Enable location</Button><br/>
-									<Button onClick={() => setStep(step + 1)} color="brand-default" size="small" block disabled={nextDisabled}>Next</Button>
-								</div>
-							</div>
-							
-						</div>
-					)}
-
-					{ step === 2 && (
-						<div className={styles.item}>
-							<div className="heading-2" style={{ "text-align": "center", width: 600, "margin-top": 40, "margin-bottom": 40 }}>Welcome! Let's create your profile.</div>
-							<div className="heading-3">External Links</div>
-							<div style={{ display: "flex", "margin-top": 5, "margin-bottom": 5 }}>
-								<div style={{ width: 200, "padding-top": 5 }}>
-									<BasicLabel label="Website"/>
-								</div>
-								<div  style={{ width: 400 }}>
-									<BasicInput 
-										type="text"
-										name="websiteURL"
-										value={value.websiteURL}
-										onChange={handleChange}
-										placeholder="Website URL"
-									/>
+									<div style={{ display: "flex"}}>
+										<div style={{ width: 200, "padding-top": 5 }}>
+											<BasicLabel label="Address"/>
+										</div>
+										<div style={{ width: 400 }}>							
+											{/* <BasicInput 
+												type="text"
+												name="address"
+												onChange={handleChange}
+												value={value.address}
+												placeholder="Address"
+											/><br/> */}
+											<Button onClick={handleLocation} color="brand-default" variant="outline" size="small">Enable location</Button><br/>
+											<Button onClick={() => setStep(step + 1)} color="brand-default" size="small" block disabled={nextDisabled}>Next</Button>
+										</div>
+									</div>
 									
 								</div>
-							</div>
-							<div style={{ display: "flex" }}>
-								<div style={{ width: 200, "padding-top": 5 }}>
-									<BasicLabel label="Facebook"/>
-								</div>
-								<div style={{ width: 400 }}>
-									<BasicInput 
-										type="text"
-										name="facebookURL"
-										value={value.facebookURL}
-										onChange={handleChange}
-										placeholder="Facebook URL"
-									/>
-								</div>
-							</div>
-							<div style={{ display: "flex" }}>
-								<div style={{ width: 200, "padding-top": 5 }}>
-									<BasicLabel label="Messenger"/>
-								</div>
-								<div style={{ width: 400 }}>
-									<BasicInput 
-										type="text"
-										name="messengerURL"
-										value={value.messengerURL}
-										onChange={handleChange}
-										placeholder="Messenger URL"
-									/>							
-								</div>
-							</div>
-							<div style={{ display: "flex" }}>
-								<div style={{ width: 200, "padding-top": 5 }}>
-									<BasicLabel label="Twitter"/>
-								</div>
-								<div style={{ width: 400 }}>
-									<BasicInput 
-										type="text"
-										name="twitterURL"
-										value={value.twitterURL}
-										onChange={handleChange}
-										placeholder="Twitter URL"
-									/>
-								</div>
-							</div>
-							<div style={{ display: "flex" }}>
-								<div style={{ width: 200, "padding-top": 5 }}>
-									<BasicLabel label="Instagram"/>
-								</div>
-								<div style={{ width: 400, "margin-bottom": 4 }}>
-									<BasicInput 
-										type="text"
-										name="instagramURL"
-										value={value.instagramURL}
-										onChange={handleChange}
-										placeholder="Instagram URL"
-									/>
-									<div style={{ "margin-top": 20 }}>
-										<Button onClick={handleSubmit} color="brand-default" size="small" block>Submit</Button>
+							)}
+
+							{ step === 2 && (
+								<div className={styles.item}>
+									<div className="heading-2" style={{ "text-align": "center", width: 600, "margin-top": 40, "margin-bottom": 40 }}>Welcome! Let's create your profile.</div>
+									<div className="heading-3">External Links</div>
+									<div style={{ display: "flex", "margin-top": 5, "margin-bottom": 5 }}>
+										<div style={{ width: 200, "padding-top": 5 }}>
+											<BasicLabel label="Website"/>
+										</div>
+										<div  style={{ width: 400 }}>
+											<BasicInput 
+												type="text"
+												name="websiteURL"
+												value={value.websiteURL}
+												onChange={handleChange}
+												placeholder="Website URL"
+											/>
+											
+										</div>
 									</div>
+									<div style={{ display: "flex" }}>
+										<div style={{ width: 200, "padding-top": 5 }}>
+											<BasicLabel label="Facebook"/>
+										</div>
+										<div style={{ width: 400 }}>
+											<BasicInput 
+												type="text"
+												name="facebookURL"
+												value={value.facebookURL}
+												onChange={handleChange}
+												placeholder="Facebook URL"
+											/>
+										</div>
+									</div>
+									<div style={{ display: "flex" }}>
+										<div style={{ width: 200, "padding-top": 5 }}>
+											<BasicLabel label="Messenger"/>
+										</div>
+										<div style={{ width: 400 }}>
+											<BasicInput 
+												type="text"
+												name="messengerURL"
+												value={value.messengerURL}
+												onChange={handleChange}
+												placeholder="Messenger URL"
+											/>							
+										</div>
+									</div>
+									<div style={{ display: "flex" }}>
+										<div style={{ width: 200, "padding-top": 5 }}>
+											<BasicLabel label="Twitter"/>
+										</div>
+										<div style={{ width: 400 }}>
+											<BasicInput 
+												type="text"
+												name="twitterURL"
+												value={value.twitterURL}
+												onChange={handleChange}
+												placeholder="Twitter URL"
+											/>
+										</div>
+									</div>
+									<div style={{ display: "flex" }}>
+										<div style={{ width: 200, "padding-top": 5 }}>
+											<BasicLabel label="Instagram"/>
+										</div>
+										<div style={{ width: 400, "margin-bottom": 4 }}>
+											<BasicInput 
+												type="text"
+												name="instagramURL"
+												value={value.instagramURL}
+												onChange={handleChange}
+												placeholder="Instagram URL"
+											/>
+											<div style={{ "margin-top": 20 }}>
+												<Button onClick={handleSubmit} color="brand-default" size="small" block>Submit</Button>
+											</div>
+										</div>
+									</div>
+
 								</div>
-							</div>
+							)}
+						</form>
 
-						</div>
-					)}
-				</form>
-
-			</div>
-		</div>
+					</div>
+				</div>
+			}
+			</>
+		}
+		</>
+		
 	)
 }
 

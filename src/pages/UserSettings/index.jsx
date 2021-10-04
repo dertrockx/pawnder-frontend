@@ -1,5 +1,5 @@
 import React, { useEffect } from "react";
-import { useHistory } from "react-router-dom";
+import history from "utils/history";
 import {
 	Switch,
 	Route,
@@ -25,7 +25,6 @@ const BetterSidebarLink = ({ children, ...linkProps }) => (
 
 
 function BasicSideBar() {
-	const history = useHistory();
 	const isAuthenticated = useSelector((s) => s.auth.isAuthenticated);
 	const loginType = useSelector((s) => s.auth.loginType);
 
