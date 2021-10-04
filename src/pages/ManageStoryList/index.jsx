@@ -4,9 +4,12 @@ import { useSelector, useDispatch } from 'react-redux';
 import { HStack, Stack, Box, Skeleton } from '@chakra-ui/react';
 import { Button as ChakraButton, IconButton, useToast, Tooltip, Menu, MenuButton, MenuList, MenuOptionGroup, MenuItemOption, InputGroup, Input, InputLeftElement} from '@chakra-ui/react';
 import { IoSearch, IoCaretDown, IoAdd } from 'react-icons/io5';
-import axios from 'axios';
 
-import { fetchStories } from 'redux/actions/storyActions';
+// import axios from 'axios';
+import axios from 'utils/axios';
+import history from 'utils/history';
+
+import { getStories } from 'redux/actions/';
 
 import styles from './ManageStoryList.module.css';
 
@@ -17,14 +20,13 @@ import StoryDetails from 'pages/ManageStoryDetails';
 // Guide: https://medium.com/geekculture/how-to-use-react-router-useparams-436851fd5ef6
 
 const ManageStoryList = () => {
-  const loginType = 'institution'; // null, user, or institution
-  const institutionId = 1;
+  // const institutionId = 1; // for when checking design
 
-  // const loginType = useSelector(s => s.auth.loginType); // this should also get instiId and pass instiId to fetchStories
-  const fetchingStories = useSelector(s => s.story.fetchingStories);
-  const fetchError = useSelector(s => s.story.fetchError);
-  const stories = useSelector(s => s.story.stories);
-  
+  const { model = {}, isAuthenticated, loginType, token } =  useSelector(s => s.auth);
+  const institutionId = model.id;
+
+  const { stories, fetchError, fetchingStories } = useSelector(s => s.story);
+
   const dispatch = useDispatch();
   const toast = useToast();
 
@@ -34,11 +36,13 @@ const ManageStoryList = () => {
 
   let storiesCopy = stories; // So I won't overwrite the storiesArray (also used for the filter and for when there are no stories)
 
-  // Might put loginType because someone might log out while while viewing stories.
-  // Might also use for pagination
   useEffect(() => {
-    dispatch(fetchStories({ loginType, institutionId }));
-  }, [])
+    // if (isAuthenticated) dispatch(getStories(institutionId));
+
+    if (token) {
+      dispatch(getStories(institutionId));
+    }
+  }, [token]);
 
   // Uses id to sort
   if (sortDate === 'ascending') {
@@ -69,7 +73,7 @@ const ManageStoryList = () => {
   });
 
   const handleDelete = (id) => {
-    axios.delete('http://localhost:8081/api/0.1/story/' + id)
+    axios.delete(`/api/0.1/story/${id}`) // might need headers
     .then(() => {
       toast({
         title: 'Successfully deleted story.',
@@ -78,7 +82,7 @@ const ManageStoryList = () => {
         duration: 5000,
         isClosable: true,
       });
-      dispatch(fetchStories({ loginType, institutionId }));
+      dispatch(getStories(institutionId));
     })
     .catch(() => {
       toast({
@@ -93,9 +97,7 @@ const ManageStoryList = () => {
   }
 
   const handlePublish = (id) => {
-    // PUT request here for isDraft field (json-server)
-    // For backend, '/story/' + id + '?publish=1'
-    axios.put('http://localhost:8081/api/0.1/story/' + id + '?publish=1')
+    axios.put(`/api/0.1/story/${id}?publish=1`) // might need headers
     .then(() => {
       toast({
         title: 'Successfully published story.',
@@ -104,7 +106,7 @@ const ManageStoryList = () => {
         duration: 5000,
         isClosable: true,
       });
-      dispatch(fetchStories({ loginType, institutionId }));
+      dispatch(getStories(institutionId));
     })
     .catch(() => {
       toast({
@@ -116,7 +118,6 @@ const ManageStoryList = () => {
         isClosable: true,
       });
     })
-    alert(`Successfully published ${id}`); // remove
   }
 
   return (
