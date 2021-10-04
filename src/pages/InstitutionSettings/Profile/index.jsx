@@ -138,6 +138,8 @@ const Profile = () => {
     })
 
     setImagePreview(values.avatarPhoto);
+    history.push('/institution/settings');
+
   }
 
   const CancelAlertDialog = () => {
@@ -174,8 +176,16 @@ const Profile = () => {
     const onClose = () => setIsOpen(false);
     const cancelRef = useRef();
 
-    const handleSave = () => {
-      if (/^\d{10}$/.test(currentValues.contactNumber) === false) {
+    const handleSave = () => {      
+      if (currentValues.locationLat === null && currentValues.locationLong === null) {
+        toast({
+          title: 'Location is required.',
+          status: 'error',
+          position: 'top',
+          duration: 5000,
+          isClosable: true,
+        });
+      } else if (/^\d{10}$/.test(currentValues.contactNumber) === false) {
         toast({
           title: 'Contact number format is invalid.',
           status: 'error',
@@ -263,11 +273,21 @@ const Profile = () => {
 
   // Location handler
   const onSuccess = (position) => {
-    setValues({
-      ...values,
-      locationLat: position.coords.latitude,
-      locationLong: position.coords.longitude,
-    });
+    if (position.coords.latitude !== currentValues.locationLat && position.coords.longitude !== currentValues.locationLong) { 
+      setCurrentValues({
+        ...currentValues,
+        locationLat: position.coords.latitude,
+        locationLong: position.coords.longitude,
+      });
+    } else {
+      toast({
+        title: 'Cannot update your location because it is the same.',
+        status: 'error',
+        position: 'top',
+        duration: 5000,
+        isClosable: true,
+      });
+    }
   }
   
   const onError = () => {
@@ -329,6 +349,8 @@ const Profile = () => {
         duration: 5000,
         isClosable: true,
       });
+
+      history.push('/institution/settings');
     })
     .catch(err => {
       console.log(err);
@@ -341,11 +363,6 @@ const Profile = () => {
         isClosable: true,
       });
     })
-
-    // Might refetch insti data or use window reload
-
-    // For testing
-    console.log(values);
   }
 
   return (
@@ -463,7 +480,7 @@ const Profile = () => {
                 <div className={styles.twoFields}>
                   <p className="paragraph">Location</p>
                   {/* Interchange current values and values */}
-                  {(values.locationLat !== currentValues.locationLat && values.locationLong !== currentValues.locationLat)
+                  {(currentValues.locationLat !== values.locationLat && currentValues.locationLong !== values.locationLat)
                   ? <Button size="small" color="brand-default" onClick={handleLocation}> <span>Location updated</span><IoLocationSharp /> </Button>
                   : <Button size="small" color="brand-default" onClick={handleLocation} variant="outline"><IoLocationSharp /> <span>Update location</span></Button> 
                   }

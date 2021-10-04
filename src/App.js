@@ -123,7 +123,6 @@ function App() {
 					<NavRoute
 						path={`${INSTITUTION_ROOT}/settings`}
 						component={InstitutionSettings}
-						exact
 						type={model.INSTITUTION}
 					/>
 
