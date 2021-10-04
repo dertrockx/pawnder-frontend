@@ -29,7 +29,19 @@ function UserInformationModal(props) {
 		loading = false,
 		secAction = () => {},
 		primAction = () => {},
+		selectedApplicant = {},
 	} = props;
+
+	const {
+		firstName = "",
+		middleName = "",
+		lastName = "",
+		email = "",
+		birthDate = new Date(),
+		photoUrl = "https://via.placeholder.com/200",
+		contactNumber = "+639706062319",
+	} = selectedApplicant;
+
 	return (
 		<Modal isOpen={isOpen} onClose={onClose} size="xl" isCentered>
 			<ModalOverlay />
@@ -38,20 +50,32 @@ function UserInformationModal(props) {
 				<ModalCloseButton />
 				<ModalBody>
 					<Grid gridTemplateColumns="1fr 1fr" columnGap={15}>
-						<Image src="https://via.placeholder.com/200" borderRadius="50%" />
-						<Grid gridTemplateColumns="137px 146px" columnGap={4}>
+						<Image
+							src={photoUrl}
+							borderRadius="50%"
+							boxSize="200px"
+							objectFit="cover"
+						/>
+						<Grid
+							gridTemplateColumns="137px 146px"
+							columnGap={4}
+							rowGap={2}
+							alignContent="start"
+						>
 							<p className="bold-text">Name:</p>
-							<p className="paragraph">Ian I. Salazar</p>
+							<p className="paragraph">{`${firstName} ${middleName} ${lastName}`}</p>
 							<p className="bold-text">Age:</p>
-							<p className="paragraph">20 years old</p>
+							<p className="paragraph">{`${
+								new Date().getFullYear() - new Date(birthDate).getFullYear()
+							}`}</p>
 							<p className="bold-text">Email:</p>
-							<p className="paragraph">Ian I. Salazar</p>
+							<p className="paragraph">{email}</p>
 							<p className="bold-text">Contact Number:</p>
-							<p className="paragraph">09618016463</p>
-							<p className="bold-text">Location:</p>
+							<p className="paragraph">{contactNumber}</p>
+							{/* <p className="bold-text">Location:</p>
 							<p className="paragraph">
 								601 San Rafael St. Barangay Poblaction, Tagkawayan, Quezon
-							</p>
+							</p> */}
 						</Grid>
 					</Grid>
 				</ModalBody>
