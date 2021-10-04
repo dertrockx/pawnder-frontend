@@ -94,8 +94,12 @@ function NearbyInstitution({ history }) {
 					locationLong: lng,
 					preferredDistance: distance,
 				} = user;
-				if (lat === null || lng === null || distance === null)
+				if (lat === null || lng === null || distance === null) {
 					setLocation(false);
+					setLoading(false);
+					return;
+				}
+
 				const institutions = await getInstitutions(lat, lng, distance, token);
 				setInstitutions(institutions);
 				setCenter({ lat, lng });

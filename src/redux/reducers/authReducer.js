@@ -1,7 +1,7 @@
 import { auth } from "constants/ActionTypes";
 
 const initialState = {
-	loginPending: true,
+	loginPending: false,
 	loginError: null, // Wrong credentials, basically error message
 
 	isAuthenticated: false,
