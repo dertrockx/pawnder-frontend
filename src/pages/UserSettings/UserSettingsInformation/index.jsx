@@ -38,7 +38,6 @@ function UserSettingsInformation() {
     firstName: null,
     middleName: null,
     lastName: null,
-
     sex: null,
     birthDate: null,
     contactNumber: null,
@@ -293,7 +292,6 @@ function UserSettingsInformation() {
   function handleCancel(e) {
     e.preventDefault();
     setValues(currentValues);
-
   }
 
   return (

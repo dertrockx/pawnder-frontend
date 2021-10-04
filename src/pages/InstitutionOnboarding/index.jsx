@@ -56,7 +56,6 @@ function InstitutionOnboardingPage() {
 			[e.target.name]: e.target.value,
 		});
 
-		// console.log(e.target.value);
 	}
 
 	const handleSubmit = (e) => {

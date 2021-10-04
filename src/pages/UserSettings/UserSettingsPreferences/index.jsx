@@ -140,6 +140,7 @@ function UserSettingsPreferences() {
       })
 
     } catch (error) {
+      console.log("///////////////////////////")
       console.log(error);
       setLoading(false);
       setHasError(true);
