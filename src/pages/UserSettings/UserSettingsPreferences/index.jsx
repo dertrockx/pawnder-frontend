@@ -45,7 +45,8 @@ function UserSettingsPreferences() {
 	useEffect(() => {
 		if (!isAuthenticated && loginType !== "USER")
 			return history.replace("/user/login");
-		const id = Object.values(model)[1];
+		// const id = Object.values(model)[1];
+		const id = model.id;
 
 		try {
 			axios
@@ -98,8 +99,8 @@ function UserSettingsPreferences() {
 
 	const handleSubmit = (e) => {
 		e.preventDefault();
-		const id = Object.values(model)[1];
-
+		// const id = Object.values(model)[1];
+		const id = model.id;
 		try {
 			axios
 				.put(`/api/0.1/user/${id}`, {

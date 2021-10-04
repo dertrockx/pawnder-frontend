@@ -137,7 +137,8 @@ function UserSettingsInformation() {
 		e.preventDefault();
 		setLoading(true);
 
-		const id = Object.values(model)[1];
+		// const id = Object.values(model)[1];
+		const id = model.id;
 		if (
 			values.firstName === "" ||
 			values.lastName === "" ||
