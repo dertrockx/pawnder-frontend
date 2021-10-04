@@ -33,6 +33,7 @@ const ShowStoryList = () => {
 	let storiesCopy = stories; // So I won't overwrite the storiesArray, esp. when sorting.
 	useEffect(() => {
 		dispatch(getPublishedStories());
+		// eslint-disable-next-line
 	}, []);
 
 	// Source: https://stackoverflow.com/a/12192544
@@ -55,6 +56,7 @@ const ShowStoryList = () => {
 	}
 
 	// Source: https://youtu.be/mZvKPtH9Fzo
+	// eslint-disable-next-line
 	storiesCopy = stories.filter((story) => {
 		if (searchTerm === "") {
 			return story;

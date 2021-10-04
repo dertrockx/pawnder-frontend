@@ -17,9 +17,9 @@ import "./normalize.css";
 import "./typography.css";
 
 // lazy-loading pages
-const InstitutionOnboardingPage = lazy(() =>
-	import("pages/InstitutionOnboarding")
-);
+// const InstitutionOnboardingPage = lazy(() =>
+// 	import("pages/InstitutionOnboarding")
+// );
 const Feed = lazy(() => import("pages/Feed"));
 const NearbyInstitution = lazy(() => import("pages/NearbyInstitution"));
 const ManagePetList = lazy(() =>
@@ -32,14 +32,14 @@ const UserLoginPage = lazy(() => import("pages/UserLogin"));
 const UserSignupPage = lazy(() => import("pages/UserSignup"));
 const Dashboard = lazy(() => import("pages/Dashboard"));
 const UserSettings = lazy(() => import("pages/UserSettings"));
-const UserOnboarding = lazy(() => import("pages/UserOnboarding"));
-const ShowStoryList = lazy(() => import("pages/ShowStoryList"));
-const ShowStoryDetails = lazy(() => import("pages/ShowStoryDetails"));
+// const UserOnboarding = lazy(() => import("pages/UserOnboarding"));
+// const ShowStoryList = lazy(() => import("pages/ShowStoryList"));
+// const ShowStoryDetails = lazy(() => import("pages/ShowStoryDetails"));
 const InstitutionSignUp = lazy(() => import("pages/InstitutionSignUpPage"));
 const InstitutionLogin = lazy(() => import("pages/InstitutionLoginPage"));
 const InstitutionSettings = lazy(() => import("pages/InstitutionSettings"));
-const ManageStoryList = lazy(() => import("pages/ManageStoryList"));
-const ManageStoryDetails = lazy(() => import("pages/ManageStoryDetails"));
+// const ManageStoryList = lazy(() => import("pages/ManageStoryList"));
+// const ManageStoryDetails = lazy(() => import("pages/ManageStoryDetails"));
 const ChooseLogin = lazy(() => import("pages/ChooseLogin"));
 const ChooseSignup = lazy(() => import("pages/ChooseSignup"));
 const INSTITUTION_ROOT = "/institution";
@@ -78,12 +78,12 @@ function App() {
 						component={NearbyInstitution}
 						type={model.USER}
 					/>
-					<NavRoute path="/stories" component={ShowStoryList} type={null} />
+					{/* <NavRoute path="/stories" component={ShowStoryList} type={null} />
 					<NavRoute
 						path="/stories/:id"
 						component={ShowStoryDetails}
 						type={null}
-					/>
+					/> */}
 					<Route
 						path={`${INSTITUTION_ROOT}/login`}
 						exact
@@ -110,16 +110,16 @@ function App() {
 						component={ManagePetList}
 						type={model.INSTITUTION}
 					/>
-					<NavRoute
+					{/* <NavRoute
 						path="/institution/manage-stories"
 						component={ManageStoryList}
 						type={model.INSTITUTION}
-					/>
-					<NavRoute
+					/> */}
+					{/* <NavRoute
 						path={`${INSTITUTION_ROOT}/manage-stories/:id`}
 						component={ManageStoryDetails}
 						type={model.INSTITUTION}
-					/>
+					/> */}
 					<NavRoute
 						path={`${INSTITUTION_ROOT}/settings`}
 						component={InstitutionSettings}
@@ -133,7 +133,7 @@ function App() {
 						exact
 						component={UserSignupPage}
 					/>
-					<Route
+					{/* <Route
 						path={`${USER_ROOT}/onboarding`}
 						exact
 						component={InstitutionOnboardingPage}
@@ -142,7 +142,7 @@ function App() {
 						path={`${INSTITUTION_ROOT}/onboarding`}
 						exact
 						component={UserOnboarding}
-					/>
+					/> */}
 					<NavRoute
 						path={`${USER_ROOT}/settings`}
 						component={UserSettings}
