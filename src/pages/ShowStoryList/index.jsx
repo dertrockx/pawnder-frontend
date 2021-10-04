@@ -23,8 +23,6 @@ const ShowStoryList = () => {
   const [searchTerm, setSearchTerm] = useState('');
 
   let storiesCopy = stories; // So I won't overwrite the storiesArray, esp. when sorting.
-  console.log(stories);
-  // might use useEffect for pagination, put loginType in useEffect bc someone might log in/out while viewing stories
   useEffect(() => {
     dispatch(getPublishedStories());
   }, [])
