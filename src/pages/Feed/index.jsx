@@ -123,7 +123,7 @@ function Feed() {
 				{/* dynamic content part */}
 				<div className={feedPage.header}>
 					<div className={feedPage.leftItems}>
-						<h4 className="heading-4">Breed</h4>
+						<h4 className="heading-4">{(info && info.breed) || ""}</h4>
 						<span
 							style={{
 								height: 3,
@@ -133,8 +133,10 @@ function Feed() {
 								display: "block",
 							}}
 						/>
-						<p className="paragraph">1 year and 6 months</p>
-						<span
+						<p className="paragraph">{`${ageY} year${ageY > 1 ? "s" : ""} ${
+							ageM > 0 ? `${ageM} month${ageM > 1 ? "s" : ""}` : ""
+						}`}</p>
+						{/* <span
 							style={{
 								height: 3,
 								width: 3,
@@ -143,7 +145,7 @@ function Feed() {
 								display: "block",
 							}}
 						/>
-						<p className="paragraph">Tagkawayan, Quezon</p>
+						<p className="paragraph">Tagkawayan, Quezon</p> */}
 					</div>
 					<div className={feedPage.rightItems}>
 						<Button variant="outline" color="black" onClick={handlePass}>
@@ -208,7 +210,7 @@ function Feed() {
 							</div>
 							<div className={feedPage.labelText}>
 								<p className="bold-text">Age</p>
-								<p className="paragraph">{`${ageY} years ${
+								<p className="paragraph">{`${ageY} year${ageY > 1 ? "s" : ""} ${
 									ageM > 0 ? `${ageM} month${ageM > 1 ? "s" : ""}` : ""
 								}`}</p>
 							</div>
