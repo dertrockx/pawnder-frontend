@@ -28,7 +28,6 @@ function InstitutionOnboardingPage() {
 		messengerURL: "",
 		instagramURL: ""
 	});
-	const [ locationError, setLocationError ] = useState(false);
 	const [ imagePreview, setImagePreview ] = useState(`${noPhoto}`);
 	const [ imagePreviewError, setImagePreviewError ] = useState(false);
 	const [ nextDisabled, setNextDisabled ] = useState(true);
@@ -57,7 +56,7 @@ function InstitutionOnboardingPage() {
 
 		//sends PUT request
 		fetch(
-			`http://localhost:8081/api/0.1/institution/` + id,	//hardcoded id
+			`http://localhost:8081/api/0.1/institution/` + id,
 			{
 				method: "PUT",
 				headers: {
@@ -120,11 +119,9 @@ function InstitutionOnboardingPage() {
 			locationLat: position.coords.latitude,
 			locationLong: position.coords.longitude,
 		});
-		setLocationError(false);
 	}
 	
 	const onError = () => {
-		setLocationError(true);
 		toast({
 			title: 'Unable to retrieve your location. Please enable permissions.',
 			status: 'error',
@@ -138,7 +135,6 @@ function InstitutionOnboardingPage() {
 		/* See note in image handler. */
 		e.preventDefault();
 		if (!navigator.geolocation) {
-		setLocationError(true);
 		toast({
 			title: 'Geolocation is not supported by your browser. Please use another.',
 			status: 'error',
