@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from "react";
 import { useSelector } from "react-redux";
-import history from "utils/history";
 
 import LoadingPage from "pages/LoadingPage";
 import BasicDescription from "components/BasicDescription";
@@ -40,10 +39,9 @@ function UserSettingsInformation() {
 		locationLong: "",
 	});
 
-	const isAuthenticated = useSelector((s) => s.auth.isAuthenticated);
-	const loginType = useSelector((s) => s.auth.loginType);
 	const token = useSelector((s) => s.auth.token);
 	const model = useSelector((s) => s.auth.model);
+	const [loaded, setLoaded] = useState(false);
 	const [imagePreviewError, setImagePreviewError] = useState(false);
 	const [imagePreview, setImagePreview] = useState(`${noPhoto}`);
 	const [locationError, setLocationError] = useState(false);
@@ -55,54 +53,59 @@ function UserSettingsInformation() {
 
 	//checks if user is authenticated
 	useEffect(() => {
-		if (!isAuthenticated && loginType !== "USER")
-			return history.replace("/user/login");
+		// if (!isAuthenticated && loginType !== "USER")
+		// 	return history.replace("/user/login");
 		// const id = Object.values(model)[1];
-		const id = model.id;
+		if (token && !loaded) {
+			const id = model.id;
 
-		try {
-			axios
-				.get(`/api/0.1/user/${id}`, {
-					headers: {
-						Authorization: `Bearer ${token}`,
-					},
-				})
-				.then((data) => {
-					const user = data.data.user;
-					var today = new Date(user.birthDate);
-					setValues({
-						avatarPhoto: user.photoUrl,
-						firstName: user.firstName,
-						middleName: user.middleName,
-						lastName: user.lastName,
-						sex: user.sex,
-						birthDate: today.toISOString().substr(0, 10),
-						contactNumber: user.contactNumber,
-						locationLat: user.locationLat,
-						locationLong: user.locationLat,
+			try {
+				axios
+					.get(`/api/0.1/user/${id}`, {
+						headers: {
+							Authorization: `Bearer ${token}`,
+						},
+					})
+					.then((data) => {
+						const user = data.data.user;
+						var today = new Date(user.birthDate);
+						setValues({
+							avatarPhoto: user.photoUrl,
+							firstName: user.firstName,
+							middleName: user.middleName,
+							lastName: user.lastName,
+							sex: user.sex,
+							birthDate: today.toISOString().substr(0, 10),
+							contactNumber: user.contactNumber,
+							locationLat: user.locationLat,
+							locationLong: user.locationLat,
+						});
+
+						setCurrentValues({
+							avatarPhoto: user.photoUrl,
+							firstName: user.firstName,
+							middleName: user.middleName,
+							lastName: user.lastName,
+							sex: user.sex,
+							birthDate: today.toISOString().substr(0, 10),
+							contactNumber: user.contactNumber,
+							locationLat: user.locationLat,
+							locationLong: user.locationLat,
+						});
+
+						setImagePreview(user.photoUrl);
+						setLoading(false);
+						setHasError(false);
+						setLoaded(true);
 					});
-
-					setCurrentValues({
-						avatarPhoto: user.photoUrl,
-						firstName: user.firstName,
-						middleName: user.middleName,
-						lastName: user.lastName,
-						sex: user.sex,
-						birthDate: today.toISOString().substr(0, 10),
-						contactNumber: user.contactNumber,
-						locationLat: user.locationLat,
-						locationLong: user.locationLat,
-					});
-
-					setImagePreview(user.photoUrl);
-					setLoading(false);
-					setHasError(false);
-				});
-		} catch (error) {
-			console.log(error);
-			setLoading(false);
-			setHasError(true);
+			} catch (error) {
+				console.log(error);
+				setLoading(false);
+				setHasError(true);
+				setLoaded(true);
+			}
 		}
+
 		// eslint-disable-next-line
 	}, [token]);
 
@@ -141,16 +144,15 @@ function UserSettingsInformation() {
 		const id = model.id;
 		if (
 			values.firstName === "" ||
-      values.firstName === null ||
+			values.firstName === null ||
 			values.lastName === "" ||
 			values.lastName === null ||
-			values.contactNumber === "" || 
-      values.contactNumber === null ||
+			values.contactNumber === "" ||
+			values.contactNumber === null ||
 			values.locationLat === "" ||
 			values.locationLong === "" ||
-      values.locationLat === null ||
+			values.locationLat === null ||
 			values.locationLong === null
-      
 		)
 			return setIsRequired(true);
 		// change logic of this one

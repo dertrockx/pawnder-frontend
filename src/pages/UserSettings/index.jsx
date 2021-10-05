@@ -1,7 +1,5 @@
 import React, { useEffect } from "react";
-import history from "utils/history";
 import { Switch, Route, useRouteMatch, Redirect, Link } from "react-router-dom";
-import { useSelector } from "react-redux";
 import UserSettingsPreferences from "./UserSettingsPreferences";
 import UserSettingsInformation from "./UserSettingsInformation";
 import styles from "./UserSettings.module.css";
@@ -18,14 +16,11 @@ const BetterSidebarLink = ({ children, ...linkProps }) => (
 );
 
 function BasicSideBar() {
-	const isAuthenticated = useSelector((s) => s.auth.isAuthenticated);
-	const loginType = useSelector((s) => s.auth.loginType);
-
 	let { path, url } = useRouteMatch();
 
 	useEffect(() => {
-		if (!isAuthenticated && loginType !== "USER")
-			history.replace("/user/login");
+		// if (!isAuthenticated && loginType !== "USER")
+		// 	history.replace("/user/login");
 		// eslint-disable-next-line
 	}, []);
 
