@@ -58,8 +58,8 @@ const getInstitutions = (lat, long, distance = 100, token) => {
 function NearbyInstitution({ history }) {
 	const { token, model } = useSelector((s) => s.auth);
 	const [center, setCenter] = useState({
-		lat: 13.961703,
-		lng: 122.542972,
+		lat: null,
+		lng: null,
 	});
 
 	const [route, setRoute] = useState([]);
@@ -105,11 +105,15 @@ function NearbyInstitution({ history }) {
 				setCenter({ ...center, lat, lng });
 				setViewport({ ...viewport, latitude: lat, longitude: lng });
 				setLoading(false);
+				console.log("Setting center");
 			} catch (error) {
 				console.log(error);
 			}
 		};
+
 		if (
+			token &&
+			model &&
 			Object.keys(institutions).length === 0 &&
 			Object.getPrototypeOf(institutions) === Object.prototype
 		) {
@@ -133,7 +137,7 @@ function NearbyInstitution({ history }) {
 				);
 			}),
 		// eslint-disable-next-line
-		[institutions]
+		[institutions, center]
 	);
 
 	async function getRoute(start, end) {
@@ -160,6 +164,7 @@ function NearbyInstitution({ history }) {
 	}
 
 	async function handleMarkerClick(lng, lat, id) {
+		console.log(center);
 		const route = await getRoute([center.lng, center.lat], [lng, lat]);
 
 		setRoute(route);
@@ -210,51 +215,59 @@ function NearbyInstitution({ history }) {
 
 	return (
 		<div className={styles.mapContainer}>
-			<ReactMapGL
-				{...viewport}
-				mapStyle="mapbox://styles/mapbox/dark-v9"
-				width="100%"
-				height="100%"
-				onViewportChange={(nextViewport) => {
-					setViewport(nextViewport);
-				}}
-				mapboxApiAccessToken={accessToken}
-				onClick={handleMapClick}
-			>
-				<Pin longitude={center.lng} latitude={center.lat} color="red" />
-				{route && route.length && <PolylineOverlay points={route} />}
+			{center.lat && center.lng && (
+				<>
+					<ReactMapGL
+						{...viewport}
+						mapStyle="mapbox://styles/mapbox/dark-v9"
+						width="100%"
+						height="100%"
+						onViewportChange={(nextViewport) => {
+							setViewport(nextViewport);
+						}}
+						mapboxApiAccessToken={accessToken}
+						onClick={handleMapClick}
+					>
+						<Pin longitude={center.lng} latitude={center.lat} color="red" />
+						{route && route.length && <PolylineOverlay points={route} />}
 
-				{pins}
-			</ReactMapGL>
-			{institutions &&
-				show &&
-				focusedInsti &&
-				(institutions[focusedInsti].photoUrl ? (
-					<div className={styles.floatingCard}>
-						{institutions[focusedInsti].photoUrl && (
-							<img
-								src={
-									institutions[focusedInsti].photoUrl ||
-									"https://assets2.rappler.com/2352E1D5E07A40DE92D51BBBB1C9AF0D/img/60D351305CAA415D8053E6143FCC7344/duterte-kiss-skor_copy.jpg"
-								}
-								alt=""
-							/>
-						)}
+						{pins}
+					</ReactMapGL>
+					{institutions &&
+						show &&
+						focusedInsti &&
+						(institutions[focusedInsti].photoUrl ? (
+							<div className={styles.floatingCard}>
+								{institutions[focusedInsti].photoUrl && (
+									<img
+										src={
+											institutions[focusedInsti].photoUrl ||
+											"https://assets2.rappler.com/2352E1D5E07A40DE92D51BBBB1C9AF0D/img/60D351305CAA415D8053E6143FCC7344/duterte-kiss-skor_copy.jpg"
+										}
+										alt=""
+									/>
+								)}
 
-						<div className={styles.imgOverlay}></div>
-						<div className={styles.content}>
-							<h2 className="heading-2">{institutions[focusedInsti].name}</h2>
-							{/* <p className="caption">I am a caption for text only</p> */}
-						</div>
-					</div>
-				) : (
-					<div className={styles.floatingCardWithNoImage}>
-						<div className={styles.content}>
-							<h2 className="heading-2">{institutions[focusedInsti].name}</h2>
-							{/* <p className="caption">I am a caption for text only</p> */}
-						</div>
-					</div>
-				))}
+								<div className={styles.imgOverlay}></div>
+								<div className={styles.content}>
+									<h2 className="heading-2">
+										{institutions[focusedInsti].name}
+									</h2>
+									{/* <p className="caption">I am a caption for text only</p> */}
+								</div>
+							</div>
+						) : (
+							<div className={styles.floatingCardWithNoImage}>
+								<div className={styles.content}>
+									<h2 className="heading-2">
+										{institutions[focusedInsti].name}
+									</h2>
+									{/* <p className="caption">I am a caption for text only</p> */}
+								</div>
+							</div>
+						))}
+				</>
+			)}
 		</div>
 	);
 }
