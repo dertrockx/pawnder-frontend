@@ -126,11 +126,12 @@ function UserSettingsInformation() {
 	}, [values]);
 
 	const handleChange = (e) => {
-		if (e.target.name === "contactNumber" && contactNumberError)
+		let { value, name } = e.target;
+		if (name === "contactNumber" && contactNumberError)
 			setContactNumberError(false);
 		setValues({
 			...values,
-			[e.target.name]: e.target.value,
+			[name]: value,
 		});
 
 		if (isRequired) setIsRequired(false);
@@ -138,7 +139,6 @@ function UserSettingsInformation() {
 
 	const handleSubmit = (e) => {
 		e.preventDefault();
-		setLoading(true);
 
 		// const id = Object.values(model)[1];
 		const id = model.id;
@@ -155,15 +155,10 @@ function UserSettingsInformation() {
 			values.locationLong === null
 		)
 			return setIsRequired(true);
-		// change logic of this one
-		// regardless of the left-part's value, it still checks the right side
-		// that's why it results to a .null error
-		if (
-			isNaN(values.contactNumber) ||
-			!values.contactNumber ||
-			values.contactNumber.length !== 11
-		)
-			return setContactNumberError(true);
+		if (isNaN(values.contactNumber)) {
+			setContactNumberError(true);
+			return;
+		}
 
 		const data = new FormData();
 		data.append("avatarPhoto", values.avatarPhoto);
@@ -173,7 +168,7 @@ function UserSettingsInformation() {
 		data.append("contactNumber", values.contactNumber);
 		data.append("locationLat", values.locationLat);
 		data.append("locationLong", values.locationLong);
-
+		setLoading(true);
 		axios
 			.put(`/api/0.1/user/${id}`, data)
 			.then((res) => {
