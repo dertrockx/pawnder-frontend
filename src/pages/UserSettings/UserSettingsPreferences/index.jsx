@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import history from "utils/history";
+
 import { useSelector } from "react-redux";
 
 import LoadingPage from "pages/LoadingPage";
@@ -35,47 +35,52 @@ function UserSettingsPreferences() {
 	const [isSaveDisabled, setIsSaveDisabled] = useState(true);
 	const [loading, setLoading] = useState(true);
 	const [hasError, setHasError] = useState(false);
-	const isAuthenticated = useSelector((s) => s.auth.isAuthenticated);
-	const loginType = useSelector((s) => s.auth.loginType);
+
 	const model = useSelector((s) => s.auth.model);
 	const token = useSelector((s) => s.auth.token);
+	const [loaded, setLoaded] = useState(false);
 	const toast = useToast();
 
 	//checks if user is authenticated
 	useEffect(() => {
-		if (!isAuthenticated && loginType !== "USER")
-			return history.replace("/user/login");
+		// if (!isAuthenticated && loginType !== "USER")
+		// 	return history.replace("/user/login");
 		// const id = Object.values(model)[1];
-		const id = model.id;
 
-		try {
-			axios
-				.get(`/api/0.1/user/${id}`, {
-					headers: {
-						Authorization: `Bearer ${token}`,
-					},
-				})
-				.then((data) => {
-					setLoading(false);
-					setHasError(false);
+		if (token && !loaded) {
+			const id = model.id;
+			try {
+				axios
+					.get(`/api/0.1/user/${id}`, {
+						headers: {
+							Authorization: `Bearer ${token}`,
+						},
+					})
+					.then((data) => {
+						setLoading(false);
+						setHasError(false);
 
-					const user = data.data.user;
-					setType(user.preferredAnimal);
-					setAction(user.action);
-					setDistance(user.preferredDistance);
-					setCurrentType(user.preferredAnimal);
-					setCurrentDistance(user.preferredDistance);
-					setCurrentAction(user.action);
+						const user = data.data.user;
+						setType(user.preferredAnimal);
+						setAction(user.action);
+						setDistance(user.preferredDistance);
+						setCurrentType(user.preferredAnimal);
+						setCurrentDistance(user.preferredDistance);
+						setCurrentAction(user.action);
+						setLoaded(true);
+					});
+				setCurrentDistance({
+					distance: (distance) => distance.replace(/^\$/, ""),
 				});
-			setCurrentDistance({
-				distance: (distance) => distance.replace(/^\$/, ""),
-			});
-		} catch (error) {
-			console.log("================");
-			console.log(error);
-			setLoading(false);
-			setHasError(true);
+			} catch (error) {
+				console.log("================");
+				console.log(error);
+				setLoading(false);
+				setHasError(true);
+				setLoaded(true);
+			}
 		}
+
 		// eslint-disable-next-line
 	}, [token]);
 
