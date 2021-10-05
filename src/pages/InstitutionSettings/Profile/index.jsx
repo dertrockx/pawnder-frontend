@@ -69,53 +69,56 @@ const Profile = () => {
 	const [isSaveDisabled, setIsSaveDisabled] = useState(true);
 	const [loading, setLoading] = useState(true); // for fetching insti data and updating insti data
 	const [hasError, setHasError] = useState(false); // for fetching insti data
-
+	const [loaded, setLoaded] = useState(false);
 	const toast = useToast();
 
 	useEffect(() => {
-		axios
-			.get(`/api/0.1/institution/${model.id}`, {
-				headers: {
-					Authorization: `Bearer ${token}`,
-				},
-			})
-			.then((res) => {
-				console.log(res);
-				const { institution } = res.data;
-				return institution;
-			})
-			.then((institution) => {
-				setValues({
-					avatarPhoto: institution.photoUrl,
-					name: institution.name,
-					email: institution.email,
-					contactNumber: institution.contactNumber,
-					description: institution.description,
-					locationLat: institution.locationLat,
-					locationLong: institution.locationLong,
-				});
+		if (token && !loaded) {
+			axios
+				.get(`/api/0.1/institution/${model.id}`, {
+					headers: {
+						Authorization: `Bearer ${token}`,
+					},
+				})
+				.then((res) => {
+					console.log(res);
+					const { institution } = res.data;
+					return institution;
+				})
+				.then((institution) => {
+					setValues({
+						avatarPhoto: institution.photoUrl,
+						name: institution.name,
+						email: institution.email,
+						contactNumber: institution.contactNumber,
+						description: institution.description,
+						locationLat: institution.locationLat,
+						locationLong: institution.locationLong,
+					});
 
-				setCurrentValues({
-					avatarPhoto: institution.photoUrl,
-					name: institution.name,
-					email: institution.email,
-					contactNumber: institution.contactNumber,
-					description: institution.description,
-					locationLat: institution.locationLat,
-					locationLong: institution.locationLong,
-				});
+					setCurrentValues({
+						avatarPhoto: institution.photoUrl,
+						name: institution.name,
+						email: institution.email,
+						contactNumber: institution.contactNumber,
+						description: institution.description,
+						locationLat: institution.locationLat,
+						locationLong: institution.locationLong,
+					});
 
-				setImagePreview(institution.photoUrl);
-				setLoading(false);
-				setHasError(false);
-			})
-			.catch((err) => {
-				console.log(err);
-				setLoading(false);
-				setHasError(true);
-			});
+					setImagePreview(institution.photoUrl);
+					setLoading(false);
+					setHasError(false);
+				})
+				.catch((err) => {
+					console.log(err);
+					setLoading(false);
+					setHasError(true);
+				});
+		}
+
 		// eslint-disable-next-line
-	}, []);
+	}, [token]);
 
 	// From Lea; compares current to initial values
 	const checkObjects = (keys1) => {
