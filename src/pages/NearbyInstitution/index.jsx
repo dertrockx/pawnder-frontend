@@ -102,7 +102,7 @@ function NearbyInstitution({ history }) {
 
 				const institutions = await getInstitutions(lat, lng, distance, token);
 				setInstitutions(institutions);
-				setCenter({ lat, lng });
+				setCenter({ ...center, lat, lng });
 				setViewport({ ...viewport, latitude: lat, longitude: lng });
 				setLoading(false);
 			} catch (error) {
