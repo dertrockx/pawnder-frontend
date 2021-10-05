@@ -14,6 +14,7 @@ import {
 	Input,
 	FormControl,
 	FormLabel,
+	FormErrorMessage,
 	Select,
 	Textarea,
 	Grid,
@@ -25,12 +26,12 @@ import {
 function CreatePetModal({
 	isOpen = false,
 	loading = false,
-	file = null,
 	uploadHandler = () => {},
 	onClose = () => {},
 	handleChange = () => {},
 	onSave = () => {},
 	info,
+	errors,
 }) {
 	const {
 		name,
@@ -64,7 +65,13 @@ function CreatePetModal({
 						justifyContent="stretch"
 					>
 						<Grid gridTemplateColumns="1fr 1fr" columnGap={5} rowGap={5}>
-							<FormControl isRequired id="name">
+							<FormControl
+								isRequired
+								id="name"
+								isInvalid={
+									errors && errors.length > 0 && errors.includes("name")
+								}
+							>
 								<FormLabel>Pet Name</FormLabel>
 								<Input
 									type="text"
@@ -74,8 +81,15 @@ function CreatePetModal({
 									onChange={handleChange}
 									disabled={loading}
 								/>
+								<FormErrorMessage>This field is required</FormErrorMessage>
 							</FormControl>
-							<FormControl isRequired id="breed">
+							<FormControl
+								isRequired
+								id="breed"
+								isInvalid={
+									errors && errors.length > 0 && errors.includes("breed")
+								}
+							>
 								<FormLabel>Breed</FormLabel>
 								<Input
 									type="text"
@@ -85,9 +99,16 @@ function CreatePetModal({
 									onChange={handleChange}
 									disabled={loading}
 								/>
+								<FormErrorMessage>This field is required</FormErrorMessage>
 							</FormControl>
 
-							<FormControl isRequired id="animalType">
+							<FormControl
+								isRequired
+								id="animalType"
+								isInvalid={
+									errors && errors.length > 0 && errors.includes("animalType")
+								}
+							>
 								<FormLabel>Animal Type</FormLabel>
 								<Select
 									placeholder="Select option"
@@ -108,9 +129,16 @@ function CreatePetModal({
 									<option value="rabbits">Rabbit</option>
 									<option value="rodents">Rodent</option>
 								</Select>
+								<FormErrorMessage>This field is required</FormErrorMessage>
 							</FormControl>
-							<FormControl isRequired id="sex">
-								<FormLabel>Height</FormLabel>
+							<FormControl
+								isRequired
+								id="sex"
+								isInvalid={
+									errors && errors.length > 0 && errors.includes("sex")
+								}
+							>
+								<FormLabel>Sex</FormLabel>
 								<Select
 									placeholder="Select option"
 									focusBorderColor="brand.100"
@@ -122,9 +150,16 @@ function CreatePetModal({
 									<option value="m">Male</option>
 									<option value="f">Female</option>
 								</Select>
+								<FormErrorMessage>This field is required</FormErrorMessage>
 							</FormControl>
 
-							<FormControl isRequired id="weight">
+							<FormControl
+								isRequired
+								id="weight"
+								isInvalid={
+									errors && errors.length > 0 && errors.includes("weight")
+								}
+							>
 								<FormLabel>Weight (kg)</FormLabel>
 								<NumberInput focusBorderColor="brand.100">
 									<NumberInputField
@@ -134,8 +169,15 @@ function CreatePetModal({
 										disabled={loading}
 									/>
 								</NumberInput>
+								<FormErrorMessage>This field is required</FormErrorMessage>
 							</FormControl>
-							<FormControl id="height">
+							<FormControl
+								isRequired
+								id="height"
+								isInvalid={
+									errors && errors.length > 0 && errors.includes("height")
+								}
+							>
 								<FormLabel>Height (cm)</FormLabel>
 								<NumberInput focusBorderColor="brand.100">
 									<NumberInputField
@@ -145,8 +187,15 @@ function CreatePetModal({
 										disabled={loading}
 									/>
 								</NumberInput>
+								<FormErrorMessage>This field is required</FormErrorMessage>
 							</FormControl>
-							<FormControl isRequired id="age">
+							<FormControl
+								isRequired
+								id="age"
+								isInvalid={
+									errors && errors.length > 0 && errors.includes("age")
+								}
+							>
 								<FormLabel>Age (in months)</FormLabel>
 								<NumberInput focusBorderColor="brand.100">
 									<NumberInputField
@@ -156,9 +205,16 @@ function CreatePetModal({
 										disabled={loading}
 									/>
 								</NumberInput>
+								<FormErrorMessage>This field is required</FormErrorMessage>
 							</FormControl>
 						</Grid>
-						<FormControl isRequired id="medicalHistory">
+						<FormControl
+							isRequired
+							id="medicalHistory"
+							isInvalid={
+								errors && errors.length > 0 && errors.includes("medicalHistory")
+							}
+						>
 							<FormLabel>Medical History</FormLabel>
 							<Textarea
 								type="text"
@@ -170,8 +226,15 @@ function CreatePetModal({
 								onChange={handleChange}
 								disabled={loading}
 							/>
+							<FormErrorMessage>This field is required</FormErrorMessage>
 						</FormControl>
-						<FormControl isRequired id="other">
+						<FormControl
+							isRequired
+							id="other"
+							isInvalid={
+								errors && errors.length > 0 && errors.includes("otherInfo")
+							}
+						>
 							<FormLabel>Other Information</FormLabel>
 							<Textarea
 								type="text"
@@ -183,8 +246,15 @@ function CreatePetModal({
 								onChange={handleChange}
 								disabled={loading}
 							/>
+							<FormErrorMessage>This field is required</FormErrorMessage>
 						</FormControl>
-						<FormControl isRequired id="action">
+						<FormControl
+							isRequired
+							id="action"
+							isInvalid={
+								errors && errors.length > 0 && errors.includes("otherInfo")
+							}
+						>
 							<FormLabel>Open for</FormLabel>
 							<Select
 								placeholder="Select option"
@@ -197,8 +267,13 @@ function CreatePetModal({
 								<option value="adopt">Adoption</option>
 								<option value="foster">Foster Care</option>
 							</Select>
+							<FormErrorMessage>This field is required</FormErrorMessage>
 						</FormControl>
-						<FormControl isRequired id="picture">
+						<FormControl
+							isRequired
+							id="picture"
+							isInvalid={errors && errors.length > 0 && errors.includes("main")}
+						>
 							<FormLabel>Main picture</FormLabel>
 							<input
 								type="file"
@@ -206,16 +281,24 @@ function CreatePetModal({
 								onChange={uploadHandler}
 								accept="image/*"
 							/>
+							<FormErrorMessage>This field is required</FormErrorMessage>
 						</FormControl>
 						<Grid gridTemplateColumns="1fr 1fr" gap={5}>
-							<FormControl isRequired id="others">
-								<FormLabel >Other picture 1</FormLabel>
+							<FormControl
+								isRequired
+								id="others"
+								isInvalid={
+									errors && errors.length > 0 && errors.includes("other1")
+								}
+							>
+								<FormLabel>Other picture 1</FormLabel>
 								<input
 									type="file"
 									name="other1"
 									onChange={uploadHandler}
 									accept="image/*"
 								/>
+								<FormErrorMessage>This field is required</FormErrorMessage>
 							</FormControl>
 							<FormControl id="others">
 								<FormLabel>Other picture 2</FormLabel>
