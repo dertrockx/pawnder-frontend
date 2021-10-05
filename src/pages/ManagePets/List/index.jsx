@@ -30,6 +30,7 @@ function ManagePetsList() {
 	const { pets, fetching, creating } = useSelector((s) => s.pet);
 	// const [pets, setPets] = useState(null);
 	// const [loading, setLoading] = useState(true);
+	const [errors, setErrors] = useState([]);
 	const { isOpen, onOpen, onClose } = useDisclosure();
 	const [file, setFile] = useState(null);
 	const [others, setOthers] = useState({});
@@ -38,14 +39,14 @@ function ManagePetsList() {
 	const [info, setInfo] = useState({
 		name: "",
 		breed: "",
-		animalType: "",
-		sex: "",
+		animalType: "dogs",
+		sex: "m",
 		weight: "",
 		height: "",
 		age: "",
 		medicalHistory: "",
 		otherInfo: "",
-		action: "",
+		action: "adopt",
 	});
 
 	const clearState = () => {
@@ -67,6 +68,8 @@ function ManagePetsList() {
 
 	function handleChange(e) {
 		const numNames = ["ageM", "ageY", "height", "width"];
+		const filteredErrors = errors.filter((error) => error !== e.target.name);
+		setErrors([...filteredErrors]);
 		setInfo({
 			...info,
 			[e.target.name]: numNames.includes(e.target.name)
@@ -76,6 +79,8 @@ function ManagePetsList() {
 	}
 
 	function uploadHandler(e) {
+		const filteredErrors = errors.filter((error) => error !== e.target.name);
+		setErrors([...filteredErrors]);
 		if (e.target.name === "main") setFile(e.target.files[0]);
 		else setOthers({ ...others, [e.target.name]: e.target.files[0] });
 	}
@@ -101,14 +106,26 @@ function ManagePetsList() {
 
 	function onSave() {
 		const formData = new FormData();
+		const hasErrors = [];
 		Object.keys(info).forEach((key) => {
-			formData.append(key, info[key]);
+			const value = info[key];
+			if (!value) hasErrors.push(key);
+			else formData.append(key, info[key]);
 		});
-		formData.append("institutionId", model.id);
+		if (!file) hasErrors.push("main");
+		if (!Object.keys(others).includes("other1")) hasErrors.push("other1");
+		if (hasErrors.length > 0) {
+			setErrors([...hasErrors]);
+			return;
+		}
+
 		formData.append("mainPhoto", file);
 		Object.values(others).forEach((otherPhoto) => {
 			formData.append("others", otherPhoto);
 		});
+
+		formData.append("institutionId", model.id);
+
 		// formData.append("others", others);
 
 		console.log(...formData);
@@ -172,6 +189,7 @@ function ManagePetsList() {
 				file={file}
 				uploadHandler={uploadHandler}
 				others={others}
+				errors={errors}
 			/>
 		</>
 	);
